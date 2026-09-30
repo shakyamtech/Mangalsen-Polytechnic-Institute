@@ -19,7 +19,6 @@
        ========================================== -->
   <div class="login-wrapper" id="adminLoginView">
     <div class="login-card">
-      <!-- Institutional Crest SVG -->
       <svg class="login-logo" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
         <circle cx="45" cy="45" r="42" fill="#0F3870" stroke="#D97706" stroke-width="3"/>
         <circle cx="45" cy="45" r="35" fill="#FFFFFF"/>
@@ -42,7 +41,7 @@
   </div>
 
   <!-- ==========================================
-       2. Admin Dashboard Layout View
+       2. Admin Multi-Page Layout
        ========================================== -->
   <div class="admin-layout" id="adminDashboardView" style="display: none;">
     
@@ -57,17 +56,35 @@
       </div>
 
       <ul class="sidebar-nav-list">
-        <li class="sidebar-nav-item active">
-          <a href="#overview"><i class="fa-solid fa-chart-pie"></i> ड्यासबोर्ड (Overview)</a>
+        <li class="sidebar-nav-item active" data-view-target="overview">
+          <a href="javascript:void(0)" onclick="switchAdminView('overview')">
+            <i class="fa-solid fa-chart-pie"></i> ड्यासबोर्ड (Overview)
+          </a>
+        </li>
+        <li class="sidebar-nav-item" data-view-target="admissions">
+          <a href="javascript:void(0)" onclick="switchAdminView('admissions')">
+            <i class="fa-solid fa-user-graduate"></i> अनलाइन भर्ना सूची
+          </a>
+        </li>
+        <li class="sidebar-nav-item" data-view-target="notices">
+          <a href="javascript:void(0)" onclick="switchAdminView('notices')">
+            <i class="fa-solid fa-bullhorn"></i> सूचना व्यवस्थापन
+          </a>
+        </li>
+        <li class="sidebar-nav-item" data-view-target="ticker">
+          <a href="javascript:void(0)" onclick="switchAdminView('ticker')">
+            <i class="fa-solid fa-bolt"></i> ताजा सूचना टिकर
+          </a>
+        </li>
+        <li class="sidebar-nav-item" data-view-target="staff">
+          <a href="javascript:void(0)" onclick="switchAdminView('staff')">
+            <i class="fa-solid fa-users"></i> शिक्षक तथा कर्मचारी
+          </a>
         </li>
         <li class="sidebar-nav-item">
-          <a href="#admissions-section"><i class="fa-solid fa-user-graduate"></i> अनलाइन भर्ना सूची</a>
-        </li>
-        <li class="sidebar-nav-item">
-          <a href="#notices-section"><i class="fa-solid fa-bullhorn"></i> सूचना व्यवस्थापन</a>
-        </li>
-        <li class="sidebar-nav-item">
-          <a href="../index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> मुख्य वेबसाइट हेर्नुहोस्</a>
+          <a href="../index.html" target="_blank">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> मुख्य वेबसाइट हेर्नुहोस्
+          </a>
         </li>
       </ul>
 
@@ -78,14 +95,14 @@
       </div>
     </aside>
 
-    <!-- Main Dashboard Body -->
+    <!-- Main Dynamic Content Views Area -->
     <main class="admin-main">
       
       <!-- Topbar Header -->
       <div class="admin-topbar">
         <div>
-          <h2 style="font-size: 1.4rem; color: var(--admin-primary); font-weight: 800;">प्रशासन प्यानल (Administration Portal)</h2>
-          <span style="font-size: 0.85rem; color: var(--admin-text-muted);">शैक्षिक सत्र २०८१/०८२ व्यवस्थापन</span>
+          <h2 style="font-size: 1.35rem; color: var(--admin-primary); font-weight: 800;" id="currentViewTitle">ड्यासबोर्ड (Overview)</h2>
+          <span style="font-size: 0.82rem; color: var(--admin-text-muted);" id="currentViewSubtitle">मङ्गलसेन बहुप्राविधिक शिक्षालय • शैक्षिक सत्र २०८१/०८२</span>
         </div>
         <div style="display: flex; gap: 0.75rem;">
           <button class="btn-admin btn-admin-primary btn-sm" onclick="addNewNotice()">
@@ -97,118 +114,236 @@
         </div>
       </div>
 
-      <!-- KPI Overview Cards -->
-      <div class="kpi-grid" id="overview">
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background:#EBF3FD; color:#0F3870;">
-            <i class="fa-solid fa-users"></i>
+      <!-- ==============================================
+           PAGE 1: OVERVIEW DASHBOARD VIEW
+           ============================================== -->
+      <section class="admin-view-panel active" id="view-overview">
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card" onclick="switchAdminView('admissions')" style="cursor:pointer;">
+            <div class="kpi-icon" style="background:#EBF3FD; color:#0F3870;">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+              <div class="kpi-num" id="kpiTotalApps">०</div>
+              <div class="kpi-lbl">कुल भर्ना आवेदन</div>
+            </div>
           </div>
-          <div>
-            <div class="kpi-num" id="kpiTotalApps">०</div>
-            <div class="kpi-lbl">कुल भर्ना आवेदन</div>
+
+          <div class="kpi-card" onclick="switchAdminView('admissions')" style="cursor:pointer;">
+            <div class="kpi-icon" style="background:#E0F2FE; color:#0284C7;">
+              <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <div>
+              <div class="kpi-num" id="kpiHaApps">०</div>
+              <div class="kpi-lbl">PCL HA आवेदन</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" onclick="switchAdminView('admissions')" style="cursor:pointer;">
+            <div class="kpi-icon" style="background:#D1FAE5; color:#059669;">
+              <i class="fa-solid fa-pills"></i>
+            </div>
+            <div>
+              <div class="kpi-num" id="kpiPharmApps">०</div>
+              <div class="kpi-lbl">Pharmacy आवेदन</div>
+            </div>
+          </div>
+
+          <div class="kpi-card" onclick="switchAdminView('notices')" style="cursor:pointer;">
+            <div class="kpi-icon" style="background:#FEF3C7; color:#D97706;">
+              <i class="fa-solid fa-newspaper"></i>
+            </div>
+            <div>
+              <div class="kpi-num" id="kpiTotalNotices">०</div>
+              <div class="kpi-lbl">सक्रिय सूचनाहरू</div>
+            </div>
           </div>
         </div>
 
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background:#E0F2FE; color:#0284C7;">
-            <i class="fa-solid fa-stethoscope"></i>
+        <!-- Recent Activities Grid -->
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem;">
+          <div class="admin-panel" style="margin-bottom: 0;">
+            <div class="panel-header">
+              <h3 class="panel-title"><i class="fa-solid fa-clock-rotate-left"></i> पछिल्ला भर्ना आवेदनहरू</h3>
+              <a href="javascript:void(0)" onclick="switchAdminView('admissions')" style="font-size:0.82rem; font-weight:700; color:var(--admin-primary);">सबै हेर्नुहोस् &rarr;</a>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Applicant ID</th>
+                    <th>नाम</th>
+                    <th>कार्यक्रम</th>
+                    <th>SEE GPA</th>
+                    <th>स्थिति</th>
+                  </tr>
+                </thead>
+                <tbody id="overviewRecentAdmissions">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div>
-            <div class="kpi-num" id="kpiHaApps">०</div>
-            <div class="kpi-lbl">PCL HA आवेदन</div>
+
+          <div class="admin-panel" style="margin-bottom: 0;">
+            <div class="panel-header">
+              <h3 class="panel-title"><i class="fa-solid fa-bullhorn"></i> हालैका सूचनाहरू</h3>
+              <a href="javascript:void(0)" onclick="switchAdminView('notices')" style="font-size:0.82rem; font-weight:700; color:var(--admin-primary);">सबै हेर्नुहोस् &rarr;</a>
+            </div>
+            <ul id="overviewRecentNotices" style="list-style:none; display:flex; flex-direction:column; gap:0.75rem;">
+              <!-- Populated via JS -->
+            </ul>
           </div>
         </div>
+      </section>
 
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background:#D1FAE5; color:#059669;">
-            <i class="fa-solid fa-pills"></i>
+      <!-- ==============================================
+           PAGE 2: ADMISSIONS MANAGEMENT VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-admissions" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-user-graduate"></i> अनलाइन भर्ना आवेदन व्यवस्थापन</h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);">आवेदक विद्यार्थीहरूको सूची, रुजु, र Excel डाउनलोड</span>
+            </div>
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+              <input type="text" id="admSearchInput" class="login-input" placeholder="नाम, सिम्बोल वा ID खोज्नुहोस्..." style="width: 220px; margin-bottom: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem;" oninput="filterAdmissions()" />
+              <select id="admCourseFilter" class="login-input" style="width: auto; margin-bottom: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="filterAdmissions()">
+                <option value="all">सबै कार्यक्रम (All Courses)</option>
+                <option value="HA">PCL General Medicine (HA)</option>
+                <option value="Pharmacy">Diploma in Pharmacy</option>
+              </select>
+              <button class="btn-admin btn-admin-success" onclick="exportAdmissionsToCSV()">
+                <i class="fa-solid fa-file-csv"></i> Excel डाउनलोड
+              </button>
+            </div>
           </div>
-          <div>
-            <div class="kpi-num" id="kpiPharmApps">०</div>
-            <div class="kpi-lbl">Pharmacy आवेदन</div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Applicant ID</th>
+                  <th>विद्यार्थीको नाम (Name)</th>
+                  <th>कार्यक्रम (Course)</th>
+                  <th>कोटा (Quota)</th>
+                  <th>SEE GPA</th>
+                  <th>सम्पर्क / ठेगाना</th>
+                  <th>स्थिति</th>
+                  <th>कार्य (Action)</th>
+                </tr>
+              </thead>
+              <tbody id="admissionsTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
           </div>
         </div>
+      </section>
 
-        <div class="kpi-card">
-          <div class="kpi-icon" style="background:#FEF3C7; color:#D97706;">
-            <i class="fa-solid fa-newspaper"></i>
-          </div>
-          <div>
-            <div class="kpi-num" id="kpiTotalNotices">०</div>
-            <div class="kpi-lbl">सक्रिय सूचनाहरू</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Online Admissions Management Panel -->
-      <div class="admin-panel" id="admissions-section">
-        <div class="panel-header">
-          <div>
-            <h3 class="panel-title"><i class="fa-solid fa-user-graduate"></i> अनलाइन भर्ना आवेदनहरूको सूची (Online Applicants)</h3>
-            <span style="font-size: 0.82rem; color: var(--admin-text-muted);">वेबसाइटबाट विद्यार्थीहरूले भरेका फारामहरूको विवरण</span>
-          </div>
-          <div style="display: flex; gap: 0.6rem;">
-            <select class="login-input" style="width: auto; margin-bottom: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="renderAdmissionsTable(this.value)">
-              <option value="all">सबै कार्यक्रम (All Courses)</option>
-              <option value="HA">PCL General Medicine (HA)</option>
-              <option value="Pharmacy">Diploma in Pharmacy</option>
-            </select>
-            <button class="btn-admin btn-admin-success" onclick="exportAdmissionsToCSV()">
-              <i class="fa-solid fa-file-csv"></i> CSV/Excel Export
+      <!-- ==============================================
+           PAGE 3: NOTICES MANAGEMENT VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-notices" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-bullhorn"></i> सूचना तथा नतिजा व्यवस्थापन (Notices CMS)</h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);">वेबसाइटको सूचना पाटी तथा परिपत्रहरूको व्यवस्थापन</span>
+            </div>
+            <button class="btn-admin btn-admin-primary" onclick="addNewNotice()">
+              <i class="fa-solid fa-plus"></i> नयाँ सूचना थप्नुहोस्
             </button>
           </div>
-        </div>
 
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Applicant ID</th>
-                <th>विद्यार्थीको नाम (Name)</th>
-                <th>कार्यक्रम (Course)</th>
-                <th>कोटा (Quota)</th>
-                <th>SEE GPA</th>
-                <th>सम्पर्क / ठेगाना</th>
-                <th>स्थिति</th>
-                <th>कार्य (Action)</th>
-              </tr>
-            </thead>
-            <tbody id="admissionsTableBody">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Notices Management Panel -->
-      <div class="admin-panel" id="notices-section">
-        <div class="panel-header">
-          <div>
-            <h3 class="panel-title"><i class="fa-solid fa-bullhorn"></i> प्रकाशित सूचनाहरू (Published Notices CMS)</h3>
-            <span style="font-size: 0.82rem; color: var(--admin-text-muted);">वेबसाइटको सूचना पाटीमा देखिने आधिकारिक परिपत्रहरू</span>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>सूचना नं</th>
+                  <th>सूचनाको शीर्षक</th>
+                  <th>श्रेणी</th>
+                  <th>मिति (BS)</th>
+                  <th>फाइल</th>
+                  <th>कार्य (Action)</th>
+                </tr>
+              </thead>
+              <tbody id="adminNoticesTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
           </div>
-          <button class="btn-admin btn-admin-primary" onclick="addNewNotice()">
-            <i class="fa-solid fa-plus"></i> सूचना थप्नुहोस्
-          </button>
         </div>
+      </section>
 
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>सूचना नं</th>
-                <th>सूचनाको शीर्षक</th>
-                <th>श्रेणी</th>
-                <th>मिति (BS)</th>
-                <th>कार्य (Action)</th>
-              </tr>
-            </thead>
-            <tbody id="adminNoticesTableBody">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
+      <!-- ==============================================
+           PAGE 4: BREAKING TICKER VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-ticker" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-bolt"></i> ताजा सूचना टिकर व्यवस्थापन (Breaking Ticker)</h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);">होमपेजको माथि घुम्ने १-२ लाइनका अलर्टहरू</span>
+            </div>
+            <button class="btn-admin btn-admin-primary" onclick="addNewTicker()">
+              <i class="fa-solid fa-plus"></i> टिकर अलर्ट थप्नुहोस्
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>क्र.सं.</th>
+                  <th>टिकर सन्देश</th>
+                  <th>ट्याग</th>
+                  <th>कार्य</th>
+                </tr>
+              </thead>
+              <tbody id="adminTickerTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <!-- ==============================================
+           PAGE 5: STAFF DIRECTORY VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-staff" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-users"></i> शिक्षक तथा कर्मचारी विवरण (Faculty & Staff)</h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);">शिक्षालयका प्राध्यापक, विभागीय प्रमुख तथा कर्मचारीहरूको सूची</span>
+            </div>
+            <button class="btn-admin btn-admin-primary" onclick="addNewStaff()">
+              <i class="fa-solid fa-user-plus"></i> नयाँ कर्मचारी थप्नुहोस्
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>नाम</th>
+                  <th>पद (Designation)</th>
+                  <th>विभाग (Department)</th>
+                  <th>योग्यता</th>
+                  <th>कार्य</th>
+                </tr>
+              </thead>
+              <tbody id="adminStaffTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
     </main>
   </div>
