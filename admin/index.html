@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | मङ्गलसेन बहुप्राविधिक शिक्षालय (CTEVT)</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Mukta:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- ==========================================
+       1. Admin Login View
+       ========================================== -->
+  <div class="login-wrapper" id="adminLoginView">
+    <div class="login-card">
+      <!-- Institutional Crest SVG -->
+      <svg class="login-logo" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="45" cy="45" r="42" fill="#0F3870" stroke="#D97706" stroke-width="3"/>
+        <circle cx="45" cy="45" r="35" fill="#FFFFFF"/>
+        <path d="M30 55 Q45 48 45 35 Q45 48 60 55 L60 38 Q45 30 45 22 Q45 30 30 38 Z" fill="#C8102E"/>
+        <circle cx="45" cy="22" r="4" fill="#D97706"/>
+      </svg>
+      <h2 class="login-title">मङ्गलसेन बहुप्राविधिक शिक्षालय</h2>
+      <p class="login-desc">प्रशासन तथा भर्ना व्यवस्थापन पोर्टल (Admin Login)</p>
+
+      <form id="adminLoginForm">
+        <input type="password" id="adminPinInput" class="login-input" placeholder="सुरक्षा पिन वा पासवर्ड प्रविष्ट गर्नुहोस्" required />
+        <button type="submit" class="btn-admin btn-admin-primary" style="width: 100%;">
+          <i class="fa-solid fa-lock-open"></i> लगइन गर्नुहोस् (Login)
+        </button>
+      </form>
+      <div style="margin-top: 1.25rem; font-size: 0.78rem; color: #94A3B8;">
+        डिफल्ट सुरक्षा पिन (Default PIN): <strong>2081</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       2. Admin Dashboard Layout View
+       ========================================== -->
+  <div class="admin-layout" id="adminDashboardView" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-graduation-cap" style="font-size: 1.8rem; color: #D97706;"></i>
+        <div>
+          <h4 style="font-size: 0.95rem; font-weight: 800; line-height: 1.2;">MPI Admin</h4>
+          <span style="font-size: 0.74rem; color: #94A3B8;">मङ्गलसेन-३, अछाम</span>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav-list">
+        <li class="sidebar-nav-item active">
+          <a href="#overview"><i class="fa-solid fa-chart-pie"></i> ड्यासबोर्ड (Overview)</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#admissions-section"><i class="fa-solid fa-user-graduate"></i> अनलाइन भर्ना सूची</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="#notices-section"><i class="fa-solid fa-bullhorn"></i> सूचना व्यवस्थापन</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a href="../index.html" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> मुख्य वेबसाइट हेर्नुहोस्</a>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="btn-admin btn-admin-danger" style="width: 100%; font-size: 0.82rem;" onclick="adminLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i> लगआउट (Logout)
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Dashboard Body -->
+    <main class="admin-main">
+      
+      <!-- Topbar Header -->
+      <div class="admin-topbar">
+        <div>
+          <h2 style="font-size: 1.4rem; color: var(--admin-primary); font-weight: 800;">प्रशासन प्यानल (Administration Portal)</h2>
+          <span style="font-size: 0.85rem; color: var(--admin-text-muted);">शैक्षिक सत्र २०८१/०८२ व्यवस्थापन</span>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn-admin btn-admin-primary btn-sm" onclick="addNewNotice()">
+            <i class="fa-solid fa-plus"></i> नयाँ सूचना थप्नुहोस्
+          </button>
+          <button class="btn-admin btn-admin-success btn-sm" onclick="exportAdmissionsToCSV()">
+            <i class="fa-solid fa-file-excel"></i> Excel डाउनलोड
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Overview Cards -->
+      <div class="kpi-grid" id="overview">
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:#EBF3FD; color:#0F3870;">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div>
+            <div class="kpi-num" id="kpiTotalApps">०</div>
+            <div class="kpi-lbl">कुल भर्ना आवेदन</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:#E0F2FE; color:#0284C7;">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
+          <div>
+            <div class="kpi-num" id="kpiHaApps">०</div>
+            <div class="kpi-lbl">PCL HA आवेदन</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:#D1FAE5; color:#059669;">
+            <i class="fa-solid fa-pills"></i>
+          </div>
+          <div>
+            <div class="kpi-num" id="kpiPharmApps">०</div>
+            <div class="kpi-lbl">Pharmacy आवेदन</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon" style="background:#FEF3C7; color:#D97706;">
+            <i class="fa-solid fa-newspaper"></i>
+          </div>
+          <div>
+            <div class="kpi-num" id="kpiTotalNotices">०</div>
+            <div class="kpi-lbl">सक्रिय सूचनाहरू</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Online Admissions Management Panel -->
+      <div class="admin-panel" id="admissions-section">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title"><i class="fa-solid fa-user-graduate"></i> अनलाइन भर्ना आवेदनहरूको सूची (Online Applicants)</h3>
+            <span style="font-size: 0.82rem; color: var(--admin-text-muted);">वेबसाइटबाट विद्यार्थीहरूले भरेका फारामहरूको विवरण</span>
+          </div>
+          <div style="display: flex; gap: 0.6rem;">
+            <select class="login-input" style="width: auto; margin-bottom: 0; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="renderAdmissionsTable(this.value)">
+              <option value="all">सबै कार्यक्रम (All Courses)</option>
+              <option value="HA">PCL General Medicine (HA)</option>
+              <option value="Pharmacy">Diploma in Pharmacy</option>
+            </select>
+            <button class="btn-admin btn-admin-success" onclick="exportAdmissionsToCSV()">
+              <i class="fa-solid fa-file-csv"></i> CSV/Excel Export
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Applicant ID</th>
+                <th>विद्यार्थीको नाम (Name)</th>
+                <th>कार्यक्रम (Course)</th>
+                <th>कोटा (Quota)</th>
+                <th>SEE GPA</th>
+                <th>सम्पर्क / ठेगाना</th>
+                <th>स्थिति</th>
+                <th>कार्य (Action)</th>
+              </tr>
+            </thead>
+            <tbody id="admissionsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Notices Management Panel -->
+      <div class="admin-panel" id="notices-section">
+        <div class="panel-header">
+          <div>
+            <h3 class="panel-title"><i class="fa-solid fa-bullhorn"></i> प्रकाशित सूचनाहरू (Published Notices CMS)</h3>
+            <span style="font-size: 0.82rem; color: var(--admin-text-muted);">वेबसाइटको सूचना पाटीमा देखिने आधिकारिक परिपत्रहरू</span>
+          </div>
+          <button class="btn-admin btn-admin-primary" onclick="addNewNotice()">
+            <i class="fa-solid fa-plus"></i> सूचना थप्नुहोस्
+          </button>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>सूचना नं</th>
+                <th>सूचनाको शीर्षक</th>
+                <th>श्रेणी</th>
+                <th>मिति (BS)</th>
+                <th>कार्य (Action)</th>
+              </tr>
+            </thead>
+            <tbody id="adminNoticesTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

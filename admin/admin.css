@@ -1,0 +1,313 @@
+/* ==========================================================================
+   Mangalsen Polytechnic Institute - Admin Dashboard Stylesheet
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Mukta:wght@400;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
+
+:root {
+  --admin-primary: #0F3870;
+  --admin-primary-dark: #081B33;
+  --admin-accent: #C8102E;
+  --admin-success: #059669;
+  --admin-warning: #D97706;
+  --admin-info: #0284C7;
+  
+  --admin-bg: #F1F5F9;
+  --admin-card: #FFFFFF;
+  --admin-border: #E2E8F0;
+  --admin-text-main: #0F172A;
+  --admin-text-muted: #64748B;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Mukta', sans-serif;
+  background-color: var(--admin-bg);
+  color: var(--admin-text-main);
+  min-height: 100vh;
+}
+
+/* Login Screen Layout */
+.login-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #081B33 0%, #0F3870 100%);
+}
+
+.login-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 30px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+.login-logo {
+  height: 64px;
+  margin: 0 auto 1rem;
+}
+
+.login-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--admin-primary);
+  margin-bottom: 0.3rem;
+}
+
+.login-desc {
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+  margin-bottom: 1.75rem;
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px rgba(15, 56, 112, 0.15);
+}
+
+.btn-admin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-admin-primary {
+  background: var(--admin-primary);
+  color: #FFFFFF;
+}
+
+.btn-admin-primary:hover {
+  background: var(--admin-primary-dark);
+}
+
+.btn-admin-success {
+  background: var(--admin-success);
+  color: #FFFFFF;
+}
+
+.btn-admin-danger {
+  background: var(--admin-accent);
+  color: #FFFFFF;
+}
+
+/* Admin Dashboard Layout */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  background: var(--admin-primary-dark);
+  color: #FFFFFF;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.sidebar-nav-item a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
+  color: #CBD5E1;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav-item a:hover, .sidebar-nav-item.active a {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+}
+
+.sidebar-footer {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Admin Main Content Area */
+.admin-main {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: #FFFFFF;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--admin-border);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.kpi-card {
+  background: #FFFFFF;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.kpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.kpi-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--admin-text-main);
+  line-height: 1.1;
+}
+
+.kpi-lbl {
+  font-size: 0.8rem;
+  color: var(--admin-text-muted);
+  font-weight: 600;
+}
+
+/* Tables & Panels */
+.admin-panel {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--admin-border);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.panel-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--admin-primary);
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.admin-table th {
+  background: #F8FAFC;
+  padding: 0.85rem 1rem;
+  font-weight: 700;
+  color: #475569;
+  border-bottom: 2px solid var(--admin-border);
+}
+
+.admin-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text-main);
+}
+
+.admin-table tr:hover td {
+  background: #F8FAFC;
+}
+
+.badge-status {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.status-verified { background: #D1FAE5; color: #065F46; }
+.status-pending { background: #FEF3C7; color: #92400E; }
+
+/* Responsive */
+@media (max-width: 992px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .admin-sidebar { display: none; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .admin-main { padding: 1rem; }
+}
