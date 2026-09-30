@@ -490,6 +490,22 @@
     </div>
   </div>
 
+  <!-- Applicant Detail Profile Modal -->
+  <div class="admin-modal-backdrop" id="applicantDetailModal">
+    <div class="admin-modal-dialog" style="max-width:680px;">
+      <div class="admin-modal-header" style="background:#F0F7FF; border-bottom:1px solid #BFDBFE;">
+        <div>
+          <span style="font-size:0.75rem; font-weight:700; color:#0284C7; letter-spacing:0.5px; text-transform:uppercase;" id="modalAppIdBadge">APPLICATION ID</span>
+          <h4 class="admin-modal-title" id="modalApplicantName" style="color:var(--admin-primary); margin-top:2px;">Applicant Profile</h4>
+        </div>
+        <button class="admin-modal-close" onclick="closeAdminModal('applicantDetailModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body" id="modalApplicantBody">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
   <script src="admin.js"></script>
 </body>
 </html>

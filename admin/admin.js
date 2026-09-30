@@ -710,17 +710,76 @@ window.viewApplicantDetail = function(appId) {
   if (!app) return;
 
   const isEn = (currentAdminLang === 'en');
-  alert(`
-=== ${isEn ? "Applicant Profile Details" : "विद्यार्थी भर्ना विवरण"} ===
-${isEn ? "Applicant ID:" : "दर्ता नम्बर:"} ${app.app_id}
-${isEn ? "Name:" : "नाम:"} ${app.name_ne} (${app.name_en})
-${isEn ? "Program:" : "कार्यक्रम:"} ${app.program}
-${isEn ? "Quota:" : "कोटा:"} ${app.quota}
-${isEn ? "Obtained SEE GPA:" : "प्राप्त SEE GPA:"} ${app.gpa} (Science: ${app.grade_sci})
-${isEn ? "Phone Contact:" : "सम्पर्क फोन:"} ${app.phone}
-${isEn ? "Address:" : "ठेगाना:"} ${app.district}
-${isEn ? "School:" : "विद्यालय:"} ${app.school}
-${isEn ? "SEE Symbol No:" : "सिम्बोल नं:"} ${app.symbol_no}
-${isEn ? "Verification Status:" : "स्थिति:"} ${app.status}
-  `);
+  const badgeId = document.getElementById('modalAppIdBadge');
+  const nameTitle = document.getElementById('modalApplicantName');
+  const modalBody = document.getElementById('modalApplicantBody');
+
+  if (badgeId) badgeId.textContent = `APPLICANT ID: ${app.app_id}`;
+  if (nameTitle) nameTitle.textContent = `${app.name_ne} (${app.name_en})`;
+
+  if (modalBody) {
+    modalBody.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; background:#F8FAFC; padding:0.9rem 1.2rem; border-radius:8px; border:1px solid #E2E8F0;">
+        <div>
+          <span style="font-size:0.75rem; color:#64748B; font-weight:700;">${isEn ? 'APPLIED PROGRAM' : 'आवेदन गरेको कार्यक्रम'}</span>
+          <h4 style="color:var(--admin-primary); margin:2px 0 0; font-size:1.05rem;">${app.program}</h4>
+        </div>
+        <div>
+          <span class="badge-status ${app.status === 'Verified' ? 'status-verified' : 'status-pending'}" style="font-size:0.85rem; padding:4px 12px;">
+            <i class="fa-solid ${app.status === 'Verified' ? 'fa-circle-check' : 'fa-clock'}"></i> ${app.status}
+          </span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem;">
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; padding:1rem; border-radius:8px;">
+          <h5 style="color:#0F3870; margin:0 0 0.6rem; font-size:0.88rem; border-bottom:1px solid #E2E8F0; padding-bottom:0.35rem;">
+            <i class="fa-solid fa-graduation-cap"></i> ${isEn ? 'Academic Details (SEE)' : 'शैक्षिक विवरण (SEE)'}
+          </h5>
+          <p style="margin:0 0 0.4rem; font-size:0.85rem;"><strong>${isEn ? 'Overall SEE GPA:' : 'प्राप्त GPA:'}</strong> <span style="color:#D97706; font-weight:800; font-size:1rem;">${app.gpa}</span></p>
+          <p style="margin:0 0 0.4rem; font-size:0.85rem;"><strong>${isEn ? 'Compulsory Science:' : 'विज्ञान ग्रेड:'}</strong> ${app.grade_sci}</p>
+          <p style="margin:0 0 0.4rem; font-size:0.85rem;"><strong>${isEn ? 'SEE Symbol No:' : 'सिम्बोल नं:'}</strong> ${app.symbol_no}</p>
+          <p style="margin:0; font-size:0.85rem;"><strong>${isEn ? 'School Name:' : 'विद्यालय:'}</strong> ${app.school}</p>
+        </div>
+
+        <div style="background:#FFFFFF; border:1px solid #E2E8F0; padding:1rem; border-radius:8px;">
+          <h5 style="color:#0F3870; margin:0 0 0.6rem; font-size:0.88rem; border-bottom:1px solid #E2E8F0; padding-bottom:0.35rem;">
+            <i class="fa-solid fa-address-card"></i> ${isEn ? 'Personal & Quota' : 'व्यक्तिगत तथा कोटा विवरण'}
+          </h5>
+          <p style="margin:0 0 0.4rem; font-size:0.85rem;"><strong>${isEn ? 'Category Quota:' : 'कोटा श्रेणी:'}</strong> <span style="background:#EBF3FD; color:#0F3870; padding:2px 6px; border-radius:4px; font-weight:600;">${app.quota}</span></p>
+          <p style="margin:0 0 0.4rem; font-size:0.85rem;"><strong>${isEn ? 'Phone / Contact:' : 'सम्पर्क नम्बर:'}</strong> ${app.phone}</p>
+          <p style="margin:0 0 0.4rem; font-size:0.85rem;"><strong>${isEn ? 'Permanent Address:' : 'स्थायी ठेगाना:'}</strong> ${app.district}</p>
+          <p style="margin:0; font-size:0.85rem;"><strong>${isEn ? 'Submission Date:' : 'आवेदन मिति:'}</strong> ${app.date}</p>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem;">
+        <div>
+          <button class="btn-admin ${app.status === 'Verified' ? 'btn-admin-danger' : 'btn-admin-success'}" style="font-size:0.85rem;" onclick="toggleApplicantVerification('${app.app_id}')">
+            <i class="fa-solid ${app.status === 'Verified' ? 'fa-xmark' : 'fa-check'}"></i> 
+            ${app.status === 'Verified' ? (isEn ? 'Mark as Pending' : 'प्रमाणिकरण रद्द (Pending)') : (isEn ? 'Verify Applicant' : 'प्रमाणित गर्नुहोस् (Verify)')}
+          </button>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn-admin" style="background:#E2E8F0; color:#334155;" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> ${isEn ? 'Print Slip' : 'प्रिन्ट स्लिप'}
+          </button>
+          <button class="btn-admin btn-admin-primary" onclick="closeAdminModal('applicantDetailModal')">
+            ${isEn ? 'Close' : 'बन्द गर्नुहोस्'}
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  openAdminModal('applicantDetailModal');
+};
+
+window.toggleApplicantVerification = function(appId) {
+  const app = mockAdmissions.find(a => a.app_id === appId);
+  if (!app) return;
+  
+  app.status = (app.status === 'Verified') ? 'Pending' : 'Verified';
+  renderDashboard();
+  viewApplicantDetail(appId);
 };
