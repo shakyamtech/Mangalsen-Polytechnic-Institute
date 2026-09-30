@@ -124,6 +124,27 @@ body {
   color: #FFFFFF;
 }
 
+.admin-lang-btn {
+  background: #F1F5F9;
+  border: 1.5px solid var(--admin-border);
+  color: var(--admin-primary);
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.admin-lang-btn:hover {
+  background: var(--admin-primary);
+  color: #FFFFFF;
+  border-color: var(--admin-primary);
+}
+
 /* Admin Dashboard Layout */
 .admin-layout {
   display: grid;

@@ -1,7 +1,157 @@
 /**
  * Mangalsen Polytechnic Institute - Admin Dashboard Engine
- * Modular View Switcher & Management
+ * Modular View Switcher & Bilingual (Nepali / English) Engine
  */
+
+let currentAdminLang = localStorage.getItem('mpi_admin_lang') || 'ne';
+
+const adminI18n = {
+  ne: {
+    brand_sub: "मङ्गलसेन-३, अछाम",
+    nav_overview: "ड्यासबोर्ड (Overview)",
+    nav_admissions: "अनलाइन भर्ना सूची",
+    nav_notices: "सूचना व्यवस्थापन",
+    nav_ticker: "ताजा सूचना टिकर",
+    nav_staff: "शिक्षक तथा कर्मचारी",
+    nav_main_site: "मुख्य वेबसाइट हेर्नुहोस्",
+    btn_logout: "लगआउट (Logout)",
+    btn_add_notice: "नयाँ सूचना थप्नुहोस्",
+    btn_export_excel: "Excel डाउनलोड",
+    btn_add_ticker: "टिकर अलर्ट थप्नुहोस्",
+    btn_add_staff: "नयाँ कर्मचारी थप्नुहोस्",
+    
+    // KPI Cards
+    kpi_total_apps: "कुल भर्ना आवेदन",
+    kpi_ha_apps: "PCL HA आवेदन",
+    kpi_pharm_apps: "Pharmacy आवेदन",
+    kpi_notices: "सक्रिय सूचनाहरू",
+
+    // Overview Section
+    recent_admissions_title: "पछिल्ला भर्ना आवेदनहरू",
+    recent_notices_title: "हालैका सूचनाहरू",
+    view_all: "सबै हेर्नुहोस् →",
+
+    // Admissions Table
+    adm_title: "अनलाइन भर्ना आवेदन व्यवस्थापन",
+    adm_sub: "आवेदक विद्यार्थीहरूको विवरण, रुजु र Excel डाउनलोड",
+    search_placeholder: "नाम, सिम्बोल वा ID खोज्नुहोस्...",
+    all_courses: "सबै कार्यक्रम (All Courses)",
+    th_app_id: "Applicant ID",
+    th_name: "विद्यार्थीको नाम (Name)",
+    th_course: "कार्यक्रम (Course)",
+    th_quota: "कोटा (Quota)",
+    th_gpa: "SEE GPA",
+    th_contact: "सम्पर्क / ठेगाना",
+    th_status: "स्थिति",
+    th_action: "कार्य (Action)",
+    btn_view: "हेर्नुहोस्",
+
+    // Notices Table
+    notices_title: "सूचना तथा नतिजा व्यवस्थापन (Notices CMS)",
+    notices_sub: "वेबसाइटको आधिकारिक सूचना पाटी सम्पादन",
+    th_notice_no: "सूचना नं",
+    th_notice_title: "सूचनाको शीर्षक",
+    th_category: "श्रेणी",
+    th_date: "मिति (BS)",
+    th_file: "फाइल",
+    btn_delete: "हटाउनुहोस्",
+
+    // Ticker Table
+    ticker_title: "ताजा सूचना टिकर व्यवस्थापन",
+    ticker_sub: "होमपेजको माथि घुम्ने १-२ लाइनका अलर्टहरू",
+    th_sn: "क्र.सं.",
+    th_ticker_msg: "टिकर सन्देश",
+    th_tag: "ट्याग",
+
+    // Staff Table
+    staff_title: "शिक्षक तथा कर्मचारी विवरण (Faculty & Staff)",
+    staff_sub: "शिक्षालयका प्राध्यापक, विभागीय प्रमुख तथा कर्मचारीहरूको सूची",
+    th_staff_name: "नाम",
+    th_role: "पद (Designation)",
+    th_dept: "विभाग (Department)",
+    th_qual: "योग्यता",
+
+    // Login View
+    login_title: "मङ्गलसेन बहुप्राविधिक शिक्षालय",
+    login_sub: "प्रशासन तथा भर्ना व्यवस्थापन पोर्टल (Admin Login)",
+    login_placeholder: "सुरक्षा पिन वा पासवर्ड प्रविष्ट गर्नुहोस्",
+    btn_login: "लगइन गर्नुहोस् (Login)",
+    default_pin_hint: "डिफल्ट सुरक्षा पिन (Default PIN):"
+  },
+
+  en: {
+    brand_sub: "Mangalsen-3, Achham",
+    nav_overview: "Dashboard Overview",
+    nav_admissions: "Online Admissions",
+    nav_notices: "Notices CMS",
+    nav_ticker: "Breaking Ticker",
+    nav_staff: "Faculty & Staff",
+    nav_main_site: "View Main Website",
+    btn_logout: "Logout",
+    btn_add_notice: "Add New Notice",
+    btn_export_excel: "Export to Excel",
+    btn_add_ticker: "Add Ticker Alert",
+    btn_add_staff: "Add New Staff",
+
+    // KPI Cards
+    kpi_total_apps: "Total Applications",
+    kpi_ha_apps: "PCL HA Applications",
+    kpi_pharm_apps: "Pharmacy Applications",
+    kpi_notices: "Active Notices",
+
+    // Overview Section
+    recent_admissions_title: "Recent Applications",
+    recent_notices_title: "Recent Circulars",
+    view_all: "View All →",
+
+    // Admissions Table
+    adm_title: "Online Admissions Management",
+    adm_sub: "Manage applicant credentials, verify status and export to Excel/CSV",
+    search_placeholder: "Search by Name, Symbol, or ID...",
+    all_courses: "All Courses",
+    th_app_id: "Applicant ID",
+    th_name: "Candidate Name",
+    th_course: "Course / Program",
+    th_quota: "Category Quota",
+    th_gpa: "SEE GPA",
+    th_contact: "Contact / Address",
+    th_status: "Status",
+    th_action: "Action",
+    btn_view: "View Profile",
+
+    // Notices Table
+    notices_title: "Notices & Circulars CMS",
+    notices_sub: "Publish, update or remove public CTEVT notices",
+    th_notice_no: "Notice ID",
+    th_notice_title: "Notice Heading",
+    th_category: "Category",
+    th_date: "Published Date",
+    th_file: "Attachment",
+    btn_delete: "Delete",
+
+    // Ticker Table
+    ticker_title: "Breaking News Ticker Manager",
+    ticker_sub: "Real-time scrolling marquee notifications on header",
+    th_sn: "S.N.",
+    th_ticker_msg: "Ticker Message",
+    th_tag: "Badge Tag",
+
+    // Staff Table
+    staff_title: "Faculty & Staff Directory",
+    staff_sub: "Manage academic instructors and administrative personnel",
+    th_staff_name: "Full Name",
+    th_role: "Designation",
+    th_dept: "Department",
+    th_qual: "Qualifications",
+
+    // Login View
+    login_title: "Mangalsen Polytechnic Institute",
+    login_sub: "Administration & Admissions Portal (Admin Login)",
+    login_placeholder: "Enter security PIN or passcode",
+    btn_login: "Login to Dashboard",
+    default_pin_hint: "Default Security PIN:"
+  }
+};
 
 // Data Stores
 let mockAdmissions = [
@@ -55,21 +205,24 @@ let mockAdmissions = [
 let mockNotices = [
   {
     id: "N-2081-104",
-    title: "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) नयाँ भर्ना आवेदन फाराम खुला!",
+    title_ne: "CTEVT डिप्लोमा इन फार्मेसी तथा PCL सामान्य चिकित्सा (HA) नयाँ भर्ना आवेदन फाराम खुला!",
+    title_en: "Admission Application Form Open for CTEVT Diploma in Pharmacy & PCL General Medicine (HA)",
     category: "Admission",
     date_bs: "२०८१ आश्विन १२",
     file: "CTEVT_Admission_Form_2081_MPI.pdf"
   },
   {
     id: "N-2081-103",
-    title: "वर्गीकृत (निःशुल्क) छात्रवृत्ति प्रवेश परीक्षाको नतिजा तथा भर्ना सम्बन्धी सूचना",
+    title_ne: "वर्गीकृत (निःशुल्क) छात्रवृत्ति प्रवेश परीक्षाको नतिजा तथा भर्ना सम्बन्धी सूचना",
+    title_en: "Result of Classified Free Scholarship Entrance Examination Published",
     category: "Scholarship",
     date_bs: "२०८१ आश्विन ०८",
     file: "Classified_Scholarship_Result_2081.pdf"
   },
   {
     id: "N-2081-102",
-    title: "डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको नियमित तथा पूरक परीक्षा तालिका (Exam Routine)",
+    title_ne: "डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको नियमित तथा पूरक परीक्षा तालिका (Exam Routine)",
+    title_en: "First Year Regular & Back Examination Schedule Routine Published",
     category: "Exam",
     date_bs: "२०८१ आश्विन ०२",
     file: "CTEVT_Exam_Routine_First_Year_2081.pdf"
@@ -89,10 +242,44 @@ let mockStaff = [
   { id: 4, name: "दिनेश राज कुँवर", role: "प्रशासन तथा लेखा अधिकृत", dept: "Administration", qual: "MBS" }
 ];
 
+let activeView = 'overview';
+
 document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
   initLogin();
+  applyAdminLanguage(currentAdminLang);
 });
+
+function toggleAdminLanguage() {
+  currentAdminLang = (currentAdminLang === 'ne') ? 'en' : 'ne';
+  localStorage.setItem('mpi_admin_lang', currentAdminLang);
+  applyAdminLanguage(currentAdminLang);
+  switchAdminView(activeView);
+}
+
+function applyAdminLanguage(lang) {
+  const dict = adminI18n[lang] || adminI18n.ne;
+
+  // Toggle button text
+  const toggleBtn = document.getElementById('adminLangToggleBtn');
+  if (toggleBtn) {
+    toggleBtn.innerHTML = (lang === 'ne')
+      ? `<i class="fa-solid fa-globe"></i> English`
+      : `<i class="fa-solid fa-globe"></i> नेपाली`;
+  }
+
+  // Update all [data-admin-i18n] elements
+  document.querySelectorAll('[data-admin-i18n]').forEach(el => {
+    const key = el.getAttribute('data-admin-i18n');
+    if (dict[key]) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.setAttribute('placeholder', dict[key]);
+      } else {
+        el.textContent = dict[key];
+      }
+    }
+  });
+}
 
 function checkAuth() {
   const isAuth = localStorage.getItem('mpi_admin_auth');
@@ -122,7 +309,7 @@ function initLogin() {
       localStorage.setItem('mpi_admin_auth', 'true');
       checkAuth();
     } else {
-      alert('गलत पासवर्ड वा पिन! (Default PIN: 2081)');
+      alert(currentAdminLang === 'en' ? 'Invalid PIN or Password! (Default PIN: 2081)' : 'गलत पासवर्ड वा पिन! (Default PIN: 2081)');
     }
   });
 }
@@ -132,8 +319,10 @@ window.adminLogout = function() {
   checkAuth();
 };
 
-// True View Switcher (SPA Style)
+// Modular View Switcher
 window.switchAdminView = function(viewKey) {
+  activeView = viewKey;
+
   // Hide all view panels
   document.querySelectorAll('.admin-view-panel').forEach(panel => {
     panel.style.display = 'none';
@@ -155,13 +344,28 @@ window.switchAdminView = function(viewKey) {
     }
   });
 
-  // Update header titles
+  const isEn = (currentAdminLang === 'en');
   const titles = {
-    overview: { title: "ड्यासबोर्ड (Overview)", sub: "मङ्गलसेन बहुप्राविधिक शिक्षालय • शैक्षिक सत्र २०८१/०८२" },
-    admissions: { title: "अनलाइन भर्ना आवेदन व्यवस्थापन", sub: "आवेदक विद्यार्थीहरूको विवरण, रुजु र Excel डाउनलोड" },
-    notices: { title: "सूचना तथा नतिजा व्यवस्थापन (Notices CMS)", sub: "वेबसाइटको आधिकारिक सूचना पाटी सम्पादन" },
-    ticker: { title: "ताजा सूचना टिकर व्यवस्थापन", sub: "होमपेजको माथि घुम्ने ब्रेकिङ टिकर सन्देशहरू" },
-    staff: { title: "शिक्षक तथा कर्मचारी विवरण व्यवस्थापन", sub: "शिक्षालयका प्राध्यापक तथा प्रशासन टिम" }
+    overview: { 
+      title: isEn ? "Dashboard Overview" : "ड्यासबोर्ड (Overview)", 
+      sub: isEn ? "Mangalsen Polytechnic Institute • Session 2081/082" : "मङ्गलसेन बहुप्राविधिक शिक्षालय • शैक्षिक सत्र २०८१/०८२" 
+    },
+    admissions: { 
+      title: isEn ? "Online Admissions Management" : "अनलाइन भर्ना आवेदन व्यवस्थापन", 
+      sub: isEn ? "Applicant records, status verification and Excel exports" : "आवेदक विद्यार्थीहरूको विवरण, रुजु र Excel डाउनलोड" 
+    },
+    notices: { 
+      title: isEn ? "Notices & Circulars CMS" : "सूचना तथा नतिजा व्यवस्थापन (Notices CMS)", 
+      sub: isEn ? "Publish, edit and manage public institutional notices" : "वेबसाइटको आधिकारिक सूचना पाटी सम्पादन" 
+    },
+    ticker: { 
+      title: isEn ? "Breaking News Ticker Manager" : "ताजा सूचना टिकर व्यवस्थापन", 
+      sub: isEn ? "Live top marquee notifications" : "होमपेजको माथि घुम्ने ब्रेकिङ टिकर सन्देशहरू" 
+    },
+    staff: { 
+      title: isEn ? "Faculty & Staff Directory" : "शिक्षक तथा कर्मचारी विवरण व्यवस्थापन", 
+      sub: isEn ? "Academic instructors and administrative personnel" : "शिक्षालयका प्राध्यापक तथा प्रशासन टिम" 
+    }
   };
 
   const current = titles[viewKey] || titles.overview;
@@ -170,7 +374,7 @@ window.switchAdminView = function(viewKey) {
   if (titleEl) titleEl.textContent = current.title;
   if (subEl) subEl.textContent = current.sub;
 
-  // Refresh relevant table
+  // Refresh relevant view table
   if (viewKey === 'overview') renderOverviewRecent();
   if (viewKey === 'admissions') renderAdmissionsTable();
   if (viewKey === 'notices') renderNoticesTable();
@@ -202,12 +406,13 @@ function renderKPIs() {
 function renderOverviewRecent() {
   const tbody = document.getElementById('overviewRecentAdmissions');
   const noticeList = document.getElementById('overviewRecentNotices');
+  const isEn = (currentAdminLang === 'en');
 
   if (tbody) {
     tbody.innerHTML = mockAdmissions.slice(0, 3).map(item => `
       <tr>
         <td><strong>${item.app_id}</strong></td>
-        <td>${item.name_ne}</td>
+        <td>${isEn ? item.name_en : item.name_ne}</td>
         <td><span style="color:var(--admin-primary); font-weight:600;">${item.program}</span></td>
         <td><strong>${item.gpa}</strong></td>
         <td><span class="badge-status ${item.status === 'Verified' ? 'status-verified' : 'status-pending'}">${item.status}</span></td>
@@ -219,8 +424,8 @@ function renderOverviewRecent() {
     noticeList.innerHTML = mockNotices.slice(0, 3).map(n => `
       <li style="background:#F8FAFC; padding:0.75rem 1rem; border-radius:8px; border:1px solid #E2E8F0; font-size:0.85rem;">
         <span class="badge-status status-verified" style="font-size:0.7rem;">${n.category}</span>
-        <strong style="display:block; margin-top:4px; color:var(--admin-primary);">${n.title}</strong>
-        <span style="font-size:0.75rem; color:#64748B;">मिति: ${n.date_bs}</span>
+        <strong style="display:block; margin-top:4px; color:var(--admin-primary);">${isEn ? n.title_en : n.title_ne}</strong>
+        <span style="font-size:0.75rem; color:#64748B;">Date: ${n.date_bs}</span>
       </li>
     `).join('');
   }
@@ -230,6 +435,7 @@ function renderAdmissionsTable(filterCourse = 'all', searchQuery = '') {
   const tbody = document.getElementById('admissionsTableBody');
   if (!tbody) return;
 
+  const isEn = (currentAdminLang === 'en');
   let list = mockAdmissions;
   if (filterCourse !== 'all') {
     list = list.filter(a => a.program.toLowerCase().includes(filterCourse.toLowerCase()));
@@ -248,7 +454,7 @@ function renderAdmissionsTable(filterCourse = 'all', searchQuery = '') {
   tbody.innerHTML = list.map(item => `
     <tr>
       <td><strong>${item.app_id}</strong></td>
-      <td><strong>${item.name_ne}</strong><br><small style="color:#64748B;">${item.name_en}</small></td>
+      <td><strong>${isEn ? item.name_en : item.name_ne}</strong><br><small style="color:#64748B;">${isEn ? item.name_ne : item.name_en}</small></td>
       <td><span style="font-weight:600; color:var(--admin-primary);">${item.program}</span></td>
       <td>${item.quota}</td>
       <td><strong>${item.gpa}</strong> (Sci: ${item.grade_sci})</td>
@@ -256,7 +462,7 @@ function renderAdmissionsTable(filterCourse = 'all', searchQuery = '') {
       <td><span class="badge-status ${item.status === 'Verified' ? 'status-verified' : 'status-pending'}">${item.status}</span></td>
       <td>
         <button class="btn-admin btn-admin-primary" style="padding:4px 8px; font-size:0.75rem;" onclick="viewApplicantDetail('${item.app_id}')">
-          <i class="fa-solid fa-eye"></i> हेर्नुहोस्
+          <i class="fa-solid fa-eye"></i> ${isEn ? 'View Profile' : 'हेर्नुहोस्'}
         </button>
       </td>
     </tr>
@@ -273,16 +479,17 @@ function renderNoticesTable() {
   const tbody = document.getElementById('adminNoticesTableBody');
   if (!tbody) return;
 
+  const isEn = (currentAdminLang === 'en');
   tbody.innerHTML = mockNotices.map(n => `
     <tr>
       <td><strong>${n.id}</strong></td>
-      <td>${n.title}</td>
+      <td>${isEn ? n.title_en : n.title_ne}</td>
       <td><span class="badge-status status-verified">${n.category}</span></td>
       <td>${n.date_bs}</td>
       <td><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${n.file}</td>
       <td>
         <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteNotice('${n.id}')">
-          <i class="fa-solid fa-trash"></i> हटाउनुहोस्
+          <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
         </button>
       </td>
     </tr>
@@ -327,31 +534,34 @@ function renderStaffTable() {
 }
 
 window.addNewTicker = function() {
-  const text = prompt('ताजा टिकर सन्देश प्रविष्ट गर्नुहोस्:');
+  const isEn = (currentAdminLang === 'en');
+  const text = prompt(isEn ? 'Enter ticker alert message:' : 'ताजा टिकर सन्देश प्रविष्ट गर्नुहोस्:');
   if (!text) return;
-  const tag = prompt('ट्याग (उदा. भर्ना खुला / परीक्षा):', 'सूचना');
+  const tag = prompt(isEn ? 'Tag label (e.g. Admission / Exam):' : 'ट्याग (उदा. भर्ना खुला / परीक्षा):', 'सूचना');
 
   mockTickers.unshift({
     id: Date.now(),
     text,
-    tag: tag || 'ताजा'
+    tag: tag || 'Alert'
   });
   renderTickerTable();
-  alert('नयाँ टिकर अलर्ट प्रकाशित भयो!');
+  alert(isEn ? 'Ticker alert published!' : 'नयाँ टिकर अलर्ट प्रकाशित भयो!');
 };
 
 window.deleteTicker = function(id) {
-  if (confirm('के तपाईं यो टिकर हटाउन चाहनुहुन्छ?')) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? 'Delete this ticker alert?' : 'के तपाईं यो टिकर हटाउन चाहनुहुन्छ?')) {
     mockTickers = mockTickers.filter(t => t.id !== id);
     renderTickerTable();
   }
 };
 
 window.addNewStaff = function() {
-  const name = prompt('कर्मचारी / शिक्षकको नाम:');
+  const isEn = (currentAdminLang === 'en');
+  const name = prompt(isEn ? 'Staff / Instructor Name:' : 'कर्मचारी / शिक्षकको नाम:');
   if (!name) return;
-  const role = prompt('पद (Designation):', 'शिक्षक / Instructor');
-  const dept = prompt('विभाग (HA / Pharmacy / Admin):', 'Academic');
+  const role = prompt(isEn ? 'Designation:' : 'पद (Designation):', 'शिक्षक / Instructor');
+  const dept = prompt(isEn ? 'Department:' : 'विभाग (HA / Pharmacy / Admin):', 'Academic');
 
   mockStaff.push({
     id: Date.now(),
@@ -361,11 +571,12 @@ window.addNewStaff = function() {
     qual: 'Master Degree'
   });
   renderStaffTable();
-  alert('नयाँ कर्मचारी विवरण थपियो!');
+  alert(isEn ? 'New staff profile added!' : 'नयाँ कर्मचारी विवरण थपियो!');
 };
 
 window.deleteStaff = function(id) {
-  if (confirm('के तपाईं यो कर्मचारी विवरण हटाउन चाहनुहुन्छ?')) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? 'Delete this staff profile?' : 'के तपाईं यो कर्मचारी विवरण हटाउन चाहनुहुन्छ?')) {
     mockStaff = mockStaff.filter(s => s.id !== id);
     renderStaffTable();
   }
@@ -388,26 +599,30 @@ window.exportAdmissionsToCSV = function() {
 };
 
 window.addNewNotice = function() {
-  const title = prompt('सूचनाको शीर्षक लेख्नुहोस् (Enter Notice Title):');
-  if (!title) return;
+  const isEn = (currentAdminLang === 'en');
+  const titleNe = prompt(isEn ? 'Enter Notice Title in Nepali:' : 'सूचनाको शीर्षक (नेपालीमा):');
+  if (!titleNe) return;
 
-  const cat = prompt('श्रेणी (Admission / Exam / Circular):', 'Admission');
+  const titleEn = prompt(isEn ? 'Enter Notice Title in English:' : 'सूचनाको शीर्षक (English):', titleNe);
+  const cat = prompt(isEn ? 'Category (Admission / Exam / Circular):' : 'श्रेणी (Admission / Exam / Circular):', 'Admission');
   const newId = `N-2081-${Math.floor(100 + Math.random() * 900)}`;
 
   mockNotices.unshift({
     id: newId,
-    title: title,
+    title_ne: titleNe,
+    title_en: titleEn || titleNe,
     category: cat || 'Circular',
     date_bs: "२०८१ आश्विन १४",
     file: "Notice_Uploaded.pdf"
   });
 
   renderDashboard();
-  alert('नयाँ सूचना सफलतापूर्वक प्रकाशित भयो!');
+  alert(isEn ? 'New notice published successfully!' : 'नयाँ सूचना सफलतापूर्वक प्रकाशित भयो!');
 };
 
 window.deleteNotice = function(id) {
-  if (confirm(`के तपाईं यो सूचना (${id}) हटाउन चाहनुहुन्छ?`)) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? `Delete notice ${id}?` : `के तपाईं यो सूचना (${id}) हटाउन चाहनुहुन्छ?`)) {
     mockNotices = mockNotices.filter(n => n.id !== id);
     renderDashboard();
   }
@@ -417,17 +632,18 @@ window.viewApplicantDetail = function(appId) {
   const app = mockAdmissions.find(a => a.app_id === appId);
   if (!app) return;
 
+  const isEn = (currentAdminLang === 'en');
   alert(`
-=== विद्यार्थी भर्ना विवरण (Applicant Details) ===
-दर्ता नम्बर: ${app.app_id}
-नाम: ${app.name_ne} (${app.name_en})
-कार्यक्रम: ${app.program}
-कोटा: ${app.quota}
-प्राप्त SEE GPA: ${app.gpa}
-सम्पर्क फोन: ${app.phone}
-ठेगाना: ${app.district}
-विद्यालय: ${app.school}
-सिम्बोल नं: ${app.symbol_no}
-स्थिति: ${app.status}
+=== ${isEn ? "Applicant Profile Details" : "विद्यार्थी भर्ना विवरण"} ===
+${isEn ? "Applicant ID:" : "दर्ता नम्बर:"} ${app.app_id}
+${isEn ? "Name:" : "नाम:"} ${app.name_ne} (${app.name_en})
+${isEn ? "Program:" : "कार्यक्रम:"} ${app.program}
+${isEn ? "Quota:" : "कोटा:"} ${app.quota}
+${isEn ? "Obtained SEE GPA:" : "प्राप्त SEE GPA:"} ${app.gpa} (Science: ${app.grade_sci})
+${isEn ? "Phone Contact:" : "सम्पर्क फोन:"} ${app.phone}
+${isEn ? "Address:" : "ठेगाना:"} ${app.district}
+${isEn ? "School:" : "विद्यालय:"} ${app.school}
+${isEn ? "SEE Symbol No:" : "सिम्बोल नं:"} ${app.symbol_no}
+${isEn ? "Verification Status:" : "स्थिति:"} ${app.status}
   `);
 };
