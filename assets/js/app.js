@@ -33,11 +33,11 @@ const translations = {
     "nav_gallery": "ग्यालरी",
     "nav_downloads": "डाउनलोड",
     "nav_contact": "सम्पर्क",
-    "nav_apply_btn": "अनलाइन भर्ना २०८१",
+    "nav_apply_btn": "अनलाइन भर्ना २०८३",
 
     // Ticker
     "ticker_heading": "ताजा सूचनाहरू",
-    "ticker_item_1": "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८१/०८२ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!",
+    "ticker_item_1": "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८३/०८४ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!",
     "ticker_item_2": "वर्गीकृत (निःशुल्क) छात्रवृत्ति प्रवेश परीक्षाको नतिजा तथा भर्ना सम्बन्धी सूचना प्रकाशित।",
     "ticker_item_3": "डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको नियमित तथा पूरक परीक्षा तालिका सार्वजनिक।",
     "ticker_item_4": "अछाम जिल्ला अस्पतालमा HA विद्यार्थीहरूको क्लिनिकल पोष्टिङ सुरु भएको छ।",
@@ -109,7 +109,7 @@ const translations = {
     "calc_btn_check": "योग्यता परीक्षण गर्नुहोस् (Check Status)",
 
     // Admission Portal
-    "adm_section_badge": "शैक्षिक सत्र २०८१/०८२ अनलाइन भर्ना",
+    "adm_section_badge": "शैक्षिक सत्र २०८३/०८४ अनलाइन भर्ना",
     "adm_section_title": "अनलाइन भर्ना आवेदन फाराम (Online Admission Portal)",
     "adm_section_desc": "घरमै बसी आफ्नो मोबाइल वा कम्प्युटरबाट मङ्गलसेन बहुप्राविधिक शिक्षालयमा भर्नाको लागि फाराम भर्नुहोस् र आधिकारिक प्रवेश स्लिप (Admit Slip) प्राप्त गर्नुहोस्।",
     "adm_step1_title": "१. इच्छित शैक्षिक कार्यक्रम तथा कोटा छनोट गर्नुहोस्",
@@ -207,11 +207,11 @@ const translations = {
     "nav_gallery": "Gallery",
     "nav_downloads": "Downloads",
     "nav_contact": "Contact Us",
-    "nav_apply_btn": "Apply Online 2081",
+    "nav_apply_btn": "Apply Online 2083",
 
     // Ticker
     "ticker_heading": "Latest Updates",
-    "ticker_item_1": "Urgent Notice regarding Admission Application Form for CTEVT Diploma in Pharmacy & PCL in General Medicine (HA) 2081/082!",
+    "ticker_item_1": "Urgent Notice regarding Admission Application Form for CTEVT Diploma in Pharmacy & PCL in General Medicine (HA) 2083/084!",
     "ticker_item_2": "Result of Classified Free Scholarship Entrance Examination & Admission Directives published.",
     "ticker_item_3": "Annual Theoretical & Practical Examination Routine for First Year Published.",
     "ticker_item_4": "Clinical & Hospital Posting commenced for HA Students at Achham District Hospital.",
@@ -283,7 +283,7 @@ const translations = {
     "calc_btn_check": "Verify Eligibility Status",
 
     // Admission Portal
-    "adm_section_badge": "Academic Session 2081/082 Admissions",
+    "adm_section_badge": "Academic Session 2083/084 Admissions",
     "adm_section_title": "Online Admission Application Portal",
     "adm_section_desc": "Apply online from your phone or PC for Mangalsen Polytechnic Institute and generate your official verified CTEVT Admit Slip instantly.",
     "adm_step1_title": "1. Program & Category Quota Selection",
@@ -376,7 +376,7 @@ function initLiveBikramSambatDate() {
   const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
   const enDate = now.toLocaleDateString('en-US', options);
   
-  const bsString = (currentLang === 'ne') ? "२०८१ आश्विन १४, बुधबार" : "Wednesday, 14 Ashwin 2081";
+  const bsString = (currentLang === 'ne') ? "२०८३ आश्विन १४, बुधबार" : "Wednesday, 14 Ashwin 2083";
   dateElement.innerHTML = `<i class="fa-regular fa-calendar-days"></i> ${bsString} (${enDate})`;
 }
 

@@ -455,6 +455,8 @@ button, input, select, textarea {
   align-items: center;
   gap: 0.45rem;
   font-size: 0.88rem;
+  white-space: nowrap;
+  flex-shrink: 0;
   box-shadow: 0 3px 10px rgba(200, 16, 46, 0.35);
   transition: all var(--transition-fast);
 }

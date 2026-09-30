@@ -156,7 +156,7 @@ const adminI18n = {
 // Data Stores
 let mockAdmissions = [
   {
-    app_id: "MPI-2081-HA-8842",
+    app_id: "MPI-2083-HA-8842",
     program: "PCL in General Medicine (HA)",
     quota: "Classified Scholarship",
     name_ne: "रमेश बहादुर कुँवर",
@@ -164,14 +164,14 @@ let mockAdmissions = [
     phone: "9848765432",
     district: "Mangalsen-3, Achham",
     school: "Shree Shodasha Devi Ma.Vi.",
-    symbol_no: "07804128K",
+    symbol_no: "08004128K",
     gpa: "3.15",
     grade_sci: "B+",
     status: "Verified",
-    date: "2081-06-14"
+    date: "2083-06-14"
   },
   {
-    app_id: "MPI-2081-PHARM-7219",
+    app_id: "MPI-2083-PHARM-7219",
     program: "Diploma in Pharmacy",
     quota: "Open Merit",
     name_ne: "सिता कुमारी शाही",
@@ -179,14 +179,14 @@ let mockAdmissions = [
     phone: "9868123456",
     district: "Sanfebagar-2, Achham",
     school: "Shree Tribhuvan Ma.Vi.",
-    symbol_no: "07809921B",
+    symbol_no: "08009921B",
     gpa: "3.45",
     grade_sci: "A",
     status: "Verified",
-    date: "2081-06-13"
+    date: "2083-06-13"
   },
   {
-    app_id: "MPI-2081-HA-4310",
+    app_id: "MPI-2083-HA-4310",
     program: "PCL in General Medicine (HA)",
     quota: "Female Quota",
     name_ne: "पुजा अधिकारी",
@@ -194,43 +194,43 @@ let mockAdmissions = [
     phone: "9812345678",
     district: "Kamalbazar, Achham",
     school: "Kamalbazar Secondary School",
-    symbol_no: "07801244M",
+    symbol_no: "08001244M",
     gpa: "2.90",
     grade_sci: "C+",
     status: "Pending",
-    date: "2081-06-12"
+    date: "2083-06-12"
   }
 ];
 
 let mockNotices = [
   {
-    id: "N-2081-104",
+    id: "N-2083-104",
     title_ne: "CTEVT डिप्लोमा इन फार्मेसी तथा PCL सामान्य चिकित्सा (HA) नयाँ भर्ना आवेदन फाराम खुला!",
     title_en: "Admission Application Form Open for CTEVT Diploma in Pharmacy & PCL General Medicine (HA)",
     category: "Admission",
-    date_bs: "२०८१ आश्विन १२",
-    file: "CTEVT_Admission_Form_2081_MPI.pdf"
+    date_bs: "२०८३ आश्विन १२",
+    file: "CTEVT_Admission_Form_2083_MPI.pdf"
   },
   {
-    id: "N-2081-103",
+    id: "N-2083-103",
     title_ne: "वर्गीकृत (निःशुल्क) छात्रवृत्ति प्रवेश परीक्षाको नतिजा तथा भर्ना सम्बन्धी सूचना",
     title_en: "Result of Classified Free Scholarship Entrance Examination Published",
     category: "Scholarship",
-    date_bs: "२०८१ आश्विन ०८",
-    file: "Classified_Scholarship_Result_2081.pdf"
+    date_bs: "२०८३ आश्विन ०८",
+    file: "Classified_Scholarship_Result_2083.pdf"
   },
   {
-    id: "N-2081-102",
+    id: "N-2083-102",
     title_ne: "डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको नियमित तथा पूरक परीक्षा तालिका (Exam Routine)",
     title_en: "First Year Regular & Back Examination Schedule Routine Published",
     category: "Exam",
-    date_bs: "२०८१ आश्विन ०२",
-    file: "CTEVT_Exam_Routine_First_Year_2081.pdf"
+    date_bs: "२०८३ आश्विन ०२",
+    file: "CTEVT_Exam_Routine_First_Year_2083.pdf"
   }
 ];
 
 let mockTickers = [
-  { id: 1, text: "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८१/०८२ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!", tag: "भर्ना खुला" },
+  { id: 1, text: "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८३/०८४ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!", tag: "भर्ना खुला" },
   { id: 2, text: "वर्गीकृत (निःशुल्क) छात्रवृत्ति प्रवेश परीक्षाको नतिजा तथा भर्ना सम्बन्धी सूचना प्रकाशित।", tag: "छात्रवृत्ति" },
   { id: 3, text: "डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको नियमित तथा पूरक परीक्षा तालिका सार्वजनिक।", tag: "परीक्षा" }
 ];
@@ -305,11 +305,11 @@ function initLogin() {
     e.preventDefault();
     const pin = document.getElementById('adminPinInput')?.value.trim();
 
-    if (pin === '2081' || pin === 'admin' || pin === 'admin@mpi') {
+    if (pin === '2083' || pin === '2081' || pin === 'admin' || pin === 'admin@mpi') {
       localStorage.setItem('mpi_admin_auth', 'true');
       checkAuth();
     } else {
-      alert(currentAdminLang === 'en' ? 'Invalid PIN or Password! (Default PIN: 2081)' : 'गलत पासवर्ड वा पिन! (Default PIN: 2081)');
+      alert(currentAdminLang === 'en' ? 'Invalid PIN or Password! (Default PIN: 2083)' : 'गलत पासवर्ड वा पिन! (Default PIN: 2083)');
     }
   });
 }
@@ -348,7 +348,7 @@ window.switchAdminView = function(viewKey) {
   const titles = {
     overview: { 
       title: isEn ? "Dashboard Overview" : "ड्यासबोर्ड (Overview)", 
-      sub: isEn ? "Mangalsen Polytechnic Institute • Session 2081/082" : "मङ्गलसेन बहुप्राविधिक शिक्षालय • शैक्षिक सत्र २०८१/०८२" 
+      sub: isEn ? "Mangalsen Polytechnic Institute • Session 2083/084" : "मङ्गलसेन बहुप्राविधिक शिक्षालय • शैक्षिक सत्र २०८३/०८४" 
     },
     admissions: { 
       title: isEn ? "Online Admissions Management" : "अनलाइन भर्ना आवेदन व्यवस्थापन", 
@@ -593,10 +593,10 @@ window.handleSaveNotice = function(e) {
   const titleNe = document.getElementById('noticeTitleNeInput')?.value.trim();
   const titleEn = document.getElementById('noticeTitleEnInput')?.value.trim() || titleNe;
   const category = document.getElementById('noticeCategoryInput')?.value || 'Admission';
-  const dateBs = document.getElementById('noticeDateBsInput')?.value.trim() || '२०८१ आश्विन १४';
+  const dateBs = document.getElementById('noticeDateBsInput')?.value.trim() || '२०८३ आश्विन १४';
   
   const fileName = selectedNoticeFileObj ? selectedNoticeFileObj.name : `Notice_Document_${Date.now().toString().slice(-4)}.pdf`;
-  const newId = `N-2081-${Math.floor(100 + Math.random() * 900)}`;
+  const newId = `N-2083-${Math.floor(100 + Math.random() * 900)}`;
 
   mockNotices.unshift({
     id: newId,
@@ -691,7 +691,7 @@ window.exportAdmissionsToCSV = function() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.setAttribute('href', url);
-  link.setAttribute('download', `MPI_Admissions_List_2081_${new Date().toISOString().slice(0,10)}.csv`);
+  link.setAttribute('download', `MPI_Admissions_List_2083_${new Date().toISOString().slice(0,10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
