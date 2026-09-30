@@ -1,0 +1,42 @@
+/* ==========================================================================
+   Print Stylesheet for Mangalsen Polytechnic Institute
+   Admit Slip & Citizen Charter Printing
+   ========================================================================== */
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area, .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: 2px solid #000000 !important;
+  }
+
+  .no-print, .top-bar, .main-header, .ticker-wrap, .main-footer, .floating-actions-bar, .modal-close-btn, .btn {
+    display: none !important;
+  }
+
+  .admit-slip-header h2 {
+    color: #000000 !important;
+    font-size: 20pt;
+  }
+
+  .slip-details-table td {
+    border-bottom: 1px solid #666666 !important;
+    font-size: 11pt;
+    padding: 6px;
+  }
+}
