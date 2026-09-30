@@ -533,18 +533,97 @@ function renderStaffTable() {
   `).join('');
 }
 
-window.addNewTicker = function() {
+// Modal Controller Functions
+window.openAdminModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add('active');
+    modal.style.display = 'flex';
+  }
+};
+
+window.closeAdminModal = function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+};
+
+// File Attachment Handler
+let selectedNoticeFileObj = null;
+
+window.handleNoticeFileSelect = function(input) {
+  const preview = document.getElementById('noticeFilePreviewArea');
+  const nameEl = document.getElementById('selectedNoticeFileName');
+  
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    selectedNoticeFileObj = file;
+    if (nameEl) nameEl.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+    if (preview) preview.style.display = 'block';
+  } else {
+    selectedNoticeFileObj = null;
+    if (preview) preview.style.display = 'none';
+  }
+};
+
+// Add New Notice Handler (Opens Modal)
+window.addNewNotice = function() {
+  const form = document.getElementById('addNoticeForm');
+  if (form) form.reset();
+  const preview = document.getElementById('noticeFilePreviewArea');
+  if (preview) preview.style.display = 'none';
+  selectedNoticeFileObj = null;
+  openAdminModal('addNoticeModal');
+};
+
+// Save Notice Form Submission
+window.handleSaveNotice = function(e) {
+  e.preventDefault();
   const isEn = (currentAdminLang === 'en');
-  const text = prompt(isEn ? 'Enter ticker alert message:' : 'ताजा टिकर सन्देश प्रविष्ट गर्नुहोस्:');
+  const titleNe = document.getElementById('noticeTitleNeInput')?.value.trim();
+  const titleEn = document.getElementById('noticeTitleEnInput')?.value.trim() || titleNe;
+  const category = document.getElementById('noticeCategoryInput')?.value || 'Admission';
+  const dateBs = document.getElementById('noticeDateBsInput')?.value.trim() || '२०८१ आश्विन १४';
+  
+  const fileName = selectedNoticeFileObj ? selectedNoticeFileObj.name : `Notice_Document_${Date.now().toString().slice(-4)}.pdf`;
+  const newId = `N-2081-${Math.floor(100 + Math.random() * 900)}`;
+
+  mockNotices.unshift({
+    id: newId,
+    title_ne: titleNe,
+    title_en: titleEn,
+    category: category,
+    date_bs: dateBs,
+    file: fileName
+  });
+
+  renderDashboard();
+  closeAdminModal('addNoticeModal');
+  alert(isEn ? `Notice "${titleEn}" published successfully with attachment: ${fileName}` : `सूचना "${titleNe}" सफलतापूर्वक संलग्न डकुमेन्ट सहित प्रकाशित भयो!`);
+};
+
+window.addNewTicker = function() {
+  openAdminModal('addTickerModal');
+};
+
+window.handleSaveTicker = function(e) {
+  e.preventDefault();
+  const isEn = (currentAdminLang === 'en');
+  const text = document.getElementById('tickerTextInput')?.value.trim();
+  const tag = document.getElementById('tickerTagInput')?.value.trim() || 'Alert';
   if (!text) return;
-  const tag = prompt(isEn ? 'Tag label (e.g. Admission / Exam):' : 'ट्याग (उदा. भर्ना खुला / परीक्षा):', 'सूचना');
 
   mockTickers.unshift({
     id: Date.now(),
-    text,
-    tag: tag || 'Alert'
+    text: text,
+    tag: tag
   });
+
   renderTickerTable();
+  closeAdminModal('addTickerModal');
+  document.getElementById('tickerTextInput').value = '';
   alert(isEn ? 'Ticker alert published!' : 'नयाँ टिकर अलर्ट प्रकाशित भयो!');
 };
 
@@ -557,20 +636,32 @@ window.deleteTicker = function(id) {
 };
 
 window.addNewStaff = function() {
+  openAdminModal('addStaffModal');
+};
+
+window.handleSaveStaff = function(e) {
+  e.preventDefault();
   const isEn = (currentAdminLang === 'en');
-  const name = prompt(isEn ? 'Staff / Instructor Name:' : 'कर्मचारी / शिक्षकको नाम:');
+  const name = document.getElementById('staffNameInput')?.value.trim();
+  const role = document.getElementById('staffRoleInput')?.value.trim();
+  const dept = document.getElementById('staffDeptInput')?.value || 'Academic';
+  const qual = document.getElementById('staffQualInput')?.value.trim() || 'Master Degree';
+
   if (!name) return;
-  const role = prompt(isEn ? 'Designation:' : 'पद (Designation):', 'शिक्षक / Instructor');
-  const dept = prompt(isEn ? 'Department:' : 'विभाग (HA / Pharmacy / Admin):', 'Academic');
 
   mockStaff.push({
     id: Date.now(),
-    name,
-    role,
-    dept,
-    qual: 'Master Degree'
+    name: name,
+    role: role,
+    dept: dept,
+    qual: qual
   });
+
   renderStaffTable();
+  closeAdminModal('addStaffModal');
+  document.getElementById('staffNameInput').value = '';
+  document.getElementById('staffRoleInput').value = '';
+  document.getElementById('staffQualInput').value = '';
   alert(isEn ? 'New staff profile added!' : 'नयाँ कर्मचारी विवरण थपियो!');
 };
 
@@ -596,28 +687,6 @@ window.exportAdmissionsToCSV = function() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-};
-
-window.addNewNotice = function() {
-  const isEn = (currentAdminLang === 'en');
-  const titleNe = prompt(isEn ? 'Enter Notice Title in Nepali:' : 'सूचनाको शीर्षक (नेपालीमा):');
-  if (!titleNe) return;
-
-  const titleEn = prompt(isEn ? 'Enter Notice Title in English:' : 'सूचनाको शीर्षक (English):', titleNe);
-  const cat = prompt(isEn ? 'Category (Admission / Exam / Circular):' : 'श्रेणी (Admission / Exam / Circular):', 'Admission');
-  const newId = `N-2081-${Math.floor(100 + Math.random() * 900)}`;
-
-  mockNotices.unshift({
-    id: newId,
-    title_ne: titleNe,
-    title_en: titleEn || titleNe,
-    category: cat || 'Circular',
-    date_bs: "२०८१ आश्विन १४",
-    file: "Notice_Uploaded.pdf"
-  });
-
-  renderDashboard();
-  alert(isEn ? 'New notice published successfully!' : 'नयाँ सूचना सफलतापूर्वक प्रकाशित भयो!');
 };
 
 window.deleteNotice = function(id) {

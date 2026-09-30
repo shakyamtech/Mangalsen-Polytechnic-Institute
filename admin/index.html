@@ -351,6 +351,145 @@
     </main>
   </div>
 
+  <!-- ==========================================
+       3. Admin Modals Hub
+       ========================================== -->
+  
+  <!-- Add New Notice Modal with File Attachment -->
+  <div class="admin-modal-backdrop" id="addNoticeModal">
+    <div class="admin-modal-dialog">
+      <div class="admin-modal-header">
+        <h4 class="admin-modal-title" id="modalNoticeTitleText"><i class="fa-solid fa-file-circle-plus"></i> नयाँ सूचना प्रकाशन (Publish Notice)</h4>
+        <button class="admin-modal-close" onclick="closeAdminModal('addNoticeModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form id="addNoticeForm" onsubmit="handleSaveNotice(event)">
+          
+          <div class="form-group-admin">
+            <label class="form-label-admin">सूचनाको शीर्षक (नेपालीमा) <span style="color:var(--admin-accent);">*</span>:</label>
+            <input type="text" id="noticeTitleNeInput" class="login-input" style="margin-bottom:0;" placeholder="उदा. PCL General Medicine (HA) नयाँ भर्ना आवेदन फाराम खुला..." required />
+          </div>
+
+          <div class="form-group-admin">
+            <label class="form-label-admin">Notice Title in English (Optional):</label>
+            <input type="text" id="noticeTitleEnInput" class="login-input" style="margin-bottom:0;" placeholder="e.g. Admission Application Form Open for Diploma in Pharmacy..." />
+          </div>
+
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">सूचनाको श्रेणी (Category) <span style="color:var(--admin-accent);">*</span>:</label>
+              <select id="noticeCategoryInput" class="login-input" style="margin-bottom:0;" required>
+                <option value="Admission">भर्ना & छात्रवृत्ति (Admission)</option>
+                <option value="Exam">परीक्षा & नतिजा (Examination)</option>
+                <option value="Circular">परिपत्र & निर्देशिका (Circular)</option>
+                <option value="Tender">बोलपत्र (Tenders & Procurement)</option>
+              </select>
+            </div>
+
+            <div class="form-group-admin">
+              <label class="form-label-admin">प्रकाशन मिति (B.S. Date):</label>
+              <input type="text" id="noticeDateBsInput" class="login-input" style="margin-bottom:0;" value="२०८१ आश्विन १४" required />
+            </div>
+          </div>
+
+          <!-- Attachment Upload Dropzone -->
+          <div class="form-group-admin">
+            <label class="form-label-admin"><i class="fa-solid fa-paperclip"></i> आधिकारिक PDF डकुमेन्ट / फाइल संलग्न गर्नुहोस् (Attachment):</label>
+            <div class="file-upload-dropzone" id="noticeDropzone">
+              <input type="file" id="noticeFileInput" class="file-upload-input" accept=".pdf,.doc,.docx,.jpg,.png" onchange="handleNoticeFileSelect(this)" />
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem; color:#3B82F6; margin-bottom:0.4rem; display:block;"></i>
+              <strong style="color:var(--admin-primary); font-size:0.92rem; display:block;">PDF फाइल छनोट गर्न यहाँ क्लिक गर्नुहोस् वा तान्नुहोस् (Drag & Drop)</strong>
+              <span style="font-size:0.76rem; color:var(--admin-text-muted);">PDF, DOCX वा JPG (Maximum File Size: 10 MB)</span>
+              
+              <div id="noticeFilePreviewArea" style="display:none; margin-top:0.6rem;">
+                <span class="file-preview-pill">
+                  <i class="fa-solid fa-file-pdf" style="color:#EF4444; font-size:1.1rem;"></i>
+                  <span id="selectedNoticeFileName">Notice_File.pdf</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem; border-top:1px solid var(--admin-border); padding-top:1rem;">
+            <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addNoticeModal')">
+              रद्द गर्नुहोस् (Cancel)
+            </button>
+            <button type="submit" class="btn-admin btn-admin-primary">
+              <i class="fa-solid fa-paper-plane"></i> सूचना प्रकाशित गर्नुहोस् (Publish)
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Ticker Modal -->
+  <div class="admin-modal-backdrop" id="addTickerModal">
+    <div class="admin-modal-dialog" style="max-width:500px;">
+      <div class="admin-modal-header">
+        <h4 class="admin-modal-title"><i class="fa-solid fa-bolt"></i> ताजा टिकर सन्देश थप्नुहोस्</h4>
+        <button class="admin-modal-close" onclick="closeAdminModal('addTickerModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form onsubmit="handleSaveTicker(event)">
+          <div class="form-group-admin">
+            <label class="form-label-admin">टिकर सन्देश (Ticker Message) <span style="color:var(--admin-accent);">*</span>:</label>
+            <textarea id="tickerTextInput" class="login-input" rows="3" placeholder="यहाँ ताजा सन्देश लेख्नुहोस्..." required></textarea>
+          </div>
+          <div class="form-group-admin">
+            <label class="form-label-admin">ब्याच ट्याग (Tag Label):</label>
+            <input type="text" id="tickerTagInput" class="login-input" placeholder="उदा. भर्ना खुला, नतिजा, जरुरी" value="ताजा" />
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+            <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addTickerModal')">रद्द</button>
+            <button type="submit" class="btn-admin btn-admin-primary">सुरक्षित गर्नुहोस्</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Staff Modal -->
+  <div class="admin-modal-backdrop" id="addStaffModal">
+    <div class="admin-modal-dialog" style="max-width:520px;">
+      <div class="admin-modal-header">
+        <h4 class="admin-modal-title"><i class="fa-solid fa-user-plus"></i> नयाँ शिक्षक / कर्मचारी थप्नुहोस्</h4>
+        <button class="admin-modal-close" onclick="closeAdminModal('addStaffModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form onsubmit="handleSaveStaff(event)">
+          <div class="form-group-admin">
+            <label class="form-label-admin">पूरा नाम (Full Name) <span style="color:var(--admin-accent);">*</span>:</label>
+            <input type="text" id="staffNameInput" class="login-input" placeholder="उदा. ई. सन्तोष भट्ट" required />
+          </div>
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">पद (Designation):</label>
+              <input type="text" id="staffRoleInput" class="login-input" placeholder="उदा. सहायक प्राध्यापक" required />
+            </div>
+            <div class="form-group-admin">
+              <label class="form-label-admin">विभाग (Department):</label>
+              <select id="staffDeptInput" class="login-input">
+                <option value="Health Sciences">Health Sciences (HA)</option>
+                <option value="Pharmacy">Pharmacy Department</option>
+                <option value="Administration">प्रशासन शाखा</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-admin">
+            <label class="form-label-admin">शैक्षिक योग्यता (Qualifications):</label>
+            <input type="text" id="staffQualInput" class="login-input" placeholder="उदा. M.Pharm, MBBS, MD" />
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+            <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addStaffModal')">रद्द</button>
+            <button type="submit" class="btn-admin btn-admin-primary">थप्नुहोस्</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="admin.js"></script>
 </body>
 </html>
