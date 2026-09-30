@@ -327,25 +327,28 @@ body {
   inset: 0;
   background: rgba(8, 27, 51, 0.75);
   backdrop-filter: blur(6px);
-  z-index: 1000;
-  display: flex;
+  z-index: 9999;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
   opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s ease;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
 
+.admin-modal-backdrop.active,
 .admin-modal-backdrop.is-open {
-  opacity: 1;
-  visibility: visible;
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
 }
 
 .admin-modal-dialog {
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  box-shadow: 0 25px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
   max-width: 620px;
   width: 100%;
   max-height: 90vh;
@@ -353,8 +356,11 @@ body {
   border: 1px solid var(--admin-border);
   transform: scale(0.95);
   transition: transform 0.25s ease;
+  position: relative;
+  z-index: 10000;
 }
 
+.admin-modal-backdrop.active .admin-modal-dialog,
 .admin-modal-backdrop.is-open .admin-modal-dialog {
   transform: scale(1);
 }

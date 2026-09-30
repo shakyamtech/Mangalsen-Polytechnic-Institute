@@ -537,7 +537,7 @@ function renderStaffTable() {
 window.openAdminModal = function(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
-    modal.classList.add('active');
+    modal.classList.add('active', 'is-open');
     modal.style.display = 'flex';
   }
 };
@@ -545,10 +545,18 @@ window.openAdminModal = function(modalId) {
 window.closeAdminModal = function(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) {
-    modal.classList.remove('active');
+    modal.classList.remove('active', 'is-open');
     modal.style.display = 'none';
   }
 };
+
+// Close modal when clicking on backdrop
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.classList.contains('admin-modal-backdrop')) {
+    e.target.classList.remove('active', 'is-open');
+    e.target.style.display = 'none';
+  }
+});
 
 // File Attachment Handler
 let selectedNoticeFileObj = null;
