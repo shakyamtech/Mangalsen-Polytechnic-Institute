@@ -370,12 +370,20 @@ button, input, select, textarea {
 .nav-bar {
   background: var(--primary);
   box-shadow: 0 4px 12px rgba(15, 56, 112, 0.15);
+  position: relative;
+  z-index: 100;
 }
 
 .nav-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
 }
 
 .main-nav-list {
@@ -384,26 +392,38 @@ button, input, select, textarea {
   align-items: center;
   margin: 0;
   padding: 0;
+  flex-wrap: nowrap;
+  flex-shrink: 1;
 }
 
 .nav-item {
   position: relative;
+  flex-shrink: 0;
 }
 
 .nav-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.85rem 1rem;
+  gap: 0.3rem;
+  padding: 0.85rem 0.65rem;
   color: #F8FAFC;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.2;
   transition: all var(--transition-fast);
 }
 
 .nav-link:hover, .nav-item.active > .nav-link {
   background: rgba(255, 255, 255, 0.14);
   color: #FFFFFF;
+}
+
+.nav-link i.fa-chevron-down {
+  font-size: 0.65rem !important;
+  opacity: 0.75;
+  margin-left: 2px;
 }
 
 .dropdown-menu {
@@ -436,6 +456,7 @@ button, input, select, textarea {
   color: var(--text-main);
   font-size: 0.88rem;
   font-weight: 500;
+  white-space: nowrap;
   transition: all var(--transition-fast);
 }
 
@@ -449,12 +470,12 @@ button, input, select, textarea {
   background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-light) 100%);
   color: #FFFFFF !important;
   font-weight: 700;
-  padding: 0.55rem 1.25rem;
+  padding: 0.48rem 1.05rem;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   white-space: nowrap;
   flex-shrink: 0;
   box-shadow: 0 3px 10px rgba(200, 16, 46, 0.35);
@@ -598,7 +619,19 @@ button, input, select, textarea {
 }
 
 /* Responsive adjustments */
-@media (max-width: 992px) {
+@media (max-width: 1250px) {
+  .nav-link {
+    padding: 0.85rem 0.45rem;
+    font-size: 0.82rem;
+    gap: 0.2rem;
+  }
+  .nav-cta-btn {
+    padding: 0.42rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 1080px) {
   .top-bar { display: none; }
   .mobile-nav-toggle { display: block; }
   .brand-title-nepali { font-size: 1.15rem; }
