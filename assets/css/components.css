@@ -1241,7 +1241,7 @@ select.admission-input {
   height: 38px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
+  color: #FFFFFF !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1250,7 +1250,12 @@ select.admission-input {
 
 .social-icon-btn:hover {
   background: var(--crimson);
+  color: #FFFFFF !important;
   transform: translateY(-2px);
+}
+
+.social-icon-btn i {
+  color: #FFFFFF;
 }
 
 .footer-bottom-bar {
