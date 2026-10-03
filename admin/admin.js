@@ -377,7 +377,10 @@ window.switchAdminView = function(viewKey) {
   // Refresh relevant view table
   if (viewKey === 'overview') renderOverviewRecent();
   if (viewKey === 'admissions') renderAdmissionsTable();
-  if (viewKey === 'notices') renderNoticesTable();
+  if (viewKey === 'notices') {
+    renderPopupSettingsForm();
+    renderNoticesTable();
+  }
   if (viewKey === 'ticker') renderTickerTable();
   if (viewKey === 'staff') renderStaffTable();
 };
@@ -386,6 +389,7 @@ function renderDashboard() {
   renderKPIs();
   renderOverviewRecent();
   renderAdmissionsTable();
+  renderPopupSettingsForm();
   renderNoticesTable();
   renderTickerTable();
   renderStaffTable();
@@ -782,4 +786,74 @@ window.toggleApplicantVerification = function(appId) {
   app.status = (app.status === 'Verified') ? 'Pending' : 'Verified';
   renderDashboard();
   viewApplicantDetail(appId);
+};
+
+// ==========================================
+// Emergency Admission Pop-up Modal Settings
+// ==========================================
+function renderPopupSettingsForm() {
+  const isEn = (currentAdminLang === 'en');
+  const raw = localStorage.getItem('mpi_popup_settings');
+  let config = {
+    enabled: true,
+    badge: 'शैक्षिक सत्र २०८३/२०८४ नयाँ भर्ना',
+    title: 'CTEVT Diploma in Pharmacy तथा PCL General Medicine (HA) मा भर्ना खुल्यो!',
+    desc: 'यस शिक्षालयमा ३ वर्षे प्रमाणपत्र तह सामान्य चिकित्सा (HA) र डिप्लोमा इन फार्मेसी (Pharmacy) का लागि योग्यताक्रम तथा वर्गीकृत छात्रवृत्ति तर्फ नयाँ भर्ना आवेदन फाराम खुला गरिएको छ।',
+    headerTitle: 'अत्यन्त जरुरी भर्ना सम्बन्धी सूचना!'
+  };
+
+  if (raw) {
+    try {
+      config = { ...config, ...JSON.parse(raw) };
+    } catch(e) {}
+  }
+
+  const enabledSelect = document.getElementById('popupEnabledInput');
+  const badgeInput = document.getElementById('popupBadgeInput');
+  const titleInput = document.getElementById('popupTitleInput');
+  const descInput = document.getElementById('popupDescInput');
+  const statusBadge = document.getElementById('popupStatusBadge');
+
+  if (enabledSelect) enabledSelect.value = String(config.enabled);
+  if (badgeInput) badgeInput.value = config.badge;
+  if (titleInput) titleInput.value = config.title;
+  if (descInput) descInput.value = config.desc;
+
+  if (statusBadge) {
+    if (config.enabled) {
+      statusBadge.className = 'badge-status status-verified';
+      statusBadge.textContent = isEn ? 'Active' : 'सक्रिय (Active)';
+    } else {
+      statusBadge.className = 'badge-status status-pending';
+      statusBadge.textContent = isEn ? 'Disabled' : 'निष्कृय (Disabled)';
+    }
+  }
+}
+
+window.savePopupSettings = function(e) {
+  if (e) e.preventDefault();
+  const enabled = document.getElementById('popupEnabledInput')?.value === 'true';
+  const badge = document.getElementById('popupBadgeInput')?.value.trim();
+  const title = document.getElementById('popupTitleInput')?.value.trim();
+  const desc = document.getElementById('popupDescInput')?.value.trim();
+
+  const config = {
+    enabled,
+    badge: badge || 'शैक्षिक सत्र २०८३/२०८४ नयाँ भर्ना',
+    title: title || 'CTEVT Diploma in Pharmacy तथा PCL General Medicine (HA) मा भर्ना खुल्यो!',
+    desc: desc || 'यस शिक्षालयमा ३ वर्षे प्रमाणपत्र तह सामान्य चिकित्सा (HA) र डिप्लोमा इन फार्मेसी (Pharmacy) का लागि योग्यताक्रम तथा वर्गीकृत छात्रवृत्ति तर्फ नयाँ भर्ना आवेदन फाराम खुला गरिएको छ।',
+    headerTitle: 'अत्यन्त जरुरी भर्ना सम्बन्धी सूचना!'
+  };
+
+  localStorage.setItem('mpi_popup_settings', JSON.stringify(config));
+  // Clear dismiss cache so user sees new popup immediately
+  localStorage.removeItem('mpi_notice_dismissed_v1');
+
+  renderPopupSettingsForm();
+  alert(currentAdminLang === 'en' ? '✅ Pop-up settings saved successfully!' : '✅ पप-अप सूचनाको सेटिङ सफलतापूर्वक सुरक्षित (Save) गरियो!');
+};
+
+window.resetPopupDismissCache = function() {
+  localStorage.removeItem('mpi_notice_dismissed_v1');
+  alert(currentAdminLang === 'en' ? '🔄 Pop-up dismiss cache cleared! You can now visit the homepage to preview the popup.' : '🔄 पप-अप क्यास रिसेट गरियो! अब मुख्य वेबसाइट खोल्दा पप-अप तुरुन्त देखिनेछ।');
 };

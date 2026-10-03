@@ -1325,22 +1325,22 @@
   <div class="modal-backdrop" id="urgentNoticeModal">
     <div class="modal-dialog">
       <div class="modal-header" style="background: linear-gradient(135deg, #C8102E 0%, #E63946 100%); color:#fff;">
-        <h4 class="modal-title" style="color:#fff;"><i class="fa-solid fa-bullhorn"></i> अत्यन्त जरुरी भर्ना सम्बन्धी सूचना!</h4>
+        <h4 class="modal-title" style="color:#fff;"><i class="fa-solid fa-bullhorn"></i> <span id="urgentModalTitleText">अत्यन्त जरुरी भर्ना सम्बन्धी सूचना!</span></h4>
         <button class="modal-close-btn" id="closeUrgentNotice" style="color:#fff;">&times;</button>
       </div>
       <div class="modal-body">
         <div style="text-align:center; margin-bottom:1.25rem;">
-          <span style="background:#FEF3C7; color:#B45309; padding:4px 12px; border-radius:20px; font-weight:700; font-size:0.82rem;">
-            शैक्षिक सत्र २०८१/२०८२ नयाँ भर्ना
+          <span id="urgentNoticeBadge" style="background:#FEF3C7; color:#B45309; padding:4px 12px; border-radius:20px; font-weight:700; font-size:0.82rem;">
+            शैक्षिक सत्र २०८३/२०८४ नयाँ भर्ना
           </span>
-          <h3 style="font-size:1.35rem; color:var(--primary); margin-top:0.6rem;">
+          <h3 id="urgentNoticeHeading" style="font-size:1.35rem; color:var(--primary); margin-top:0.6rem;">
             CTEVT Diploma in Pharmacy तथा PCL General Medicine (HA) मा भर्ना खुल्यो!
           </h3>
         </div>
-        <p style="font-size:0.92rem; line-height:1.7; color:var(--text-main); margin-bottom:1.25rem;">
+        <p id="urgentNoticeDesc" style="font-size:0.92rem; line-height:1.7; color:var(--text-main); margin-bottom:1.25rem;">
           यस शिक्षालयमा ३ वर्षे प्रमाणपत्र तह सामान्य चिकित्सा (HA) र डिप्लोमा इन फार्मेसी (Pharmacy) का लागि योग्यताक्रम तथा वर्गीकृत छात्रवृत्ति तर्फ नयाँ भर्ना आवेदन फाराम खुला गरिएको छ।
         </p>
-        <div style="background:var(--primary-subtle); padding:1rem; border-radius:8px; font-size:0.86rem; margin-bottom:1.5rem;">
+        <div id="urgentNoticeReqs" style="background:var(--primary-subtle); padding:1rem; border-radius:8px; font-size:0.86rem; margin-bottom:1.5rem;">
           <div><i class="fa-solid fa-check" style="color:var(--success);"></i> <strong>न्यूनतम योग्यता:</strong> SEE मा न्यूनतम GPA २.० (विज्ञान, गणित र अंग्रेजीमा C ग्रेड)</div>
           <div style="margin-top:4px;"><i class="fa-solid fa-check" style="color:var(--success);"></i> <strong>कुल सिट क्षमता:</strong> प्रत्येक कार्यक्रममा ४०/४० सिट</div>
         </div>
@@ -1485,7 +1485,7 @@
         html += '<a href="#calculator-section" onclick="closeModal(\'searchModal\')" style="padding:8px 12px; background:var(--bg-alt); border-radius:6px; font-weight:600;"><i class="fa-solid fa-calculator"></i> CTEVT GPA & Eligibility Checker</a>';
       }
       if (q.includes('भर्ना') || q.includes('apply') || q.includes('admission')) {
-        html += '<a href="#online-admission" onclick="closeModal(\'searchModal\')" style="padding:8px 12px; background:var(--bg-alt); border-radius:6px; font-weight:600;"><i class="fa-solid fa-file-pen"></i> अनलाइन भर्ना आवेदन फाराम २०८१/८२</a>';
+        html += '<a href="#online-admission" onclick="closeModal(\'searchModal\')" style="padding:8px 12px; background:var(--bg-alt); border-radius:6px; font-weight:600;"><i class="fa-solid fa-file-pen"></i> अनलाइन भर्ना आवेदन फाराम २०८३/८४</a>';
       }
       if (q.includes('सूचना') || q.includes('notice') || q.includes('exam')) {
         html += '<a href="#notices" onclick="closeModal(\'searchModal\')" style="padding:8px 12px; background:var(--bg-alt); border-radius:6px; font-weight:600;"><i class="fa-solid fa-bullhorn"></i> सूचना तथा नतिजा पाटी</a>';

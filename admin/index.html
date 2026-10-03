@@ -250,10 +250,71 @@
            PAGE 3: NOTICES MANAGEMENT VIEW
            ============================================== -->
       <section class="admin-view-panel" id="view-notices" style="display: none;">
+        
+        <!-- Emergency Pop-up Modal Settings Card -->
+        <div class="admin-panel" style="margin-bottom: 1.5rem; border-left: 4px solid var(--admin-primary);">
+          <div class="panel-header" style="margin-bottom: 1rem;">
+            <div>
+              <h3 class="panel-title" style="color: var(--admin-primary);">
+                <i class="fa-solid fa-bullhorn"></i> <span data-admin-i18n="popup_settings_title">गृहपृष्ठ भर्ना पप-अप सूचना सेटिङ (Homepage Admission Pop-up Modal)</span>
+              </h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);" data-admin-i18n="popup_settings_sub">वेबसाइट खोल्दा देखिने विशेष भर्ना अलर्ट पप-अपको सामग्री तथा सक्रियता सम्पादन</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-status status-verified" id="popupStatusBadge">सक्रिय (Active)</span>
+            </div>
+          </div>
+
+          <form id="popupSettingsForm" onsubmit="savePopupSettings(event)">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="font-size: 0.84rem; font-weight: 600; display: block; margin-bottom: 4px;">
+                  <i class="fa-solid fa-power-off"></i> पप-अप स्थिति (Modal Status):
+                </label>
+                <select id="popupEnabledInput" class="login-input" style="margin-bottom: 0;">
+                  <option value="true">सक्रिय (Enabled - Display on Homepage)</option>
+                  <option value="false">निष्कृय (Disabled - Hide Pop-up)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="font-size: 0.84rem; font-weight: 600; display: block; margin-bottom: 4px;">
+                  <i class="fa-solid fa-tag"></i> शैक्षिक सत्र ट्याग (Session Badge):
+                </label>
+                <input type="text" id="popupBadgeInput" class="login-input" style="margin-bottom: 0;" value="शैक्षिक सत्र २०८३/२०८४ नयाँ भर्ना" required />
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.84rem; font-weight: 600; display: block; margin-bottom: 4px;">
+                <i class="fa-solid fa-heading"></i> पप-अप मुख्य शीर्षक (Pop-up Title Heading):
+              </label>
+              <input type="text" id="popupTitleInput" class="login-input" style="margin-bottom: 0;" value="CTEVT Diploma in Pharmacy तथा PCL General Medicine (HA) मा भर्ना खुल्यो!" required />
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <label style="font-size: 0.84rem; font-weight: 600; display: block; margin-bottom: 4px;">
+                <i class="fa-solid fa-align-left"></i> संक्षिप्त विवरण (Description):
+              </label>
+              <textarea id="popupDescInput" class="login-input" style="margin-bottom: 0; min-height: 70px; resize: vertical;">यस शिक्षालयमा ३ वर्षे प्रमाणपत्र तह सामान्य चिकित्सा (HA) र डिप्लोमा इन फार्मेसी (Pharmacy) का लागि योग्यताक्रम तथा वर्गीकृत छात्रवृत्ति तर्फ नयाँ भर्ना आवेदन फाराम खुला गरिएको छ।</textarea>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button type="submit" class="btn-admin btn-admin-primary">
+                <i class="fa-solid fa-floppy-disk"></i> <span data-admin-i18n="btn_save_popup">पप-अप सेटिङ सेभ गर्नुहोस्</span>
+              </button>
+              <button type="button" class="btn-admin btn-admin-secondary" onclick="resetPopupDismissCache()">
+                <i class="fa-solid fa-rotate"></i> टेस्ट पप-अप हेर्नुहोस् (Reset Dismiss Cache)
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Official Notices Hub Panel -->
         <div class="admin-panel">
           <div class="panel-header">
             <div>
-              <h3 class="panel-title"><i class="fa-solid fa-bullhorn"></i> <span data-admin-i18n="notices_title">सूचना तथा नतिजा व्यवस्थापन (Notices CMS)</span></h3>
+              <h3 class="panel-title"><i class="fa-solid fa-list-check"></i> <span data-admin-i18n="notices_title">सूचना तथा नतिजा व्यवस्थापन (Notices CMS)</span></h3>
               <span style="font-size: 0.82rem; color: var(--admin-text-muted);" data-admin-i18n="notices_sub">वेबसाइटको आधिकारिक सूचना पाटी सम्पादन</span>
             </div>
             <button class="btn-admin btn-admin-primary" onclick="addNewNotice()">

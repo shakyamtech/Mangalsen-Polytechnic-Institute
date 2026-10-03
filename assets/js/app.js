@@ -546,6 +546,35 @@ function initNoticeModalPopup() {
 
   if (!popup) return;
 
+  // Check admin customized popup settings
+  try {
+    const rawConfig = localStorage.getItem('mpi_popup_settings');
+    if (rawConfig) {
+      const config = JSON.parse(rawConfig);
+      if (config.enabled === false) {
+        return; // Disabled by admin
+      }
+      if (config.badge) {
+        const badgeEl = document.getElementById('urgentNoticeBadge');
+        if (badgeEl) badgeEl.textContent = config.badge;
+      }
+      if (config.title) {
+        const titleEl = document.getElementById('urgentNoticeHeading');
+        if (titleEl) titleEl.textContent = config.title;
+      }
+      if (config.desc) {
+        const descEl = document.getElementById('urgentNoticeDesc');
+        if (descEl) descEl.textContent = config.desc;
+      }
+      if (config.headerTitle) {
+        const headerEl = document.getElementById('urgentModalTitleText');
+        if (headerEl) headerEl.textContent = config.headerTitle;
+      }
+    }
+  } catch (e) {
+    console.warn('Popup settings parse error', e);
+  }
+
   const hasDismissed = localStorage.getItem('mpi_notice_dismissed_v1');
   if (!hasDismissed) {
     setTimeout(() => {
