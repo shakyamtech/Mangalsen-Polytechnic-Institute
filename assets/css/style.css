@@ -618,6 +618,13 @@ button, input, select, textarea {
   color: var(--text-muted);
 }
 
+.nav-actions-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1250px) {
   .nav-link {
@@ -638,31 +645,73 @@ button, input, select, textarea {
   .brand-title-english { font-size: 0.85rem; }
   .gov-emblem-svg, .mpi-crest-svg { height: 48px; }
   
+  .nav-bar {
+    width: 100%;
+  }
+
+  .nav-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    width: 100%;
+  }
+
+  .nav-actions-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.45rem 1rem;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
   .main-nav-list {
     display: none;
     flex-direction: column;
     width: 100%;
     background: var(--primary-dark);
-    padding: 1rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
   
   .main-nav-list.is-open {
     display: flex;
   }
   
-  .nav-item { width: 100%; }
-  .nav-link { width: 100%; padding: 0.75rem 1.5rem; }
+  .nav-item { 
+    width: 100%; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .nav-link { 
+    width: 100%; 
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   .dropdown-menu {
     position: static;
     opacity: 1;
     visibility: visible;
     transform: none;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.25);
     border: none;
     box-shadow: none;
-    padding-left: 1rem;
+    padding: 0.35rem 0;
+    width: 100%;
   }
-  .dropdown-item a { color: #E2E8F0; }
+  .dropdown-item a { 
+    color: #E2E8F0; 
+    padding: 0.65rem 1.5rem 0.65rem 2.25rem;
+    font-size: 0.9rem;
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .dropdown-item:last-child a {
+    border-bottom: none;
+  }
   .section-title { font-size: 1.85rem; }
 }
 
