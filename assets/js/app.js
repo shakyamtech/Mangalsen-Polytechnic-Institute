@@ -359,6 +359,7 @@ let currentLang = 'ne';
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initLanguage();
+  initDynamicTicker();
   initHeroSlider();
   initAccessibility();
   initNoticeModalPopup();
@@ -366,6 +367,29 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollEffects();
   initLiveBikramSambatDate();
 });
+
+// Dynamic Breaking Ticker Sync from Admin
+function initDynamicTicker() {
+  try {
+    const raw = localStorage.getItem('mpi_tickers');
+    if (raw) {
+      const tickers = JSON.parse(raw);
+      if (Array.isArray(tickers) && tickers.length > 0) {
+        const container = document.querySelector('.ticker-items');
+        if (container) {
+          container.innerHTML = tickers.map(t => `
+            <span class="ticker-item">
+              <span class="badge-pill">${t.tag || 'NEW'}</span>
+              <a href="javascript:void(0)" onclick="viewNoticeDetail('N-2083-104')">${t.text}</a>
+            </span>
+          `).join('');
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Dynamic ticker render error', e);
+  }
+}
 
 // Live Bikram Sambat Date Clock
 function initLiveBikramSambatDate() {

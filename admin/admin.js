@@ -229,11 +229,13 @@ let mockNotices = [
   }
 ];
 
-let mockTickers = [
+const defaultTickers = [
   { id: 1, text: "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८३/०८४ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!", tag: "भर्ना खुला" },
   { id: 2, text: "वर्गीकृत (निःशुल्क) छात्रवृत्ति प्रवेश परीक्षाको नतिजा तथा भर्ना सम्बन्धी सूचना प्रकाशित।", tag: "छात्रवृत्ति" },
   { id: 3, text: "डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको नियमित तथा पूरक परीक्षा तालिका सार्वजनिक।", tag: "परीक्षा" }
 ];
+
+let mockTickers = JSON.parse(localStorage.getItem('mpi_tickers') || 'null') || defaultTickers;
 
 let mockStaff = [
   { id: 1, name: "डा. राजेश कुमार श्रेष्ठ", role: "शिक्षालय प्रमुख (Campus Chief)", dept: "Leadership", qual: "M.Sc., Ph.D." },
@@ -633,6 +635,7 @@ window.handleSaveTicker = function(e) {
     tag: tag
   });
 
+  localStorage.setItem('mpi_tickers', JSON.stringify(mockTickers));
   renderTickerTable();
   closeAdminModal('addTickerModal');
   document.getElementById('tickerTextInput').value = '';
@@ -643,6 +646,7 @@ window.deleteTicker = function(id) {
   const isEn = (currentAdminLang === 'en');
   if (confirm(isEn ? 'Delete this ticker alert?' : 'के तपाईं यो टिकर हटाउन चाहनुहुन्छ?')) {
     mockTickers = mockTickers.filter(t => t.id !== id);
+    localStorage.setItem('mpi_tickers', JSON.stringify(mockTickers));
     renderTickerTable();
   }
 };
