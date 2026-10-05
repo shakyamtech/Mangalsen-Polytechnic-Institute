@@ -391,6 +391,13 @@ function initDynamicTicker() {
   }
 }
 
+// Auto-sync ticker live across browser tabs
+window.addEventListener('storage', (e) => {
+  if (e.key === 'mpi_tickers') {
+    initDynamicTicker();
+  }
+});
+
 // Live Bikram Sambat Date Clock
 function initLiveBikramSambatDate() {
   const dateElement = document.getElementById('liveNepaliDate');
@@ -513,6 +520,9 @@ function setLanguage(lang) {
   if (typeof checkEligibility === 'function') {
     checkEligibility();
   }
+
+  // Preserve dynamic tickers
+  initDynamicTicker();
 }
 
 // Dark / Light Theme
