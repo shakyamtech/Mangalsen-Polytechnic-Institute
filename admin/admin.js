@@ -229,10 +229,48 @@ const defaultNotices = [
     date_bs: "२०८३ आश्विन ०२",
     file: "CTEVT_Exam_Routine_First_Year_2083.pdf",
     content_ne: "CTEVT परीक्षा नियन्त्रण कार्यालयको वार्षिक क्यालेन्डर अनुसार डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको परीक्षा तालिका सार्वजनिक गरिएको छ।"
+  },
+  {
+    id: "N-2083-101",
+    title_ne: "अछाम जिल्ला अस्पताल तथा प्राथमिक स्वास्थ्य केन्द्रहरूमा PCL HA विद्यार्थीहरूको क्लिनिकल पोष्टिङ सम्बन्धी",
+    title_en: "Clinical & Community Hospital Posting Directives for PCL Health Assistant Students",
+    category: "Circular",
+    date_bs: "२०८३ भाद्र २५",
+    file: "Clinical_Posting_Achham_Hospital_2083.pdf",
+    content_ne: "PCL in General Medicine दोस्रो र तेस्रो वर्षका विद्यार्थीहरूका लागि जिल्ला अस्पताल अछाम, मङ्गलसेन तथा मातहतका प्राथमिक स्वास्थ्य केन्द्रहरूमा क्लिनिकल इन्टर्नसिप तथा प्रयोगात्मक अभ्यास सञ्चालन हुने तालिका सम्बन्धी जानकारी।"
+  },
+  {
+    id: "N-2083-100",
+    title_ne: "फार्मेसी तथा विज्ञान प्रयोगशाला उपकरण खरिद सम्बन्धी बोलपत्र (Tender/Quotation) आह्वान",
+    title_en: "Sealed Quotation Invitation for Supply & Delivery of Pharmacy Lab Equipments & Chemicals",
+    category: "Tender",
+    date_bs: "२०८३ भाद्र १५",
+    file: "Tender_Lab_Equipments_MPI_2083.pdf",
+    content_ne: "यस शिक्षालयको फार्मेसी तथा एनाटोमी प्रयोगशालाका लागि आवश्यक आधुनिक उपकरण, रासायनिक पदार्थ (Chemicals) र ग्लासवयर आपूर्ति गर्न इजाजतप्राप्त फर्म/कम्पनीहरूबाट सिलबन्दी दरभाउपत्र आह्वान गरिएको छ।"
   }
 ];
 
-let mockNotices = JSON.parse(localStorage.getItem('mpi_notices') || 'null') || defaultNotices;
+function loadStoredAdminNotices() {
+  const raw = localStorage.getItem('mpi_notices');
+  if (!raw) return defaultNotices;
+  try {
+    const stored = JSON.parse(raw);
+    if (!Array.isArray(stored) || stored.length === 0) return defaultNotices;
+    // Ensure all default notices are available
+    const storedIds = new Set(stored.map(s => s.id));
+    const merged = [...stored];
+    defaultNotices.forEach(dn => {
+      if (!storedIds.has(dn.id)) {
+        merged.push(dn);
+      }
+    });
+    return merged;
+  } catch (e) {
+    return defaultNotices;
+  }
+}
+
+let mockNotices = loadStoredAdminNotices();
 
 const defaultTickers = [
   { id: 1, text: "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८३/०८४ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!", tag: "भर्ना खुला" },
