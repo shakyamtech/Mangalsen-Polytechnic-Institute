@@ -305,11 +305,14 @@ function submitApplication() {
             </div>
 
             <div class="slip-qr-box">
-              <div style="background: #F1F5F9; border: 1px dashed #94A3B8; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
-                <i class="fa-solid fa-qrcode" style="font-size: 4.5rem; color: #0F3870;"></i>
+              <div style="background: #FFFFFF; border: 1.5px solid #0F3870; border-radius: 8px; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; box-shadow: 0 2px 5px rgba(15,56,112,0.08);">
+                <i class="fa-solid fa-qrcode" style="font-size: 4.8rem; color: #0F3870;"></i>
               </div>
-              <span style="font-size: 0.72rem; color: #64748B;">Digital Verified</span>
-              <span style="font-size: 0.7rem; font-weight: 700; color: #0F3870;">${appId}</span>
+              <div style="font-size: 0.75rem; font-weight: 700; color: #059669; display: flex; align-items: center; gap: 4px; justify-content: center;">
+                <i class="fa-solid fa-circle-check"></i> Digital Verified
+              </div>
+              <div style="font-size: 0.72rem; font-weight: 700; color: #0F3870; margin-top: 2px; font-family: monospace; letter-spacing: 0.5px;">${appId}</div>
+              <div style="font-size: 0.65rem; color: #64748B; margin-top: 2px;">CTEVT • MPI 2083</div>
             </div>
           </div>
 
