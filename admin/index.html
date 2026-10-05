@@ -563,7 +563,7 @@
 
   <!-- Add / Edit Staff Modal -->
   <div class="admin-modal-backdrop" id="addStaffModal">
-    <div class="admin-modal-dialog" style="max-width:520px;">
+    <div class="admin-modal-dialog" style="max-width:540px;">
       <div class="admin-modal-header">
         <h4 class="admin-modal-title" id="modalStaffTitleText"><i class="fa-solid fa-user-plus"></i> नयाँ शिक्षक / कर्मचारी थप्नुहोस्</h4>
         <button class="admin-modal-close" onclick="closeAdminModal('addStaffModal')">&times;</button>
@@ -573,12 +573,12 @@
           <input type="hidden" id="staffEditId" value="" />
           <div class="form-group-admin">
             <label class="form-label-admin">पूरा नाम (Full Name) <span style="color:var(--admin-accent);">*</span>:</label>
-            <input type="text" id="staffNameInput" class="login-input" placeholder="उदा. ई. सन्तोष भट्ट" required />
+            <input type="text" id="staffNameInput" class="login-input" placeholder="उदा. डा. भुवन प्रसाद जोशी" required />
           </div>
           <div class="form-grid-2-admin">
             <div class="form-group-admin">
               <label class="form-label-admin">पद (Designation):</label>
-              <input type="text" id="staffRoleInput" class="login-input" placeholder="उदा. सहायक प्राध्यापक" required />
+              <input type="text" id="staffRoleInput" class="login-input" placeholder="उदा. विभागीय प्रमुख (HA)" required />
             </div>
             <div class="form-group-admin">
               <label class="form-label-admin">विभाग (Department):</label>
@@ -586,15 +586,30 @@
                 <option value="Health Sciences">Health Sciences (HA)</option>
                 <option value="Pharmacy">Pharmacy Department</option>
                 <option value="Leadership">नेतृत्व (Leadership)</option>
-                <option value="Administration">प्रशासन शाखा</option>
+                <option value="Administration">प्रशासन शाखा (Administration)</option>
               </select>
             </div>
           </div>
           <div class="form-group-admin">
             <label class="form-label-admin">शैक्षिक योग्यता (Qualifications):</label>
-            <input type="text" id="staffQualInput" class="login-input" placeholder="उदा. M.Pharm, MBBS, MD" />
+            <input type="text" id="staffQualInput" class="login-input" placeholder="उदा. MBBS, MD • Clinical Medicine" />
           </div>
-          <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <div class="form-group-admin">
+            <label class="form-label-admin">फोटो (Photo / Profile Picture - ऐच्छिक):</label>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="text" id="staffImageInput" class="login-input" style="flex:1;" placeholder="फोटोको URL वा फाइल छान्नुहोस्" />
+              <label class="btn-admin" style="cursor:pointer; background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; white-space:nowrap; padding:0.6rem 0.85rem; font-size:0.82rem;">
+                <i class="fa-solid fa-upload"></i> फोटो छान्नुहोस्
+                <input type="file" id="staffFileInput" accept="image/*" style="display:none;" onchange="handleStaffPhotoUpload(event)" />
+              </label>
+            </div>
+            <div id="staffPhotoPreviewWrap" style="margin-top:0.6rem; display:none; align-items:center; gap:0.75rem; background:#F8FAFC; padding:0.5rem 0.75rem; border-radius:8px; border:1px solid #E2E8F0;">
+              <img id="staffPhotoPreview" src="" alt="Preview" style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid #CBD5E1;" />
+              <span style="font-size:0.8rem; color:#64748B;">फोटो छानियो</span>
+              <button type="button" class="btn-admin btn-admin-danger" style="margin-left:auto; padding:3px 8px; font-size:0.75rem;" onclick="clearStaffPhoto()">हटाउनुहोस्</button>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
             <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addStaffModal')">रद्द</button>
             <button type="submit" class="btn-admin btn-admin-primary" id="btnStaffSubmit">
               <i class="fa-solid fa-floppy-disk"></i> <span id="btnStaffSubmitText">थप्नुहोस्</span>

@@ -361,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initDynamicTicker();
   initDynamicCharter();
+  initDynamicFaculty();
   initHeroSlider();
   initAccessibility();
   initNoticeModalPopup();
@@ -368,6 +369,63 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollEffects();
   initLiveBikramSambatDate();
 });
+
+// Dynamic Faculty & Staff Directory Sync from Admin
+const defaultFacultyList = [
+  { id: 1, name: "Dr. Rajesh Kumar Shrestha", role: "Campus Chief / Principal", dept: "Leadership", qual: "M.Sc., Ph.D. • Academic Administration", image: "assets/images/principal.jpg" },
+  { id: 2, name: "Dr. Bhuwan Prasad Joshi", role: "Head of Department (HA Program)", dept: "Health Sciences", qual: "MBBS, MD • Clinical Medicine" },
+  { id: 3, name: "Pharmacist Anjana Thapa", role: "Head of Department (Pharmacy)", dept: "Pharmacy", qual: "M.Pharm • Pharmaceutical Sciences" },
+  { id: 4, name: "Dinesh Raj Kunwar", role: "Admin & Account Officer", dept: "Administration", qual: "MBS • Administration & Exam" }
+];
+
+function getFacultyDeptMeta(dept) {
+  const d = (dept || '').toLowerCase();
+  if (d.includes('ha') || d.includes('health') || d.includes('medicine') || d.includes('सामान्य चिकित्सा')) {
+    return { icon: 'fa-user-doctor', color: '#0284C7' };
+  } else if (d.includes('pharm') || d.includes('फार्मेसी')) {
+    return { icon: 'fa-prescription-bottle-medical', color: '#059669' };
+  } else if (d.includes('leader') || d.includes('principal') || d.includes('chief') || d.includes('नेतृत्व') || d.includes('प्रमुख')) {
+    return { icon: 'fa-graduation-cap', color: '#1E3A8A' };
+  } else if (d.includes('admin') || d.includes('account') || d.includes('प्रशासन') || d.includes('लेखा')) {
+    return { icon: 'fa-user-gear', color: '#D97706' };
+  }
+  return { icon: 'fa-user-tie', color: '#4F46E5' };
+}
+
+function initDynamicFaculty() {
+  const container = document.getElementById('mainFacultyGrid');
+  if (!container) return;
+
+  try {
+    const raw = localStorage.getItem('mpi_staff');
+    const list = (raw && JSON.parse(raw).length > 0) ? JSON.parse(raw) : defaultFacultyList;
+    if (Array.isArray(list) && list.length > 0) {
+      container.innerHTML = list.map(member => {
+        const meta = getFacultyDeptMeta(member.dept);
+        const avatarHtml = member.image
+          ? `<img src="${member.image}" alt="${member.name}" class="faculty-avatar" onerror="this.onerror=null; this.outerHTML='<div class=\\'faculty-avatar\\' style=\\'background:${meta.color}; color:#fff; display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1rem;\\'><i class=\\'fa-solid ${meta.icon}\\'></i></div>';" />`
+          : `<div class="faculty-avatar" style="background:${meta.color}; color:#fff; display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin:0 auto 1rem;">
+               <i class="fa-solid ${meta.icon}"></i>
+             </div>`;
+        
+        const subtitle = member.qual 
+          ? (member.dept ? `${member.qual} • ${member.dept}` : member.qual)
+          : (member.dept || '');
+
+        return `
+          <div class="faculty-card">
+            ${avatarHtml}
+            <h5 class="faculty-name">${member.name}</h5>
+            <div class="faculty-role">${member.role || 'Faculty Member'}</div>
+            <div class="faculty-dept">${subtitle}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  } catch (e) {
+    console.warn('Dynamic faculty render error', e);
+  }
+}
 
 // Dynamic Citizen Charter Sync from Admin
 const defaultCharterList = [
@@ -424,13 +482,16 @@ function initDynamicTicker() {
   }
 }
 
-// Auto-sync ticker & charter live across browser tabs
+// Auto-sync ticker, charter & faculty live across browser tabs
 window.addEventListener('storage', (e) => {
   if (e.key === 'mpi_tickers') {
     initDynamicTicker();
   }
   if (e.key === 'mpi_charter') {
     initDynamicCharter();
+  }
+  if (e.key === 'mpi_staff') {
+    initDynamicFaculty();
   }
 });
 
@@ -557,8 +618,9 @@ function setLanguage(lang) {
     checkEligibility();
   }
 
-  // Preserve dynamic tickers
+  // Preserve dynamic tickers & faculty
   initDynamicTicker();
+  initDynamicFaculty();
 }
 
 // Dark / Light Theme

@@ -299,10 +299,10 @@ const defaultTickers = [
 let mockTickers = JSON.parse(localStorage.getItem('mpi_tickers') || 'null') || defaultTickers;
 
 const defaultStaff = [
-  { id: 1, name: "डा. राजेश कुमार श्रेष्ठ", role: "शिक्षालय प्रमुख (Campus Chief)", dept: "Leadership", qual: "M.Sc., Ph.D." },
-  { id: 2, name: "डा. भुवन प्रसाद जोशी", role: "विभागीय प्रमुख (HA Program)", dept: "Health Sciences", qual: "MBBS, MD" },
-  { id: 3, name: "फर्मासिस्ट अन्जना थापा", role: "विभागीय प्रमुख (Pharmacy Program)", dept: "Pharmacy", qual: "M.Pharm" },
-  { id: 4, name: "दिनेश राज कुँवर", role: "प्रशासन तथा लेखा अधिकृत", dept: "Administration", qual: "MBS" }
+  { id: 1, name: "Dr. Rajesh Kumar Shrestha", role: "Campus Chief / Principal", dept: "Leadership", qual: "M.Sc., Ph.D. • Academic Administration", image: "assets/images/principal.jpg" },
+  { id: 2, name: "Dr. Bhuwan Prasad Joshi", role: "Head of Department (HA Program)", dept: "Health Sciences", qual: "MBBS, MD • Clinical Medicine" },
+  { id: 3, name: "Pharmacist Anjana Thapa", role: "Head of Department (Pharmacy)", dept: "Pharmacy", qual: "M.Pharm • Pharmaceutical Sciences" },
+  { id: 4, name: "Dinesh Raj Kunwar", role: "Admin & Account Officer", dept: "Administration", qual: "MBS • Administration & Exam" }
 ];
 
 let mockStaff = JSON.parse(localStorage.getItem('mpi_staff') || 'null') || defaultStaff;
@@ -614,24 +614,37 @@ function renderStaffTable() {
   if (!tbody) return;
 
   const isEn = (currentAdminLang === 'en');
-  tbody.innerHTML = mockStaff.map(s => `
-    <tr>
-      <td><strong>${s.name}</strong></td>
-      <td>${s.role}</td>
-      <td>${s.dept}</td>
-      <td>${s.qual}</td>
-      <td>
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editStaff(${s.id})">
-            <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
-          </button>
-          <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStaff(${s.id})">
-            <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = mockStaff.map(s => {
+    const avatar = s.image 
+      ? `<img src="${s.image}" alt="${s.name}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid #CBD5E1;" onerror="this.onerror=null; this.outerHTML='<div style=\\'width:36px; height:36px; border-radius:50%; background:#EEF2FF; color:#4F46E5; display:inline-flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:700;\\'><i class=\\'fa-solid fa-user\\'></i></div>';" />`
+      : `<div style="width:36px; height:36px; border-radius:50%; background:#EEF2FF; color:#4F46E5; display:inline-flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:700;"><i class="fa-solid fa-user"></i></div>`;
+
+    return `
+      <tr>
+        <td>
+          <div style="display:flex; align-items:center; gap:10px;">
+            ${avatar}
+            <div>
+              <strong>${s.name}</strong>
+            </div>
+          </div>
+        </td>
+        <td>${s.role || '-'}</td>
+        <td><span class="badge-status status-verified">${s.dept || '-'}</span></td>
+        <td>${s.qual || '-'}</td>
+        <td>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editStaff(${s.id})">
+              <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+            </button>
+            <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStaff(${s.id})">
+              <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function renderCharterTable() {
@@ -940,6 +953,34 @@ window.deleteTicker = function(id) {
   }
 };
 
+window.handleStaffPhotoUpload = function(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const dataUrl = evt.target.result;
+    const imgInput = document.getElementById('staffImageInput');
+    const preview = document.getElementById('staffPhotoPreview');
+    const previewWrap = document.getElementById('staffPhotoPreviewWrap');
+    if (imgInput) imgInput.value = dataUrl;
+    if (preview) preview.src = dataUrl;
+    if (previewWrap) previewWrap.style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearStaffPhoto = function() {
+  const imgInput = document.getElementById('staffImageInput');
+  const fileInput = document.getElementById('staffFileInput');
+  const preview = document.getElementById('staffPhotoPreview');
+  const previewWrap = document.getElementById('staffPhotoPreviewWrap');
+  if (imgInput) imgInput.value = '';
+  if (fileInput) fileInput.value = '';
+  if (preview) preview.src = '';
+  if (previewWrap) previewWrap.style.display = 'none';
+};
+
 window.addNewStaff = function() {
   const isEn = (currentAdminLang === 'en');
   const editIdInput = document.getElementById('staffEditId');
@@ -949,11 +990,15 @@ window.addNewStaff = function() {
   const roleInput = document.getElementById('staffRoleInput');
   const deptInput = document.getElementById('staffDeptInput');
   const qualInput = document.getElementById('staffQualInput');
+  const imgInput = document.getElementById('staffImageInput');
+  const previewWrap = document.getElementById('staffPhotoPreviewWrap');
 
   if (nameInput) nameInput.value = '';
   if (roleInput) roleInput.value = '';
   if (deptInput) deptInput.value = 'Health Sciences';
   if (qualInput) qualInput.value = '';
+  if (imgInput) imgInput.value = '';
+  if (previewWrap) previewWrap.style.display = 'none';
 
   const modalTitle = document.getElementById('modalStaffTitleText');
   const btnSubmitText = document.getElementById('btnStaffSubmitText');
@@ -980,11 +1025,22 @@ window.editStaff = function(id) {
   const roleInput = document.getElementById('staffRoleInput');
   const deptInput = document.getElementById('staffDeptInput');
   const qualInput = document.getElementById('staffQualInput');
+  const imgInput = document.getElementById('staffImageInput');
+  const preview = document.getElementById('staffPhotoPreview');
+  const previewWrap = document.getElementById('staffPhotoPreviewWrap');
 
   if (nameInput) nameInput.value = staff.name || '';
   if (roleInput) roleInput.value = staff.role || '';
   if (deptInput) deptInput.value = staff.dept || 'Health Sciences';
   if (qualInput) qualInput.value = staff.qual || '';
+  if (imgInput) imgInput.value = staff.image || '';
+
+  if (staff.image && preview && previewWrap) {
+    preview.src = staff.image;
+    previewWrap.style.display = 'flex';
+  } else if (previewWrap) {
+    previewWrap.style.display = 'none';
+  }
 
   const modalTitle = document.getElementById('modalStaffTitleText');
   const btnSubmitText = document.getElementById('btnStaffSubmitText');
@@ -1006,7 +1062,8 @@ window.handleSaveStaff = function(e) {
   const name = document.getElementById('staffNameInput')?.value.trim();
   const role = document.getElementById('staffRoleInput')?.value.trim();
   const dept = document.getElementById('staffDeptInput')?.value || 'Health Sciences';
-  const qual = document.getElementById('staffQualInput')?.value.trim() || 'Degree';
+  const qual = document.getElementById('staffQualInput')?.value.trim() || '';
+  const image = document.getElementById('staffImageInput')?.value.trim() || '';
 
   if (!name) return;
 
@@ -1019,14 +1076,13 @@ window.handleSaveStaff = function(e) {
         name: name,
         role: role,
         dept: dept,
-        qual: qual
+        qual: qual,
+        image: image
       };
       localStorage.setItem('mpi_staff', JSON.stringify(mockStaff));
       renderStaffTable();
       closeAdminModal('addStaffModal');
-      document.getElementById('staffNameInput').value = '';
-      document.getElementById('staffRoleInput').value = '';
-      document.getElementById('staffQualInput').value = '';
+      clearStaffPhoto();
       alert(isEn ? 'Staff profile updated!' : 'कर्मचारी विवरण सफलतापूर्वक सम्पादन भयो!');
     }
   } else {
@@ -1036,15 +1092,14 @@ window.handleSaveStaff = function(e) {
       name: name,
       role: role,
       dept: dept,
-      qual: qual
+      qual: qual,
+      image: image
     });
 
     localStorage.setItem('mpi_staff', JSON.stringify(mockStaff));
     renderStaffTable();
     closeAdminModal('addStaffModal');
-    document.getElementById('staffNameInput').value = '';
-    document.getElementById('staffRoleInput').value = '';
-    document.getElementById('staffQualInput').value = '';
+    clearStaffPhoto();
     alert(isEn ? 'New staff profile added!' : 'नयाँ कर्मचारी विवरण थपियो!');
   }
 };
