@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDynamicFaculty();
   initDynamicDownloads();
   initDynamicContactInfo();
-  initHeroSlider();
+  renderDynamicHeroSlider();
   initAccessibility();
   initNoticeModalPopup();
   initMobileNav();
@@ -612,7 +612,7 @@ window.handleContactInquirySubmit = function(event) {
   alert(`धन्यवाद ${name} ज्यू! तपाईंको सोधपुछ सन्देश (ID: ${newInquiry.id}) मङ्गलसेन बहुप्राविधिक शिक्षालयमा सफलतापूर्वक दर्ता भएको छ। हाम्रा प्रतिनिधिले छिट्टै सम्पर्क गर्नेछन्।`);
 };
 
-// Auto-sync ticker, charter, faculty, downloads & contact live across browser tabs
+// Auto-sync ticker, charter, faculty, downloads, contact & hero slider live across browser tabs
 window.addEventListener('storage', (e) => {
   if (e.key === 'mpi_tickers') {
     initDynamicTicker();
@@ -629,6 +629,9 @@ window.addEventListener('storage', (e) => {
   if (e.key === 'mpi_contact_info') {
     initDynamicContactInfo();
   }
+  if (e.key === 'mpi_hero_slides') {
+    renderDynamicHeroSlider();
+  }
 });
 
 // Live Bikram Sambat Date Clock
@@ -644,7 +647,138 @@ function initLiveBikramSambatDate() {
   dateElement.innerHTML = `<i class="fa-regular fa-calendar-days"></i> ${bsString} (${enDate})`;
 }
 
-// Hero Slider
+// Hero Slider Dynamic Data & Renderer
+const defaultAppHeroSlides = [
+  {
+    id: 1,
+    tag: "CTEVT Constituent Institute • Estd: 2079",
+    tag_color: "#C8102E",
+    title_ne: "सुदूरपश्चिममा दक्ष प्राविधिक तथा स्वास्थ्य शिक्षाको ज्योति",
+    title_en: "Leading Technical & Health Sciences Education in Sudurpashchim",
+    desc_ne: "मङ्गलसेन बहुप्राविधिक शिक्षालय, अछाम - गुणस्तरीय प्रयोगशाला, दक्ष प्राध्यापक र अस्पतालको प्रत्यक्ष प्रयोगात्मक अभ्यास सहित Diploma in Pharmacy र PCL in General Medicine (HA) अध्यापन गराइने एक मात्र आधिकारिक आङ्गिक शिक्षालय।",
+    desc_en: "Mangalsen Polytechnic Institute, Achham - Premier constituent institution providing quality laboratory, expert faculty and hospital clinical training in Pharmacy and Health Assistant.",
+    image: "assets/images/hero-campus.jpg",
+    btn1_text_ne: "अनलाइन भर्ना आवेदन फाराम",
+    btn1_text_en: "Online Admission Form",
+    btn1_link: "#online-admission",
+    btn2_text_ne: "कार्यक्रमहरू हेर्नुहोस्",
+    btn2_text_en: "Explore Programs",
+    btn2_link: "#programs"
+  },
+  {
+    id: 2,
+    tag: "PCL General Medicine (HA)",
+    tag_color: "#0284C7",
+    title_ne: "३ वर्षे स्वास्थ्य सहायक (HA) कार्यक्रम - ४० सिट",
+    title_en: "3-Year PCL in General Medicine (Health Assistant - HA)",
+    desc_ne: "प्रत्यक्ष एनाटोमी प्रयोगशाला, प्राथमिक स्वास्थ्य शिविर र जिल्ला अस्पताल अछामसँगको साझेदारीमा क्लिनिकल इन्टर्नसिपद्वारा अब्बल स्वास्थ्यकर्मी बन्ने स्वर्णिम अवसर।",
+    desc_en: "Golden opportunity to become certified health professionals with dedicated anatomy labs, public health camps, and district hospital clinical posting.",
+    image: "assets/images/ha-lab.jpg",
+    btn1_text_ne: "HA मा भर्ना हुनुहोस्",
+    btn1_text_en: "Apply for HA",
+    btn1_link: "#ha-program",
+    btn2_text_ne: "योग्यता जाँच्नुहोस्",
+    btn2_text_en: "Check GPA Eligibility",
+    btn2_link: "#calculator-section"
+  },
+  {
+    id: 3,
+    tag: "Diploma in Pharmacy",
+    tag_color: "#059669",
+    title_ne: "३ वर्षे डिप्लोमा इन फार्मेसी - ४० सिट",
+    title_en: "3-Year Diploma in Pharmacy - 40 Seats",
+    desc_ne: "अत्याधुनिक औषधि विज्ञान ल्याब, फर्मास्युटिकल केमिस्ट्री तथा अस्पताल फार्मेसी अभ्यास मार्फत नेपाल फार्मेसी काउन्सिल (NPC) मान्यता प्राप्त जनशक्ति उत्पादन।",
+    desc_en: "State-of-the-art pharmaceutical science laboratories and hospital pharmacy practice producing NPC registered pharmacists.",
+    image: "assets/images/pharmacy-lab.jpg",
+    btn1_text_ne: "फार्मेसीमा भर्ना हुनुहोस्",
+    btn1_text_en: "Apply for Pharmacy",
+    btn1_link: "#pharmacy-program",
+    btn2_text_ne: "अनलाइन भर्ना",
+    btn2_text_en: "Apply Online",
+    btn2_link: "#online-admission"
+  },
+  {
+    id: 4,
+    tag: "Community Service",
+    tag_color: "#D97706",
+    title_ne: "अछामका दूरदराजका बस्तीहरूमा स्वास्थ्य सेवा र अभ्यास",
+    title_en: "Community Healthcare & Practical Medical Camps in Rural Achham",
+    desc_ne: "हाम्रा विद्यार्थीहरू केवल कक्षाकोठामा मात्र सीमित नभई गाउँबस्तीमा पुगेर निःशुल्क स्वास्थ्य परामर्श तथा जनस्वास्थ्य सचेतना अभियानमा सक्रिय छन्।",
+    desc_en: "Our students actively participate in free medical outreach and health awareness camps throughout rural communities in Achham.",
+    image: "assets/images/community-camp.jpg",
+    btn1_text_ne: "ग्यालरी",
+    btn1_text_en: "Campus Gallery",
+    btn1_link: "#gallery",
+    btn2_text_ne: "सम्पर्क",
+    btn2_text_en: "Contact Us",
+    btn2_link: "#contact"
+  }
+];
+
+function loadAppHeroSlides() {
+  const raw = localStorage.getItem('mpi_hero_slides');
+  if (!raw) return defaultAppHeroSlides;
+  try {
+    const stored = JSON.parse(raw);
+    if (!Array.isArray(stored) || stored.length === 0) return defaultAppHeroSlides;
+    return stored;
+  } catch(e) {
+    return defaultAppHeroSlides;
+  }
+}
+
+let appHeroSlideInterval = null;
+
+function renderDynamicHeroSlider() {
+  const container = document.querySelector('.hero-slider-container');
+  if (!container) return;
+
+  const slides = loadAppHeroSlides();
+  const isEn = (currentLang === 'en');
+
+  let slidesHtml = slides.map((s, idx) => {
+    const title = isEn ? (s.title_en || s.title_ne) : s.title_ne;
+    const desc = isEn ? (s.desc_en || s.desc_ne) : s.desc_ne;
+    const btn1Text = isEn ? (s.btn1_text_en || s.btn1_text_ne) : s.btn1_text_ne;
+    const btn2Text = isEn ? (s.btn2_text_en || s.btn2_text_ne) : s.btn2_text_ne;
+    const tagColorStyle = s.tag_color ? `style="background:${s.tag_color};"` : '';
+
+    return `
+      <div class="hero-slide ${idx === 0 ? 'active' : ''}">
+        <img src="${s.image}" alt="${s.title_ne}" class="hero-bg-img" onerror="this.onerror=null; this.src='assets/images/hero-campus.jpg';" />
+        <div class="hero-overlay"></div>
+        <div class="container">
+          <div class="hero-content">
+            <span class="hero-tag" ${tagColorStyle}><i class="fa-solid fa-graduation-cap"></i> <span>${s.tag || 'CTEVT Constituent Institute'}</span></span>
+            <h2 class="hero-title">${title}</h2>
+            <p class="hero-desc">${desc}</p>
+            <div class="hero-btn-group">
+              ${btn1Text ? `<a href="${s.btn1_link || '#online-admission'}" class="btn btn-primary"><i class="fa-solid fa-file-signature"></i> <span>${btn1Text}</span></a>` : ''}
+              ${btn2Text ? `<a href="${s.btn2_link || '#programs'}" class="btn btn-secondary"><i class="fa-solid fa-book-open-reader"></i> <span>${btn2Text}</span></a>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const dotsHtml = `
+    <div class="slider-dots">
+      ${slides.map((_, idx) => `<button class="slider-dot ${idx === 0 ? 'active' : ''}" aria-label="Slide ${idx + 1}"></button>`).join('')}
+    </div>
+  `;
+
+  const arrowsHtml = `
+    <div class="slider-nav-arrows">
+      <button class="slider-btn" id="heroPrevBtn" aria-label="Previous Slide"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slider-btn" id="heroNextBtn" aria-label="Next Slide"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  `;
+
+  container.innerHTML = slidesHtml + dotsHtml + arrowsHtml;
+  initHeroSlider();
+}
+
 function initHeroSlider() {
   const slides = document.querySelectorAll('.hero-slide');
   const dots = document.querySelectorAll('.slider-dot');
@@ -653,8 +787,12 @@ function initHeroSlider() {
   
   if (slides.length === 0) return;
   
+  if (appHeroSlideInterval) {
+    clearInterval(appHeroSlideInterval);
+    appHeroSlideInterval = null;
+  }
+
   let currentSlide = 0;
-  let slideInterval = null;
 
   function showSlide(index) {
     slides.forEach(s => s.classList.remove('active'));
@@ -666,13 +804,14 @@ function initHeroSlider() {
   }
 
   function startAutoSlide() {
-    slideInterval = setInterval(() => {
+    if (appHeroSlideInterval) clearInterval(appHeroSlideInterval);
+    appHeroSlideInterval = setInterval(() => {
       showSlide(currentSlide + 1);
     }, 6000);
   }
 
   function stopAutoSlide() {
-    if (slideInterval) clearInterval(slideInterval);
+    if (appHeroSlideInterval) clearInterval(appHeroSlideInterval);
   }
 
   if (prevBtn) {
@@ -727,6 +866,8 @@ function setLanguage(lang) {
       ? `<i class="fa-solid fa-globe"></i> English` 
       : `<i class="fa-solid fa-globe"></i> नेपाली`;
   }
+
+  renderDynamicHeroSlider();
 
   const trans = translations[lang] || translations.ne;
   document.querySelectorAll('[data-i18n]').forEach(el => {

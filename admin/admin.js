@@ -12,6 +12,7 @@ const adminI18n = {
     nav_admissions: "अनलाइन भर्ना सूची",
     nav_notices: "सूचना व्यवस्थापन",
     nav_ticker: "ताजा सूचना टिकर",
+    nav_hero: "हिरो ब्यानर / स्लाइडर",
     nav_staff: "शिक्षक तथा कर्मचारी",
     nav_charter: "नागरिक बडापत्र",
     nav_main_site: "मुख्य वेबसाइट हेर्नुहोस्",
@@ -19,11 +20,14 @@ const adminI18n = {
     btn_add_notice: "नयाँ सूचना थप्नुहोस्",
     btn_export_excel: "Excel डाउनलोड",
     btn_add_ticker: "टिकर अलर्ट थप्नुहोस्",
+    btn_add_hero: "नयाँ ब्यानर थप्नुहोस्",
     btn_add_staff: "नयाँ कर्मचारी थप्नुहोस्",
     btn_add_charter: "नयाँ सेवा थप्नुहोस्",
     btn_add_download: "नयाँ फाइल थप्नुहोस्",
     nav_downloads: "डाउनलोड हब",
     nav_inquiries: "सम्पर्क सन्देशहरू (Inbox)",
+    hero_cms_title: "हिरो ब्यानर तथा स्लाइडर व्यवस्थापन (Hero Slider CMS)",
+    hero_cms_sub: "होमपेजको मुख्य ब्यानर, फोटो, शीर्षक, विवरण तथा बटनहरू परिवर्तन र सम्पादन गर्नुहोस्",
     downloads_cms_title: "डाउनलोड हब व्यवस्थापन (Downloads & Resources CMS)",
     downloads_cms_sub: "पाठ्यक्रम, मोडल प्रश्नपत्र, शैक्षिक क्यालेन्डर तथा स्रोत सामग्री अपलोड र सम्पादन गर्नुहोस्",
     inquiries_title: "सम्पर्क तथा सोधपुछ सन्देशहरू (Inquiries Inbox)",
@@ -106,6 +110,7 @@ const adminI18n = {
     nav_admissions: "Online Admissions",
     nav_notices: "Notices CMS",
     nav_ticker: "Breaking Ticker",
+    nav_hero: "Hero Slider CMS",
     nav_staff: "Faculty & Staff",
     nav_charter: "Citizen Charter",
     nav_downloads: "Downloads Hub",
@@ -115,9 +120,12 @@ const adminI18n = {
     btn_add_notice: "Add New Notice",
     btn_export_excel: "Export to Excel",
     btn_add_ticker: "Add Ticker Alert",
+    btn_add_hero: "Add New Slide",
     btn_add_staff: "Add New Staff",
     btn_add_charter: "Add New Service",
     btn_add_download: "Add New Resource",
+    hero_cms_title: "Hero Slider & Banners CMS",
+    hero_cms_sub: "Customize homepage top carousel, photos, headings and call-to-actions",
     downloads_cms_title: "Downloads & Resources CMS",
     downloads_cms_sub: "Manage and upload syllabus, model question papers, and academic resources",
     inquiries_title: "Contact & Inquiries Inbox",
@@ -341,6 +349,87 @@ const defaultTickers = [
 
 let mockTickers = JSON.parse(localStorage.getItem('mpi_tickers') || 'null') || defaultTickers;
 
+const defaultHeroSlides = [
+  {
+    id: 1,
+    tag: "CTEVT Constituent Institute • Estd: 2079",
+    tag_color: "#C8102E",
+    title_ne: "सुदूरपश्चिममा दक्ष प्राविधिक तथा स्वास्थ्य शिक्षाको ज्योति",
+    title_en: "Leading Technical & Health Sciences Education in Sudurpashchim",
+    desc_ne: "मङ्गलसेन बहुप्राविधिक शिक्षालय, अछाम - गुणस्तरीय प्रयोगशाला, दक्ष प्राध्यापक र अस्पतालको प्रत्यक्ष प्रयोगात्मक अभ्यास सहित Diploma in Pharmacy र PCL in General Medicine (HA) अध्यापन गराइने एक मात्र आधिकारिक आङ्गिक शिक्षालय।",
+    desc_en: "Mangalsen Polytechnic Institute, Achham - Premier constituent institution providing quality laboratory, expert faculty and hospital clinical training in Pharmacy and Health Assistant.",
+    image: "assets/images/hero-campus.jpg",
+    btn1_text_ne: "अनलाइन भर्ना आवेदन फाराम",
+    btn1_text_en: "Online Admission Form",
+    btn1_link: "#online-admission",
+    btn2_text_ne: "कार्यक्रमहरू हेर्नुहोस्",
+    btn2_text_en: "Explore Programs",
+    btn2_link: "#programs"
+  },
+  {
+    id: 2,
+    tag: "PCL General Medicine (HA)",
+    tag_color: "#0284C7",
+    title_ne: "३ वर्षे स्वास्थ्य सहायक (HA) कार्यक्रम - ४० सिट",
+    title_en: "3-Year PCL in General Medicine (Health Assistant - HA)",
+    desc_ne: "प्रत्यक्ष एनाटोमी प्रयोगशाला, प्राथमिक स्वास्थ्य शिविर र जिल्ला अस्पताल अछामसँगको साझेदारीमा क्लिनिकल इन्टर्नसिपद्वारा अब्बल स्वास्थ्यकर्मी बन्ने स्वर्णिम अवसर।",
+    desc_en: "Golden opportunity to become certified health professionals with dedicated anatomy labs, public health camps, and district hospital clinical posting.",
+    image: "assets/images/ha-lab.jpg",
+    btn1_text_ne: "HA मा भर्ना हुनुहोस्",
+    btn1_text_en: "Apply for HA",
+    btn1_link: "#ha-program",
+    btn2_text_ne: "योग्यता जाँच्नुहोस्",
+    btn2_text_en: "Check GPA Eligibility",
+    btn2_link: "#calculator-section"
+  },
+  {
+    id: 3,
+    tag: "Diploma in Pharmacy",
+    tag_color: "#059669",
+    title_ne: "३ वर्षे डिप्लोमा इन फार्मेसी - ४० सिट",
+    title_en: "3-Year Diploma in Pharmacy - 40 Seats",
+    desc_ne: "अत्याधुनिक औषधि विज्ञान ल्याब, फर्मास्युटिकल केमिस्ट्री तथा अस्पताल फार्मेसी अभ्यास मार्फत नेपाल फार्मेसी काउन्सिल (NPC) मान्यता प्राप्त जनशक्ति उत्पादन।",
+    desc_en: "State-of-the-art pharmaceutical science laboratories and hospital pharmacy practice producing NPC registered pharmacists.",
+    image: "assets/images/pharmacy-lab.jpg",
+    btn1_text_ne: "फार्मेसीमा भर्ना हुनुहोस्",
+    btn1_text_en: "Apply for Pharmacy",
+    btn1_link: "#pharmacy-program",
+    btn2_text_ne: "अनलाइन भर्ना",
+    btn2_text_en: "Apply Online",
+    btn2_link: "#online-admission"
+  },
+  {
+    id: 4,
+    tag: "Community Service",
+    tag_color: "#D97706",
+    title_ne: "अछामका दूरदराजका बस्तीहरूमा स्वास्थ्य सेवा र अभ्यास",
+    title_en: "Community Healthcare & Practical Medical Camps in Rural Achham",
+    desc_ne: "हाम्रा विद्यार्थीहरू केवल कक्षाकोठामा मात्र सीमित नभई गाउँबस्तीमा पुगेर निःशुल्क स्वास्थ्य परामर्श तथा जनस्वास्थ्य सचेतना अभियानमा सक्रिय छन्।",
+    desc_en: "Our students actively participate in free medical outreach and health awareness camps throughout rural communities in Achham.",
+    image: "assets/images/community-camp.jpg",
+    btn1_text_ne: "ग्यालरी",
+    btn1_text_en: "Campus Gallery",
+    btn1_link: "#gallery",
+    btn2_text_ne: "सम्पर्क",
+    btn2_text_en: "Contact Us",
+    btn2_link: "#contact"
+  }
+];
+
+function loadStoredHeroSlides() {
+  const raw = localStorage.getItem('mpi_hero_slides');
+  if (!raw) return defaultHeroSlides;
+  try {
+    const stored = JSON.parse(raw);
+    if (!Array.isArray(stored) || stored.length === 0) return defaultHeroSlides;
+    return stored;
+  } catch(e) {
+    return defaultHeroSlides;
+  }
+}
+
+let mockHeroSlides = loadStoredHeroSlides();
+
 const defaultStaff = [
   { id: 1, name: "Dr. Rajesh Kumar Shrestha", role: "Campus Chief / Principal", dept: "Leadership", qual: "M.Sc., Ph.D. • Academic Administration", image: "assets/images/principal.jpg" },
   { id: 2, name: "Dr. Bhuwan Prasad Joshi", role: "Head of Department (HA Program)", dept: "Health Sciences", qual: "MBBS, MD • Clinical Medicine" },
@@ -524,6 +613,10 @@ window.switchAdminView = function(viewKey) {
       title: isEn ? "Breaking News Ticker Manager" : "ताजा सूचना टिकर व्यवस्थापन", 
       sub: isEn ? "Live top marquee notifications" : "होमपेजको माथि घुम्ने ब्रेकिङ टिकर सन्देशहरू" 
     },
+    hero: {
+      title: isEn ? "Hero Slider & Banners CMS" : "हिरो ब्यानर तथा स्लाइडर व्यवस्थापन (Hero CMS)",
+      sub: isEn ? "Manage homepage top visual banners, photos, titles, and call-to-actions" : "होमपेजको मुख्य ब्यानर, फोटो, शीर्षक, विवरण तथा बटनहरू परिवर्तन गर्नुहोस्"
+    },
     staff: { 
       title: isEn ? "Faculty & Staff Directory" : "शिक्षक तथा कर्मचारी विवरण व्यवस्थापन", 
       sub: isEn ? "Academic instructors and administrative personnel" : "शिक्षालयका प्राध्यापक तथा प्रशासन टिम" 
@@ -556,6 +649,7 @@ window.switchAdminView = function(viewKey) {
     renderNoticesTable();
   }
   if (viewKey === 'ticker') renderTickerTable();
+  if (viewKey === 'hero') renderHeroTable();
   if (viewKey === 'staff') renderStaffTable();
   if (viewKey === 'charter') renderCharterTable();
   if (viewKey === 'downloads') renderDownloadsTable();
@@ -569,6 +663,7 @@ function renderDashboard() {
   renderPopupSettingsForm();
   renderNoticesTable();
   renderTickerTable();
+  renderHeroTable();
   renderStaffTable();
   renderCharterTable();
   renderDownloadsTable();
@@ -713,6 +808,47 @@ function renderTickerTable() {
       </td>
     </tr>
   `).join('');
+}
+
+function renderHeroTable() {
+  const tbody = document.getElementById('adminHeroTableBody');
+  if (!tbody) return;
+
+  const isEn = (currentAdminLang === 'en');
+  tbody.innerHTML = mockHeroSlides.map((slide, idx) => {
+    const photo = slide.image
+      ? `<img src="${slide.image}" alt="${slide.title_ne}" style="width:72px; height:42px; object-fit:cover; border-radius:6px; border:1px solid #CBD5E1;" onerror="this.onerror=null; this.outerHTML='<div style=\\'width:72px; height:42px; background:#F1F5F9; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#94A3B8; font-size:0.75rem;\\'><i class=\\'fa-solid fa-image\\'></i></div>';" />`
+      : `<div style="width:72px; height:42px; background:#F1F5F9; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#94A3B8; font-size:0.75rem;"><i class="fa-solid fa-image"></i></div>`;
+
+    const tagColor = slide.tag_color || '#C8102E';
+    const title = isEn ? (slide.title_en || slide.title_ne) : slide.title_ne;
+    const desc = isEn ? (slide.desc_en || slide.desc_ne) : slide.desc_ne;
+    const descPreview = desc.length > 60 ? desc.substring(0, 60) + '...' : desc;
+
+    return `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${photo}</td>
+        <td><span class="badge-status" style="background:${tagColor}18; color:${tagColor}; font-weight:700; border:1px solid ${tagColor}40;">${slide.tag || 'Slide'}</span></td>
+        <td><strong>${title}</strong><br><small style="color:#64748B;">${isEn ? slide.title_ne : (slide.title_en || '')}</small></td>
+        <td style="max-width:260px; font-size:0.84rem; color:#475569;">${descPreview}</td>
+        <td style="font-size:0.8rem;">
+          <div><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem; color:var(--admin-primary);"></i> ${slide.btn1_text_ne || 'Button 1'}</div>
+          ${slide.btn2_text_ne ? `<div style="margin-top:2px; color:#64748B;"><i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i> ${slide.btn2_text_ne}</div>` : ''}
+        </td>
+        <td>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editHeroSlide(${slide.id})">
+              <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+            </button>
+            <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteHeroSlide(${slide.id})">
+              <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function renderStaffTable() {
@@ -1103,6 +1239,200 @@ window.deleteTicker = function(id) {
     mockTickers = mockTickers.filter(t => t.id !== id);
     localStorage.setItem('mpi_tickers', JSON.stringify(mockTickers));
     renderTickerTable();
+  }
+};
+
+// ==========================================
+// Hero Slider & Banner CMS Handlers
+// ==========================================
+window.handleHeroPhotoUpload = function(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const dataUrl = evt.target.result;
+    const imgInput = document.getElementById('heroImageInput');
+    const preview = document.getElementById('heroPhotoPreview');
+    const placeholder = document.getElementById('heroPhotoPlaceholder');
+    if (imgInput) imgInput.value = dataUrl;
+    if (preview) {
+      preview.src = dataUrl;
+      preview.style.display = 'block';
+    }
+    if (placeholder) placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.addNewHeroSlide = function() {
+  const isEn = (currentAdminLang === 'en');
+  const form = document.getElementById('heroSlideForm');
+  if (form) form.reset();
+
+  const editId = document.getElementById('heroEditId');
+  const imgInput = document.getElementById('heroImageInput');
+  const preview = document.getElementById('heroPhotoPreview');
+  const placeholder = document.getElementById('heroPhotoPlaceholder');
+  const modalTitle = document.getElementById('modalHeroTitleText');
+  const submitText = document.getElementById('btnHeroSubmitText');
+
+  if (editId) editId.value = '';
+  if (imgInput) imgInput.value = '';
+  if (preview) {
+    preview.src = '';
+    preview.style.display = 'none';
+  }
+  if (placeholder) placeholder.style.display = 'block';
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-panorama"></i> ${isEn ? 'Add New Hero Slide' : 'नयाँ ब्यानर स्लाइड थप्नुहोस् (Add Hero Slide)'}`;
+  }
+  if (submitText) {
+    submitText.textContent = isEn ? 'Publish Slide' : 'स्लाइड सुरक्षित गर्नुहोस् (Save)';
+  }
+
+  // Set default values
+  const tagInput = document.getElementById('heroTagInput');
+  const btn1Text = document.getElementById('heroBtn1TextNe');
+  const btn1Link = document.getElementById('heroBtn1Link');
+  const btn2Text = document.getElementById('heroBtn2TextNe');
+  const btn2Link = document.getElementById('heroBtn2Link');
+
+  if (tagInput) tagInput.value = 'CTEVT Constituent Institute • Estd: 2079';
+  if (btn1Text) btn1Text.value = 'अनलाइन भर्ना आवेदन फाराम';
+  if (btn1Link) btn1Link.value = '#online-admission';
+  if (btn2Text) btn2Text.value = 'कार्यक्रमहरू हेर्नुहोस्';
+  if (btn2Link) btn2Link.value = '#programs';
+
+  openAdminModal('addHeroModal');
+};
+
+window.editHeroSlide = function(id) {
+  const slide = mockHeroSlides.find(s => s.id == id);
+  if (!slide) return;
+
+  const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('heroEditId');
+  const tagInput = document.getElementById('heroTagInput');
+  const tagColorInput = document.getElementById('heroTagColorInput');
+  const titleNeInput = document.getElementById('heroTitleNeInput');
+  const titleEnInput = document.getElementById('heroTitleEnInput');
+  const descNeInput = document.getElementById('heroDescNeInput');
+  const descEnInput = document.getElementById('heroDescEnInput');
+  const imgInput = document.getElementById('heroImageInput');
+  const preview = document.getElementById('heroPhotoPreview');
+  const placeholder = document.getElementById('heroPhotoPlaceholder');
+  const btn1Text = document.getElementById('heroBtn1TextNe');
+  const btn1Link = document.getElementById('heroBtn1Link');
+  const btn2Text = document.getElementById('heroBtn2TextNe');
+  const btn2Link = document.getElementById('heroBtn2Link');
+  const modalTitle = document.getElementById('modalHeroTitleText');
+  const submitText = document.getElementById('btnHeroSubmitText');
+
+  if (editId) editId.value = slide.id;
+  if (tagInput) tagInput.value = slide.tag || '';
+  if (tagColorInput) tagColorInput.value = slide.tag_color || '#C8102E';
+  if (titleNeInput) titleNeInput.value = slide.title_ne || '';
+  if (titleEnInput) titleEnInput.value = slide.title_en || '';
+  if (descNeInput) descNeInput.value = slide.desc_ne || '';
+  if (descEnInput) descEnInput.value = slide.desc_en || '';
+  if (imgInput) imgInput.value = slide.image || '';
+  if (btn1Text) btn1Text.value = slide.btn1_text_ne || '';
+  if (btn1Link) btn1Link.value = slide.btn1_link || '';
+  if (btn2Text) btn2Text.value = slide.btn2_text_ne || '';
+  if (btn2Link) btn2Link.value = slide.btn2_link || '';
+
+  if (slide.image && preview) {
+    preview.src = slide.image;
+    preview.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+  } else {
+    if (preview) preview.style.display = 'none';
+    if (placeholder) placeholder.style.display = 'block';
+  }
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isEn ? `Edit Hero Slide (${slide.id})` : `ब्यानर स्लाइड सम्पादन (${slide.id})`}`;
+  }
+  if (submitText) {
+    submitText.textContent = isEn ? 'Save Changes' : 'परिवर्तन सुरक्षित गर्नुहोस् (Save Changes)';
+  }
+
+  openAdminModal('addHeroModal');
+};
+
+window.handleSaveHeroSlide = function(e) {
+  e.preventDefault();
+  const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('heroEditId')?.value;
+  const tag = document.getElementById('heroTagInput')?.value.trim() || 'CTEVT Constituent Institute';
+  const tagColor = document.getElementById('heroTagColorInput')?.value || '#C8102E';
+  const titleNe = document.getElementById('heroTitleNeInput')?.value.trim();
+  const titleEn = document.getElementById('heroTitleEnInput')?.value.trim() || titleNe;
+  const descNe = document.getElementById('heroDescNeInput')?.value.trim();
+  const descEn = document.getElementById('heroDescEnInput')?.value.trim() || descNe;
+  const image = document.getElementById('heroImageInput')?.value.trim() || 'assets/images/hero-campus.jpg';
+  const btn1Text = document.getElementById('heroBtn1TextNe')?.value.trim() || 'अनलाइन भर्ना आवेदन फाराम';
+  const btn1Link = document.getElementById('heroBtn1Link')?.value.trim() || '#online-admission';
+  const btn2Text = document.getElementById('heroBtn2TextNe')?.value.trim() || 'कार्यक्रमहरू हेर्नुहोस्';
+  const btn2Link = document.getElementById('heroBtn2Link')?.value.trim() || '#programs';
+
+  if (!titleNe || !descNe) {
+    alert('कृपया मुख्य शीर्षक र विवरण भर्नुहोस्।');
+    return;
+  }
+
+  if (editId) {
+    const idx = mockHeroSlides.findIndex(s => s.id == editId);
+    if (idx !== -1) {
+      mockHeroSlides[idx] = {
+        ...mockHeroSlides[idx],
+        tag,
+        tag_color: tagColor,
+        title_ne: titleNe,
+        title_en: titleEn,
+        desc_ne: descNe,
+        desc_en: descEn,
+        image,
+        btn1_text_ne: btn1Text,
+        btn1_link: btn1Link,
+        btn2_text_ne: btn2Text,
+        btn2_link: btn2Link
+      };
+      localStorage.setItem('mpi_hero_slides', JSON.stringify(mockHeroSlides));
+      renderHeroTable();
+      closeAdminModal('addHeroModal');
+      alert(isEn ? 'Hero slide updated successfully!' : 'ब्यानर स्लाइड सफलतापूर्वक अद्यावधिक भयो!');
+    }
+  } else {
+    mockHeroSlides.push({
+      id: Date.now(),
+      tag,
+      tag_color: tagColor,
+      title_ne: titleNe,
+      title_en: titleEn,
+      desc_ne: descNe,
+      desc_en: descEn,
+      image,
+      btn1_text_ne: btn1Text,
+      btn1_link: btn1Link,
+      btn2_text_ne: btn2Text,
+      btn2_link: btn2Link
+    });
+    localStorage.setItem('mpi_hero_slides', JSON.stringify(mockHeroSlides));
+    renderHeroTable();
+    closeAdminModal('addHeroModal');
+    alert(isEn ? 'New hero slide published!' : 'नयाँ ब्यानर स्लाइड थपियो!');
+  }
+};
+
+window.deleteHeroSlide = function(id) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? 'Delete this hero slide?' : 'के तपाईं यो ब्यानर स्लाइड हटाउन चाहनुहुन्छ?')) {
+    mockHeroSlides = mockHeroSlides.filter(s => s.id != id);
+    localStorage.setItem('mpi_hero_slides', JSON.stringify(mockHeroSlides));
+    renderHeroTable();
   }
 };
 
@@ -1943,6 +2273,11 @@ window.addEventListener('storage', (e) => {
     renderOverviewRecent();
     if (activeView === 'notices') {
       renderNoticesTable();
+    }
+  } else if (e.key === 'mpi_hero_slides') {
+    mockHeroSlides = loadStoredHeroSlides();
+    if (activeView === 'hero') {
+      renderHeroTable();
     }
   }
 });
