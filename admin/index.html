@@ -86,6 +86,11 @@
             <i class="fa-solid fa-scroll"></i> <span data-admin-i18n="nav_charter">नागरिक बडापत्र</span>
           </a>
         </li>
+        <li class="sidebar-nav-item" data-view-target="downloads">
+          <a href="javascript:void(0)" onclick="switchAdminView('downloads')">
+            <i class="fa-solid fa-file-arrow-down"></i> <span data-admin-i18n="nav_downloads">डाउनलोड हब</span>
+          </a>
+        </li>
         <li class="sidebar-nav-item">
           <a href="../index.html" target="_blank">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-admin-i18n="nav_main_site">मुख्य वेबसाइट हेर्नुहोस्</span>
@@ -450,6 +455,41 @@
         </div>
       </section>
 
+      <!-- ==============================================
+           PAGE 7: DOWNLOADS & RESOURCES CMS VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-downloads" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-file-arrow-down"></i> <span data-admin-i18n="downloads_cms_title">डाउनलोड हब व्यवस्थापन (Downloads & Resources CMS)</span></h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);" data-admin-i18n="downloads_cms_sub">पाठ्यक्रम, मोडल प्रश्नपत्र, शैक्षिक क्यालेन्डर तथा स्रोत सामग्री अपलोड र सम्पादन गर्नुहोस्</span>
+            </div>
+            <button class="btn-admin btn-admin-primary" onclick="addNewDownload()">
+              <i class="fa-solid fa-plus"></i> <span data-admin-i18n="btn_add_download">नयाँ फाइल थप्नुहोस्</span>
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th data-admin-i18n="th_doc_title">फाइल शीर्षक (Document Title)</th>
+                  <th data-admin-i18n="th_doc_cat">विधा (Category)</th>
+                  <th data-admin-i18n="th_doc_date">मिति (Date)</th>
+                  <th data-admin-i18n="th_doc_size">साइज (Size)</th>
+                  <th data-admin-i18n="th_doc_file">फाइल नाम (Attachment)</th>
+                  <th data-admin-i18n="th_action">कार्य</th>
+                </tr>
+              </thead>
+              <tbody id="adminDownloadsTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -656,6 +696,73 @@
             <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addCharterModal')">रद्द</button>
             <button type="submit" class="btn-admin btn-admin-primary" id="btnCharterSubmit">
               <i class="fa-solid fa-floppy-disk"></i> <span id="btnCharterSubmitText">सुरक्षित गर्नुहोस्</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Download Resource Modal -->
+  <div class="admin-modal-backdrop" id="addDownloadModal">
+    <div class="admin-modal-dialog" style="max-width:540px;">
+      <div class="admin-modal-header">
+        <h4 class="admin-modal-title" id="modalDownloadTitleText"><i class="fa-solid fa-file-circle-plus"></i> नयाँ डाउनलोड सामग्री थप्नुहोस्</h4>
+        <button class="admin-modal-close" onclick="closeAdminModal('addDownloadModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form onsubmit="handleSaveDownload(event)">
+          <input type="hidden" id="downloadEditId" value="" />
+          <div class="form-group-admin">
+            <label class="form-label-admin">फाइलको नाम / शीर्षक (Document Title) <span style="color:var(--admin-accent);">*</span>:</label>
+            <input type="text" id="downloadTitleInput" class="login-input" placeholder="उदा. CTEVT PCL General Medicine (HA) Curriculum Syllabus" required />
+          </div>
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">विधा (Category):</label>
+              <select id="downloadCategoryInput" class="login-input">
+                <option value="Syllabus">पाठ्यक्रम (Syllabus)</option>
+                <option value="Model Questions">नमुना प्रश्नपत्र (Model Questions)</option>
+                <option value="Calendar">शैक्षिक क्यालेन्डर (Calendar)</option>
+                <option value="Application Form">आवेदन फाराम (Form)</option>
+                <option value="Curriculum">पाठ्यविवरण (Curriculum)</option>
+                <option value="General">अन्य (General)</option>
+              </select>
+            </div>
+            <div class="form-group-admin">
+              <label class="form-label-admin">प्रकाशित मिति (Date):</label>
+              <input type="text" id="downloadDateInput" class="login-input" placeholder="उदा. २०८३/०५/१०" />
+            </div>
+          </div>
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">फाइल साइज (File Size):</label>
+              <input type="text" id="downloadSizeInput" class="login-input" placeholder="उदा. 2.4 MB" />
+            </div>
+            <div class="form-group-admin">
+              <label class="form-label-admin">फाइल प्रकार (Format):</label>
+              <select id="downloadTypeInput" class="login-input">
+                <option value="pdf">PDF Document (.pdf)</option>
+                <option value="doc">Word Document (.docx)</option>
+                <option value="zip">Zip Archive (.zip)</option>
+                <option value="excel">Excel (.xlsx)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group-admin">
+            <label class="form-label-admin">फाइल छान्नुहोस् वा फाइल नाम (Attachment) <span style="color:var(--admin-accent);">*</span>:</label>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="text" id="downloadFileNameInput" class="login-input" style="flex:1;" placeholder="उदा. CTEVT_HA_Curriculum.pdf" required />
+              <label class="btn-admin" style="cursor:pointer; background:#F1F5F9; color:#334155; border:1px solid #CBD5E1; white-space:nowrap; padding:0.6rem 0.85rem; font-size:0.82rem;">
+                <i class="fa-solid fa-paperclip"></i> कम्प्युटरबाट छान्नुहोस्
+                <input type="file" id="downloadFileInput" style="display:none;" onchange="handleDownloadFileUpload(event)" />
+              </label>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
+            <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addDownloadModal')">रद्द</button>
+            <button type="submit" class="btn-admin btn-admin-primary" id="btnDownloadSubmit">
+              <i class="fa-solid fa-floppy-disk"></i> <span id="btnDownloadSubmitText">थप्नुहोस्</span>
             </button>
           </div>
         </form>

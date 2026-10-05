@@ -21,6 +21,15 @@ const adminI18n = {
     btn_add_ticker: "टिकर अलर्ट थप्नुहोस्",
     btn_add_staff: "नयाँ कर्मचारी थप्नुहोस्",
     btn_add_charter: "नयाँ सेवा थप्नुहोस्",
+    btn_add_download: "नयाँ फाइल थप्नुहोस्",
+    nav_downloads: "डाउनलोड हब",
+    downloads_cms_title: "डाउनलोड हब व्यवस्थापन (Downloads & Resources CMS)",
+    downloads_cms_sub: "पाठ्यक्रम, मोडल प्रश्नपत्र, शैक्षिक क्यालेन्डर तथा स्रोत सामग्री अपलोड र सम्पादन गर्नुहोस्",
+    th_doc_title: "फाइल शीर्षक (Document Title)",
+    th_doc_cat: "विधा (Category)",
+    th_doc_date: "मिति (Date)",
+    th_doc_size: "साइज (Size)",
+    th_doc_file: "फाइल नाम (Attachment)",
     charter_title: "नागरिक बडापत्र व्यवस्थापन (Citizen Charter CMS)",
     charter_sub: "शिक्षालयबाट प्रवाह गरिने प्रमुख प्रशासनिक तथा शैक्षिक सेवाहरूको तालिका",
     th_service: "सेवाको विवरण (Service)",
@@ -96,6 +105,7 @@ const adminI18n = {
     nav_ticker: "Breaking Ticker",
     nav_staff: "Faculty & Staff",
     nav_charter: "Citizen Charter",
+    nav_downloads: "Downloads Hub",
     nav_main_site: "View Main Website",
     btn_logout: "Logout",
     btn_add_notice: "Add New Notice",
@@ -103,6 +113,14 @@ const adminI18n = {
     btn_add_ticker: "Add Ticker Alert",
     btn_add_staff: "Add New Staff",
     btn_add_charter: "Add New Service",
+    btn_add_download: "Add New Resource",
+    downloads_cms_title: "Downloads & Resources CMS",
+    downloads_cms_sub: "Manage and upload syllabus, model question papers, and academic resources",
+    th_doc_title: "Document Title",
+    th_doc_cat: "Category",
+    th_doc_date: "Date",
+    th_doc_size: "Size",
+    th_doc_file: "Attachment",
     charter_title: "Citizen Charter CMS",
     charter_sub: "Official Institutional Service Charter and Citizen Guarantees",
     th_service: "Service Description",
@@ -316,6 +334,15 @@ const defaultCharter = [
 
 let mockCharter = JSON.parse(localStorage.getItem('mpi_charter') || 'null') || defaultCharter;
 
+const defaultDownloads = [
+  { id: 1, title: "CTEVT PCL General Medicine (HA) Curriculum Syllabus", category: "Syllabus", date: "2083/05/10", size: "2.4 MB", type: "pdf", file: "CTEVT_HA_Curriculum.pdf" },
+  { id: 2, title: "CTEVT Diploma in Pharmacy Curriculum Syllabus", category: "Syllabus", date: "2083/05/10", size: "2.1 MB", type: "pdf", file: "CTEVT_Pharmacy_Curriculum.pdf" },
+  { id: 3, title: "CTEVT Diploma Entrance Model Question Papers 2083", category: "Model Questions", date: "2083/06/01", size: "1.5 MB", type: "pdf", file: "CTEVT_Model_Questions_2083.pdf" },
+  { id: 4, title: "Mangalsen Polytechnic Institute Academic Calendar 2083/2084", category: "Calendar", date: "2083/01/15", size: "980 KB", type: "pdf", file: "MPI_Academic_Calendar_2083_84.pdf" }
+];
+
+let mockDownloads = JSON.parse(localStorage.getItem('mpi_downloads') || 'null') || defaultDownloads;
+
 let activeView = 'overview';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -443,6 +470,10 @@ window.switchAdminView = function(viewKey) {
     charter: {
       title: isEn ? "Citizen Charter CMS" : "नागरिक बडापत्र व्यवस्थापन (Citizen Charter CMS)",
       sub: isEn ? "Official Institutional Service Charter and citizen guarantees" : "शिक्षालयबाट प्रवाह गरिने प्रमुख प्रशासनिक तथा शैक्षिक सेवाहरूको तालिका"
+    },
+    downloads: {
+      title: isEn ? "Downloads & Resources CMS" : "डाउनलोड हब व्यवस्थापन (Downloads CMS)",
+      sub: isEn ? "Curriculum syllabus, model questions, and academic resources" : "पाठ्यक्रम, मोडल प्रश्नपत्र तथा शैक्षिक सामग्री अपलोड र व्यवस्थापन"
     }
   };
 
@@ -462,6 +493,7 @@ window.switchAdminView = function(viewKey) {
   if (viewKey === 'ticker') renderTickerTable();
   if (viewKey === 'staff') renderStaffTable();
   if (viewKey === 'charter') renderCharterTable();
+  if (viewKey === 'downloads') renderDownloadsTable();
 };
 
 function renderDashboard() {
@@ -473,6 +505,7 @@ function renderDashboard() {
   renderTickerTable();
   renderStaffTable();
   renderCharterTable();
+  renderDownloadsTable();
 }
 
 function renderKPIs() {
@@ -672,6 +705,53 @@ function renderCharterTable() {
       </td>
     </tr>
   `).join('');
+}
+
+function renderDownloadsTable() {
+  const tbody = document.getElementById('adminDownloadsTableBody');
+  if (!tbody) return;
+
+  const isEn = (currentAdminLang === 'en');
+  tbody.innerHTML = mockDownloads.map(d => {
+    let iconClass = 'fa-file-pdf';
+    let iconColor = '#EF4444';
+    const fileName = (d.file || '').toLowerCase();
+    if (d.type === 'doc' || fileName.endsWith('.docx') || fileName.endsWith('.doc')) {
+      iconClass = 'fa-file-word';
+      iconColor = '#2563EB';
+    } else if (d.type === 'zip' || fileName.endsWith('.zip')) {
+      iconClass = 'fa-file-zipper';
+      iconColor = '#D97706';
+    } else if (d.type === 'excel' || fileName.endsWith('.xlsx')) {
+      iconClass = 'fa-file-excel';
+      iconColor = '#059669';
+    }
+
+    return `
+      <tr>
+        <td>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid ${iconClass}" style="color:${iconColor}; font-size:1.1rem;"></i>
+            <strong>${d.title}</strong>
+          </div>
+        </td>
+        <td><span class="badge-status status-verified">${d.category}</span></td>
+        <td>${d.date || '-'}</td>
+        <td>${d.size || '-'}</td>
+        <td><code style="background:#F1F5F9; padding:2px 6px; border-radius:4px; font-size:0.78rem;">${d.file}</code></td>
+        <td>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editDownload(${d.id})">
+              <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+            </button>
+            <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteDownload(${d.id})">
+              <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // Modal Controller Functions
@@ -1228,6 +1308,147 @@ window.deleteCharterService = function(id) {
     mockCharter = mockCharter.filter(c => c.id !== id);
     localStorage.setItem('mpi_charter', JSON.stringify(mockCharter));
     renderCharterTable();
+  }
+};
+
+window.handleDownloadFileUpload = function(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+
+  const nameInput = document.getElementById('downloadFileNameInput');
+  const sizeInput = document.getElementById('downloadSizeInput');
+  const titleInput = document.getElementById('downloadTitleInput');
+
+  if (nameInput) nameInput.value = file.name;
+  if (sizeInput && !sizeInput.value) {
+    const sizeInMB = (file.size / (1024 * 1024)).toFixed(1);
+    sizeInput.value = (sizeInMB > 0.1) ? `${sizeInMB} MB` : `${Math.round(file.size / 1024)} KB`;
+  }
+  if (titleInput && !titleInput.value) {
+    titleInput.value = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, " ");
+  }
+};
+
+window.addNewDownload = function() {
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('downloadEditId');
+  if (editIdInput) editIdInput.value = '';
+
+  const titleInput = document.getElementById('downloadTitleInput');
+  const catInput = document.getElementById('downloadCategoryInput');
+  const dateInput = document.getElementById('downloadDateInput');
+  const sizeInput = document.getElementById('downloadSizeInput');
+  const typeInput = document.getElementById('downloadTypeInput');
+  const fileInput = document.getElementById('downloadFileNameInput');
+
+  if (titleInput) titleInput.value = '';
+  if (catInput) catInput.value = 'Syllabus';
+  if (dateInput) dateInput.value = '२०८३/०५/१०';
+  if (sizeInput) sizeInput.value = '2.0 MB';
+  if (typeInput) typeInput.value = 'pdf';
+  if (fileInput) fileInput.value = '';
+
+  const modalTitle = document.getElementById('modalDownloadTitleText');
+  const btnSubmitText = document.getElementById('btnDownloadSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-file-circle-plus"></i> ${isEn ? 'Add New Download Resource' : 'नयाँ डाउनलोड सामग्री थप्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Add Resource' : 'थप्नुहोस्';
+  }
+
+  openAdminModal('addDownloadModal');
+};
+
+window.editDownload = function(id) {
+  const item = mockDownloads.find(d => d.id == id);
+  if (!item) return;
+
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('downloadEditId');
+  if (editIdInput) editIdInput.value = item.id;
+
+  const titleInput = document.getElementById('downloadTitleInput');
+  const catInput = document.getElementById('downloadCategoryInput');
+  const dateInput = document.getElementById('downloadDateInput');
+  const sizeInput = document.getElementById('downloadSizeInput');
+  const typeInput = document.getElementById('downloadTypeInput');
+  const fileInput = document.getElementById('downloadFileNameInput');
+
+  if (titleInput) titleInput.value = item.title || '';
+  if (catInput) catInput.value = item.category || 'Syllabus';
+  if (dateInput) dateInput.value = item.date || '';
+  if (sizeInput) sizeInput.value = item.size || '';
+  if (typeInput) typeInput.value = item.type || 'pdf';
+  if (fileInput) fileInput.value = item.file || '';
+
+  const modalTitle = document.getElementById('modalDownloadTitleText');
+  const btnSubmitText = document.getElementById('btnDownloadSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit Resource' : 'डाउनलोड सामग्री सम्पादन गर्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Update Resource' : 'परिवर्तन सुरक्षित गर्नुहोस्';
+  }
+
+  openAdminModal('addDownloadModal');
+};
+
+window.handleSaveDownload = function(e) {
+  e.preventDefault();
+  const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('downloadEditId')?.value;
+  const title = document.getElementById('downloadTitleInput')?.value.trim();
+  const category = document.getElementById('downloadCategoryInput')?.value || 'Syllabus';
+  const date = document.getElementById('downloadDateInput')?.value.trim() || '२०८३/०५/१०';
+  const size = document.getElementById('downloadSizeInput')?.value.trim() || '2.0 MB';
+  const type = document.getElementById('downloadTypeInput')?.value || 'pdf';
+  const file = document.getElementById('downloadFileNameInput')?.value.trim() || 'document.pdf';
+
+  if (!title) return;
+
+  if (editId) {
+    const idx = mockDownloads.findIndex(d => d.id == editId);
+    if (idx !== -1) {
+      mockDownloads[idx] = {
+        ...mockDownloads[idx],
+        title,
+        category,
+        date,
+        size,
+        type,
+        file
+      };
+      localStorage.setItem('mpi_downloads', JSON.stringify(mockDownloads));
+      renderDownloadsTable();
+      closeAdminModal('addDownloadModal');
+      alert(isEn ? 'Download resource updated!' : 'डाउनलोड सामग्री सफलतापूर्वक सम्पादन भयो!');
+    }
+  } else {
+    mockDownloads.push({
+      id: Date.now(),
+      title,
+      category,
+      date,
+      size,
+      type,
+      file
+    });
+    localStorage.setItem('mpi_downloads', JSON.stringify(mockDownloads));
+    renderDownloadsTable();
+    closeAdminModal('addDownloadModal');
+    alert(isEn ? 'New download resource added!' : 'नयाँ डाउनलोड सामग्री थपियो!');
+  }
+};
+
+window.deleteDownload = function(id) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? 'Delete this resource item?' : 'के तपाईं यो डाउनलोड सामग्री हटाउन चाहनुहुन्छ?')) {
+    mockDownloads = mockDownloads.filter(d => d.id !== id);
+    localStorage.setItem('mpi_downloads', JSON.stringify(mockDownloads));
+    renderDownloadsTable();
   }
 };
 

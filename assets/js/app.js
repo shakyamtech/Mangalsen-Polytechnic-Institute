@@ -362,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDynamicTicker();
   initDynamicCharter();
   initDynamicFaculty();
+  initDynamicDownloads();
   initHeroSlider();
   initAccessibility();
   initNoticeModalPopup();
@@ -459,6 +460,60 @@ function initDynamicCharter() {
   }
 }
 
+// Dynamic Downloads Hub Sync from Admin
+const defaultDownloadsList = [
+  { id: 1, title: "CTEVT PCL General Medicine (HA) Curriculum Syllabus", category: "Syllabus", date: "2083/05/10", size: "2.4 MB", type: "pdf", file: "CTEVT_HA_Curriculum.pdf" },
+  { id: 2, title: "CTEVT Diploma in Pharmacy Curriculum Syllabus", category: "Syllabus", date: "2083/05/10", size: "2.1 MB", type: "pdf", file: "CTEVT_Pharmacy_Curriculum.pdf" },
+  { id: 3, title: "CTEVT Diploma Entrance Model Question Papers 2083", category: "Model Questions", date: "2083/06/01", size: "1.5 MB", type: "pdf", file: "CTEVT_Model_Questions_2083.pdf" },
+  { id: 4, title: "Mangalsen Polytechnic Institute Academic Calendar 2083/2084", category: "Calendar", date: "2083/01/15", size: "980 KB", type: "pdf", file: "MPI_Academic_Calendar_2083_84.pdf" }
+];
+
+function initDynamicDownloads() {
+  const tbody = document.getElementById('mainDownloadsTableBody');
+  if (!tbody) return;
+
+  try {
+    const raw = localStorage.getItem('mpi_downloads');
+    const list = (raw && JSON.parse(raw).length > 0) ? JSON.parse(raw) : defaultDownloadsList;
+    if (Array.isArray(list) && list.length > 0) {
+      tbody.innerHTML = list.map(d => {
+        let iconClass = 'fa-file-pdf';
+        let iconColor = '#EF4444';
+        const fileName = (d.file || '').toLowerCase();
+        if (d.type === 'doc' || fileName.endsWith('.docx') || fileName.endsWith('.doc')) {
+          iconClass = 'fa-file-word';
+          iconColor = '#2563EB';
+        } else if (d.type === 'zip' || fileName.endsWith('.zip')) {
+          iconClass = 'fa-file-zipper';
+          iconColor = '#D97706';
+        } else if (d.type === 'excel' || fileName.endsWith('.xlsx')) {
+          iconClass = 'fa-file-excel';
+          iconColor = '#059669';
+        }
+
+        return `
+          <tr>
+            <td>
+              <i class="fa-solid ${iconClass}" style="color:${iconColor}; margin-right:8px;"></i>
+              <strong>${d.title}</strong>
+            </td>
+            <td>${d.category}</td>
+            <td>${d.date || '-'}</td>
+            <td>${d.size || '-'}</td>
+            <td style="text-align: right;">
+              <button class="btn btn-outline-primary btn-sm" onclick="simulateNoticeDownload('${d.file}')">
+                <i class="fa-solid fa-download"></i> Download
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (e) {
+    console.warn('Dynamic downloads render error', e);
+  }
+}
+
 // Dynamic Breaking Ticker Sync from Admin
 function initDynamicTicker() {
   try {
@@ -482,7 +537,7 @@ function initDynamicTicker() {
   }
 }
 
-// Auto-sync ticker, charter & faculty live across browser tabs
+// Auto-sync ticker, charter, faculty & downloads live across browser tabs
 window.addEventListener('storage', (e) => {
   if (e.key === 'mpi_tickers') {
     initDynamicTicker();
@@ -492,6 +547,9 @@ window.addEventListener('storage', (e) => {
   }
   if (e.key === 'mpi_staff') {
     initDynamicFaculty();
+  }
+  if (e.key === 'mpi_downloads') {
+    initDynamicDownloads();
   }
 });
 
@@ -618,9 +676,10 @@ function setLanguage(lang) {
     checkEligibility();
   }
 
-  // Preserve dynamic tickers & faculty
+  // Preserve dynamic tickers, faculty & downloads
   initDynamicTicker();
   initDynamicFaculty();
+  initDynamicDownloads();
 }
 
 // Dark / Light Theme
