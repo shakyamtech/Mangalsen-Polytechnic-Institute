@@ -520,15 +520,16 @@
     </div>
   </div>
 
-  <!-- Add Staff Modal -->
+  <!-- Add / Edit Staff Modal -->
   <div class="admin-modal-backdrop" id="addStaffModal">
     <div class="admin-modal-dialog" style="max-width:520px;">
       <div class="admin-modal-header">
-        <h4 class="admin-modal-title"><i class="fa-solid fa-user-plus"></i> नयाँ शिक्षक / कर्मचारी थप्नुहोस्</h4>
+        <h4 class="admin-modal-title" id="modalStaffTitleText"><i class="fa-solid fa-user-plus"></i> नयाँ शिक्षक / कर्मचारी थप्नुहोस्</h4>
         <button class="admin-modal-close" onclick="closeAdminModal('addStaffModal')">&times;</button>
       </div>
       <div class="admin-modal-body">
         <form onsubmit="handleSaveStaff(event)">
+          <input type="hidden" id="staffEditId" value="" />
           <div class="form-group-admin">
             <label class="form-label-admin">पूरा नाम (Full Name) <span style="color:var(--admin-accent);">*</span>:</label>
             <input type="text" id="staffNameInput" class="login-input" placeholder="उदा. ई. सन्तोष भट्ट" required />
@@ -543,6 +544,7 @@
               <select id="staffDeptInput" class="login-input">
                 <option value="Health Sciences">Health Sciences (HA)</option>
                 <option value="Pharmacy">Pharmacy Department</option>
+                <option value="Leadership">नेतृत्व (Leadership)</option>
                 <option value="Administration">प्रशासन शाखा</option>
               </select>
             </div>
@@ -553,7 +555,9 @@
           </div>
           <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
             <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addStaffModal')">रद्द</button>
-            <button type="submit" class="btn-admin btn-admin-primary">थप्नुहोस्</button>
+            <button type="submit" class="btn-admin btn-admin-primary" id="btnStaffSubmit">
+              <i class="fa-solid fa-floppy-disk"></i> <span id="btnStaffSubmitText">थप्नुहोस्</span>
+            </button>
           </div>
         </form>
       </div>

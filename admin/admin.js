@@ -280,12 +280,14 @@ const defaultTickers = [
 
 let mockTickers = JSON.parse(localStorage.getItem('mpi_tickers') || 'null') || defaultTickers;
 
-let mockStaff = [
+const defaultStaff = [
   { id: 1, name: "डा. राजेश कुमार श्रेष्ठ", role: "शिक्षालय प्रमुख (Campus Chief)", dept: "Leadership", qual: "M.Sc., Ph.D." },
   { id: 2, name: "डा. भुवन प्रसाद जोशी", role: "विभागीय प्रमुख (HA Program)", dept: "Health Sciences", qual: "MBBS, MD" },
   { id: 3, name: "फर्मासिस्ट अन्जना थापा", role: "विभागीय प्रमुख (Pharmacy Program)", dept: "Pharmacy", qual: "M.Pharm" },
   { id: 4, name: "दिनेश राज कुँवर", role: "प्रशासन तथा लेखा अधिकृत", dept: "Administration", qual: "MBS" }
 ];
+
+let mockStaff = JSON.parse(localStorage.getItem('mpi_staff') || 'null') || defaultStaff;
 
 let activeView = 'overview';
 
@@ -578,6 +580,7 @@ function renderStaffTable() {
   const tbody = document.getElementById('adminStaffTableBody');
   if (!tbody) return;
 
+  const isEn = (currentAdminLang === 'en');
   tbody.innerHTML = mockStaff.map(s => `
     <tr>
       <td><strong>${s.name}</strong></td>
@@ -585,9 +588,14 @@ function renderStaffTable() {
       <td>${s.dept}</td>
       <td>${s.qual}</td>
       <td>
-        <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStaff(${s.id})">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editStaff(${s.id})">
+            <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+          </button>
+          <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStaff(${s.id})">
+            <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -873,39 +881,119 @@ window.deleteTicker = function(id) {
 };
 
 window.addNewStaff = function() {
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('staffEditId');
+  if (editIdInput) editIdInput.value = '';
+
+  const nameInput = document.getElementById('staffNameInput');
+  const roleInput = document.getElementById('staffRoleInput');
+  const deptInput = document.getElementById('staffDeptInput');
+  const qualInput = document.getElementById('staffQualInput');
+
+  if (nameInput) nameInput.value = '';
+  if (roleInput) roleInput.value = '';
+  if (deptInput) deptInput.value = 'Health Sciences';
+  if (qualInput) qualInput.value = '';
+
+  const modalTitle = document.getElementById('modalStaffTitleText');
+  const btnSubmitText = document.getElementById('btnStaffSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-user-plus"></i> ${isEn ? 'Add New Faculty & Staff' : 'नयाँ शिक्षक / कर्मचारी थप्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Add Staff' : 'थप्नुहोस्';
+  }
+
+  openAdminModal('addStaffModal');
+};
+
+window.editStaff = function(id) {
+  const staff = mockStaff.find(s => s.id == id);
+  if (!staff) return;
+
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('staffEditId');
+  if (editIdInput) editIdInput.value = staff.id;
+
+  const nameInput = document.getElementById('staffNameInput');
+  const roleInput = document.getElementById('staffRoleInput');
+  const deptInput = document.getElementById('staffDeptInput');
+  const qualInput = document.getElementById('staffQualInput');
+
+  if (nameInput) nameInput.value = staff.name || '';
+  if (roleInput) roleInput.value = staff.role || '';
+  if (deptInput) deptInput.value = staff.dept || 'Health Sciences';
+  if (qualInput) qualInput.value = staff.qual || '';
+
+  const modalTitle = document.getElementById('modalStaffTitleText');
+  const btnSubmitText = document.getElementById('btnStaffSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit Faculty / Staff' : 'कर्मचारी विवरण सम्पादन गर्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Update Profile' : 'परिवर्तन सुरक्षित गर्नुहोस्';
+  }
+
   openAdminModal('addStaffModal');
 };
 
 window.handleSaveStaff = function(e) {
   e.preventDefault();
   const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('staffEditId')?.value;
   const name = document.getElementById('staffNameInput')?.value.trim();
   const role = document.getElementById('staffRoleInput')?.value.trim();
-  const dept = document.getElementById('staffDeptInput')?.value || 'Academic';
-  const qual = document.getElementById('staffQualInput')?.value.trim() || 'Master Degree';
+  const dept = document.getElementById('staffDeptInput')?.value || 'Health Sciences';
+  const qual = document.getElementById('staffQualInput')?.value.trim() || 'Degree';
 
   if (!name) return;
 
-  mockStaff.push({
-    id: Date.now(),
-    name: name,
-    role: role,
-    dept: dept,
-    qual: qual
-  });
+  if (editId) {
+    // Edit existing staff
+    const idx = mockStaff.findIndex(s => s.id == editId);
+    if (idx !== -1) {
+      mockStaff[idx] = {
+        ...mockStaff[idx],
+        name: name,
+        role: role,
+        dept: dept,
+        qual: qual
+      };
+      localStorage.setItem('mpi_staff', JSON.stringify(mockStaff));
+      renderStaffTable();
+      closeAdminModal('addStaffModal');
+      document.getElementById('staffNameInput').value = '';
+      document.getElementById('staffRoleInput').value = '';
+      document.getElementById('staffQualInput').value = '';
+      alert(isEn ? 'Staff profile updated!' : 'कर्मचारी विवरण सफलतापूर्वक सम्पादन भयो!');
+    }
+  } else {
+    // Add new staff
+    mockStaff.push({
+      id: Date.now(),
+      name: name,
+      role: role,
+      dept: dept,
+      qual: qual
+    });
 
-  renderStaffTable();
-  closeAdminModal('addStaffModal');
-  document.getElementById('staffNameInput').value = '';
-  document.getElementById('staffRoleInput').value = '';
-  document.getElementById('staffQualInput').value = '';
-  alert(isEn ? 'New staff profile added!' : 'नयाँ कर्मचारी विवरण थपियो!');
+    localStorage.setItem('mpi_staff', JSON.stringify(mockStaff));
+    renderStaffTable();
+    closeAdminModal('addStaffModal');
+    document.getElementById('staffNameInput').value = '';
+    document.getElementById('staffRoleInput').value = '';
+    document.getElementById('staffQualInput').value = '';
+    alert(isEn ? 'New staff profile added!' : 'नयाँ कर्मचारी विवरण थपियो!');
+  }
 };
 
 window.deleteStaff = function(id) {
   const isEn = (currentAdminLang === 'en');
   if (confirm(isEn ? 'Delete this staff profile?' : 'के तपाईं यो कर्मचारी विवरण हटाउन चाहनुहुन्छ?')) {
     mockStaff = mockStaff.filter(s => s.id !== id);
+    localStorage.setItem('mpi_staff', JSON.stringify(mockStaff));
     renderStaffTable();
   }
 };
