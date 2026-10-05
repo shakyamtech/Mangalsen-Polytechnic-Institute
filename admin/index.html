@@ -81,6 +81,11 @@
             <i class="fa-solid fa-users"></i> <span data-admin-i18n="nav_staff">शिक्षक तथा कर्मचारी</span>
           </a>
         </li>
+        <li class="sidebar-nav-item" data-view-target="charter">
+          <a href="javascript:void(0)" onclick="switchAdminView('charter')">
+            <i class="fa-solid fa-scroll"></i> <span data-admin-i18n="nav_charter">नागरिक बडापत्र</span>
+          </a>
+        </li>
         <li class="sidebar-nav-item">
           <a href="../index.html" target="_blank">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-admin-i18n="nav_main_site">मुख्य वेबसाइट हेर्नुहोस्</span>
@@ -409,6 +414,42 @@
         </div>
       </section>
 
+      <!-- ==============================================
+           PAGE 6: CITIZEN CHARTER VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-charter" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-scroll"></i> <span data-admin-i18n="charter_title">नागरिक बडापत्र व्यवस्थापन (Citizen Charter CMS)</span></h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);" data-admin-i18n="charter_sub">शिक्षालयबाट प्रवाह गरिने प्रमुख प्रशासनिक तथा शैक्षिक सेवाहरूको तालिका</span>
+            </div>
+            <button class="btn-admin btn-admin-primary" onclick="addNewCharterService()">
+              <i class="fa-solid fa-plus"></i> <span data-admin-i18n="btn_add_charter">नयाँ सेवा थप्नुहोस्</span>
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th data-admin-i18n="th_sn">क्र.सं.</th>
+                  <th data-admin-i18n="th_service">सेवाको विवरण (Service)</th>
+                  <th data-admin-i18n="th_docs">आवश्यक कागजात (Documents)</th>
+                  <th data-admin-i18n="th_branch">शाखा / अधिकारी</th>
+                  <th data-admin-i18n="th_time">समय</th>
+                  <th data-admin-i18n="th_fee">शुल्क</th>
+                  <th data-admin-i18n="th_action">कार्य</th>
+                </tr>
+              </thead>
+              <tbody id="adminCharterTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -557,6 +598,49 @@
             <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addStaffModal')">रद्द</button>
             <button type="submit" class="btn-admin btn-admin-primary" id="btnStaffSubmit">
               <i class="fa-solid fa-floppy-disk"></i> <span id="btnStaffSubmitText">थप्नुहोस्</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Citizen Charter Modal -->
+  <div class="admin-modal-backdrop" id="addCharterModal">
+    <div class="admin-modal-dialog" style="max-width:560px;">
+      <div class="admin-modal-header">
+        <h4 class="admin-modal-title" id="modalCharterTitleText"><i class="fa-solid fa-scroll"></i> नयाँ सेवा विवरण थप्नुहोस्</h4>
+        <button class="admin-modal-close" onclick="closeAdminModal('addCharterModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form onsubmit="handleSaveCharterService(event)">
+          <input type="hidden" id="charterEditId" value="" />
+          <div class="form-group-admin">
+            <label class="form-label-admin">सेवाको नाम / विवरण (Service Description) <span style="color:var(--admin-accent);">*</span>:</label>
+            <input type="text" id="charterServiceInput" class="login-input" placeholder="उदा. चारित्रिक प्रमाणपत्र वितरण" required />
+          </div>
+          <div class="form-group-admin">
+            <label class="form-label-admin">आवश्यक कागजात (Required Documents) <span style="color:var(--admin-accent);">*</span>:</label>
+            <input type="text" id="charterDocsInput" class="login-input" placeholder="उदा. अन्तिम वर्षको मार्कसिट, क्लियरेन्स फाराम" required />
+          </div>
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">सम्बन्धित शाखा / अधिकारी (Branch):</label>
+              <input type="text" id="charterBranchInput" class="login-input" placeholder="उदा. प्रशासन शाखा / भर्ना शाखा" required />
+            </div>
+            <div class="form-group-admin">
+              <label class="form-label-admin">लाग्ने समय (Timeframe):</label>
+              <input type="text" id="charterTimeInput" class="login-input" placeholder="उदा. सोही दिन / १ कार्यदिन" value="सोही दिन" required />
+            </div>
+          </div>
+          <div class="form-group-admin">
+            <label class="form-label-admin">दस्तुर / शुल्क (Fee):</label>
+            <input type="text" id="charterFeeInput" class="login-input" placeholder="उदा. निःशुल्क / रु. २००/-" value="निःशुल्क" required />
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+            <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addCharterModal')">रद्द</button>
+            <button type="submit" class="btn-admin btn-admin-primary" id="btnCharterSubmit">
+              <i class="fa-solid fa-floppy-disk"></i> <span id="btnCharterSubmitText">सुरक्षित गर्नुहोस्</span>
             </button>
           </div>
         </form>

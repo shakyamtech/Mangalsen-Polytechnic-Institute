@@ -360,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initLanguage();
   initDynamicTicker();
+  initDynamicCharter();
   initHeroSlider();
   initAccessibility();
   initNoticeModalPopup();
@@ -367,6 +368,38 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollEffects();
   initLiveBikramSambatDate();
 });
+
+// Dynamic Citizen Charter Sync from Admin
+const defaultCharterList = [
+  { id: 1, service: "Admission Application Registration", docs: "SEE Marksheet, Character Certificate, Citizenship/Birth Cert", branch: "Admission & Exam Section", time: "Immediate (Same Day)", fee: "As per CTEVT rules" },
+  { id: 2, service: "Character Certificate Issuance", docs: "Final Year Marksheet, Clearance Form", branch: "Admin Section", time: "1 Working Day", fee: "NPR 200/-" },
+  { id: 3, service: "Recommendation Letter & Document Verification", docs: "Application & Original Credentials", branch: "Campus Chief / Admin", time: "Same Day", fee: "Free" },
+  { id: 4, service: "Scholarship Recommendations", docs: "CTEVT Exam Controller Selection Letter", branch: "Student Welfare Section", time: "Immediate", fee: "Free" }
+];
+
+function initDynamicCharter() {
+  const tbody = document.getElementById('mainCharterTableBody');
+  if (!tbody) return;
+
+  try {
+    const raw = localStorage.getItem('mpi_charter');
+    const list = raw ? JSON.parse(raw) : defaultCharterList;
+    if (Array.isArray(list) && list.length > 0) {
+      tbody.innerHTML = list.map((c, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td><strong>${c.service}</strong></td>
+          <td>${c.docs}</td>
+          <td>${c.branch}</td>
+          <td>${c.time}</td>
+          <td>${c.fee}</td>
+        </tr>
+      `).join('');
+    }
+  } catch (e) {
+    console.warn('Dynamic charter load error', e);
+  }
+}
 
 // Dynamic Breaking Ticker Sync from Admin
 function initDynamicTicker() {
@@ -391,10 +424,13 @@ function initDynamicTicker() {
   }
 }
 
-// Auto-sync ticker live across browser tabs
+// Auto-sync ticker & charter live across browser tabs
 window.addEventListener('storage', (e) => {
   if (e.key === 'mpi_tickers') {
     initDynamicTicker();
+  }
+  if (e.key === 'mpi_charter') {
+    initDynamicCharter();
   }
 });
 

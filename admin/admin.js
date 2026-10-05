@@ -13,12 +13,21 @@ const adminI18n = {
     nav_notices: "सूचना व्यवस्थापन",
     nav_ticker: "ताजा सूचना टिकर",
     nav_staff: "शिक्षक तथा कर्मचारी",
+    nav_charter: "नागरिक बडापत्र",
     nav_main_site: "मुख्य वेबसाइट हेर्नुहोस्",
     btn_logout: "लगआउट (Logout)",
     btn_add_notice: "नयाँ सूचना थप्नुहोस्",
     btn_export_excel: "Excel डाउनलोड",
     btn_add_ticker: "टिकर अलर्ट थप्नुहोस्",
     btn_add_staff: "नयाँ कर्मचारी थप्नुहोस्",
+    btn_add_charter: "नयाँ सेवा थप्नुहोस्",
+    charter_title: "नागरिक बडापत्र व्यवस्थापन (Citizen Charter CMS)",
+    charter_sub: "शिक्षालयबाट प्रवाह गरिने प्रमुख प्रशासनिक तथा शैक्षिक सेवाहरूको तालिका",
+    th_service: "सेवाको विवरण (Service)",
+    th_docs: "आवश्यक कागजात (Documents)",
+    th_branch: "शाखा / अधिकारी",
+    th_time: "समय",
+    th_fee: "शुल्क",
     
     // KPI Cards
     kpi_total_apps: "कुल भर्ना आवेदन",
@@ -86,12 +95,21 @@ const adminI18n = {
     nav_notices: "Notices CMS",
     nav_ticker: "Breaking Ticker",
     nav_staff: "Faculty & Staff",
+    nav_charter: "Citizen Charter",
     nav_main_site: "View Main Website",
     btn_logout: "Logout",
     btn_add_notice: "Add New Notice",
     btn_export_excel: "Export to Excel",
     btn_add_ticker: "Add Ticker Alert",
     btn_add_staff: "Add New Staff",
+    btn_add_charter: "Add New Service",
+    charter_title: "Citizen Charter CMS",
+    charter_sub: "Official Institutional Service Charter and Citizen Guarantees",
+    th_service: "Service Description",
+    th_docs: "Required Documents",
+    th_branch: "Branch / Officer",
+    th_time: "Timeframe",
+    th_fee: "Fee",
 
     // KPI Cards
     kpi_total_apps: "Total Applications",
@@ -289,6 +307,15 @@ const defaultStaff = [
 
 let mockStaff = JSON.parse(localStorage.getItem('mpi_staff') || 'null') || defaultStaff;
 
+const defaultCharter = [
+  { id: 1, service: "Admission Application Registration", docs: "SEE Marksheet, Character Certificate, Citizenship/Birth Cert", branch: "Admission & Exam Section", time: "Immediate (Same Day)", fee: "As per CTEVT rules" },
+  { id: 2, service: "Character Certificate Issuance", docs: "Final Year Marksheet, Clearance Form", branch: "Admin Section", time: "1 Working Day", fee: "NPR 200/-" },
+  { id: 3, service: "Recommendation Letter & Document Verification", docs: "Application & Original Credentials", branch: "Campus Chief / Admin", time: "Same Day", fee: "Free" },
+  { id: 4, service: "Scholarship Recommendations", docs: "CTEVT Exam Controller Selection Letter", branch: "Student Welfare Section", time: "Immediate", fee: "Free" }
+];
+
+let mockCharter = JSON.parse(localStorage.getItem('mpi_charter') || 'null') || defaultCharter;
+
 let activeView = 'overview';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -412,6 +439,10 @@ window.switchAdminView = function(viewKey) {
     staff: { 
       title: isEn ? "Faculty & Staff Directory" : "शिक्षक तथा कर्मचारी विवरण व्यवस्थापन", 
       sub: isEn ? "Academic instructors and administrative personnel" : "शिक्षालयका प्राध्यापक तथा प्रशासन टिम" 
+    },
+    charter: {
+      title: isEn ? "Citizen Charter CMS" : "नागरिक बडापत्र व्यवस्थापन (Citizen Charter CMS)",
+      sub: isEn ? "Official Institutional Service Charter and citizen guarantees" : "शिक्षालयबाट प्रवाह गरिने प्रमुख प्रशासनिक तथा शैक्षिक सेवाहरूको तालिका"
     }
   };
 
@@ -430,6 +461,7 @@ window.switchAdminView = function(viewKey) {
   }
   if (viewKey === 'ticker') renderTickerTable();
   if (viewKey === 'staff') renderStaffTable();
+  if (viewKey === 'charter') renderCharterTable();
 };
 
 function renderDashboard() {
@@ -440,6 +472,7 @@ function renderDashboard() {
   renderNoticesTable();
   renderTickerTable();
   renderStaffTable();
+  renderCharterTable();
 }
 
 function renderKPIs() {
@@ -593,6 +626,33 @@ function renderStaffTable() {
             <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
           </button>
           <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStaff(${s.id})">
+            <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderCharterTable() {
+  const tbody = document.getElementById('adminCharterTableBody');
+  if (!tbody) return;
+
+  const isEn = (currentAdminLang === 'en');
+  tbody.innerHTML = mockCharter.map((c, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td><strong>${c.service}</strong></td>
+      <td>${c.docs}</td>
+      <td><span class="badge-status status-verified">${c.branch}</span></td>
+      <td>${c.time}</td>
+      <td><strong>${c.fee}</strong></td>
+      <td>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editCharterService(${c.id})">
+            <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+          </button>
+          <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteCharterService(${c.id})">
             <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
           </button>
         </div>
@@ -995,6 +1055,124 @@ window.deleteStaff = function(id) {
     mockStaff = mockStaff.filter(s => s.id !== id);
     localStorage.setItem('mpi_staff', JSON.stringify(mockStaff));
     renderStaffTable();
+  }
+};
+
+window.addNewCharterService = function() {
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('charterEditId');
+  if (editIdInput) editIdInput.value = '';
+
+  const serviceInput = document.getElementById('charterServiceInput');
+  const docsInput = document.getElementById('charterDocsInput');
+  const branchInput = document.getElementById('charterBranchInput');
+  const timeInput = document.getElementById('charterTimeInput');
+  const feeInput = document.getElementById('charterFeeInput');
+
+  if (serviceInput) serviceInput.value = '';
+  if (docsInput) docsInput.value = '';
+  if (branchInput) branchInput.value = 'प्रशासन शाखा';
+  if (timeInput) timeInput.value = 'सोही दिन';
+  if (feeInput) feeInput.value = 'निःशुल्क';
+
+  const modalTitle = document.getElementById('modalCharterTitleText');
+  const btnSubmitText = document.getElementById('btnCharterSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-scroll"></i> ${isEn ? 'Add New Charter Service' : 'नयाँ सेवा विवरण थप्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Save Service' : 'सुरक्षित गर्नुहोस्';
+  }
+
+  openAdminModal('addCharterModal');
+};
+
+window.editCharterService = function(id) {
+  const item = mockCharter.find(c => c.id == id);
+  if (!item) return;
+
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('charterEditId');
+  if (editIdInput) editIdInput.value = item.id;
+
+  const serviceInput = document.getElementById('charterServiceInput');
+  const docsInput = document.getElementById('charterDocsInput');
+  const branchInput = document.getElementById('charterBranchInput');
+  const timeInput = document.getElementById('charterTimeInput');
+  const feeInput = document.getElementById('charterFeeInput');
+
+  if (serviceInput) serviceInput.value = item.service || '';
+  if (docsInput) docsInput.value = item.docs || '';
+  if (branchInput) branchInput.value = item.branch || '';
+  if (timeInput) timeInput.value = item.time || '';
+  if (feeInput) feeInput.value = item.fee || '';
+
+  const modalTitle = document.getElementById('modalCharterTitleText');
+  const btnSubmitText = document.getElementById('btnCharterSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit Service' : 'बडापत्र सेवा सम्पादन गर्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Update Service' : 'परिवर्तन सुरक्षित गर्नुहोस्';
+  }
+
+  openAdminModal('addCharterModal');
+};
+
+window.handleSaveCharterService = function(e) {
+  e.preventDefault();
+  const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('charterEditId')?.value;
+  const service = document.getElementById('charterServiceInput')?.value.trim();
+  const docs = document.getElementById('charterDocsInput')?.value.trim();
+  const branch = document.getElementById('charterBranchInput')?.value.trim() || 'प्रशासन शाखा';
+  const time = document.getElementById('charterTimeInput')?.value.trim() || 'सोही दिन';
+  const fee = document.getElementById('charterFeeInput')?.value.trim() || 'निःशुल्क';
+
+  if (!service) return;
+
+  if (editId) {
+    // Edit existing service
+    const idx = mockCharter.findIndex(c => c.id == editId);
+    if (idx !== -1) {
+      mockCharter[idx] = {
+        ...mockCharter[idx],
+        service: service,
+        docs: docs,
+        branch: branch,
+        time: time,
+        fee: fee
+      };
+      localStorage.setItem('mpi_charter', JSON.stringify(mockCharter));
+      renderCharterTable();
+      closeAdminModal('addCharterModal');
+      alert(isEn ? 'Service details updated!' : 'सेवा विवरण सफलतापूर्वक सम्पादन भयो!');
+    }
+  } else {
+    // Add new service
+    mockCharter.push({
+      id: Date.now(),
+      service: service,
+      docs: docs,
+      branch: branch,
+      time: time,
+      fee: fee
+    });
+    localStorage.setItem('mpi_charter', JSON.stringify(mockCharter));
+    renderCharterTable();
+    closeAdminModal('addCharterModal');
+    alert(isEn ? 'New service added to Citizen Charter!' : 'नागरिक बडापत्रमा नयाँ सेवा थपियो!');
+  }
+};
+
+window.deleteCharterService = function(id) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? 'Delete this service from citizen charter?' : 'के तपाईं यो सेवा नागरिक बडापत्रबाट हटाउन चाहनुहुन्छ?')) {
+    mockCharter = mockCharter.filter(c => c.id !== id);
+    localStorage.setItem('mpi_charter', JSON.stringify(mockCharter));
+    renderCharterTable();
   }
 };
 
