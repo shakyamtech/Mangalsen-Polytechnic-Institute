@@ -306,6 +306,38 @@ window.viewNoticeDetail = function(id) {
 };
 
 window.simulateNoticeDownload = function(filename) {
+  // 1. Trigger actual browser file download to Downloads folder
+  const noticeContent = `=====================================================
+🏛️ MANGALSEN POLYTECHNIC INSTITUTE
+मङ्गलसेन बहुप्राविधिक शिक्षालय, मङ्गलसेन-३, अछाम
+(Council for Technical Education and Vocational Training - CTEVT)
+=====================================================
+
+आधिकारिक सूचना / संलग्न डकुमेन्ट (Official Document):
+फाइलको नाम (Filename): ${filename}
+प्रमाणित प्रणाली (Verification): MPI Official Web Portal Verified
+
+सम्पर्क ठेगाना:
+- फोन: ०९७-६२०००० / ९८५८४८८०००
+- वेबसाइट: https://shakyamtech.github.io/Mangalsen-Polytechnic-Institute/
+- फेसबुक: facebook.com/mangalsenpi/
+=====================================================`;
+
+  const isPdf = filename.toLowerCase().endsWith('.pdf');
+  const mimeType = isPdf ? 'application/pdf' : 'text/plain;charset=utf-8';
+  const blob = new Blob([noticeContent], { type: mimeType });
+  const downloadUrl = URL.createObjectURL(blob);
+  
+  const link = document.createElement('a');
+  link.href = downloadUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+
+  // 2. Show user feedback toast
   const toast = document.createElement('div');
   toast.style.position = 'fixed';
   toast.style.bottom = '2rem';
@@ -318,12 +350,12 @@ window.simulateNoticeDownload = function(filename) {
   toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
   toast.style.zIndex = '3000';
   toast.style.fontWeight = '600';
-  toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> डाउनलोड सुरु भयो: ${filename}`;
+  toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> फाइल तपाईंको कम्प्युटरको <b>Downloads</b> फोल्डरमा डाउनलोड भयो! (${filename})`;
   document.body.appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = '0';
     toast.style.transition = 'opacity 0.4s ease';
     setTimeout(() => toast.remove(), 400);
-  }, 2500);
+  }, 3000);
 };
