@@ -167,6 +167,15 @@ body {
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   margin-bottom: 1.5rem;
+  text-decoration: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-brand:hover {
+  opacity: 0.9;
+  transform: translateX(3px);
 }
 
 .sidebar-nav-list {
