@@ -554,15 +554,21 @@ function renderTickerTable() {
   const tbody = document.getElementById('adminTickerTableBody');
   if (!tbody) return;
 
+  const isEn = (currentAdminLang === 'en');
   tbody.innerHTML = mockTickers.map((t, idx) => `
     <tr>
       <td>${idx + 1}</td>
       <td><strong>${t.text}</strong></td>
       <td><span class="badge-status status-verified">${t.tag}</span></td>
       <td>
-        <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteTicker(${t.id})">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editTicker(${t.id})">
+            <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+          </button>
+          <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteTicker(${t.id})">
+            <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -770,27 +776,91 @@ window.handleSaveNotice = function(e) {
 };
 
 window.addNewTicker = function() {
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('tickerEditId');
+  if (editIdInput) editIdInput.value = '';
+
+  const textInput = document.getElementById('tickerTextInput');
+  const tagInput = document.getElementById('tickerTagInput');
+  if (textInput) textInput.value = '';
+  if (tagInput) tagInput.value = 'ताजा';
+
+  const modalTitle = document.getElementById('modalTickerTitleText');
+  const btnSubmitText = document.getElementById('btnTickerSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-bolt"></i> ${isEn ? 'Add New Ticker Alert' : 'ताजा टिकर सन्देश थप्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Save Ticker' : 'सुरक्षित गर्नुहोस्';
+  }
+
+  openAdminModal('addTickerModal');
+};
+
+window.editTicker = function(id) {
+  const ticker = mockTickers.find(t => t.id == id);
+  if (!ticker) return;
+
+  const isEn = (currentAdminLang === 'en');
+  const editIdInput = document.getElementById('tickerEditId');
+  if (editIdInput) editIdInput.value = ticker.id;
+
+  const textInput = document.getElementById('tickerTextInput');
+  const tagInput = document.getElementById('tickerTagInput');
+  if (textInput) textInput.value = ticker.text || '';
+  if (tagInput) tagInput.value = ticker.tag || 'ताजा';
+
+  const modalTitle = document.getElementById('modalTickerTitleText');
+  const btnSubmitText = document.getElementById('btnTickerSubmitText');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit Ticker Alert' : 'टिकर सन्देश सम्पादन गर्नुहोस्'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Update Changes' : 'परिवर्तन सुरक्षित गर्नुहोस्';
+  }
+
   openAdminModal('addTickerModal');
 };
 
 window.handleSaveTicker = function(e) {
   e.preventDefault();
   const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('tickerEditId')?.value;
   const text = document.getElementById('tickerTextInput')?.value.trim();
   const tag = document.getElementById('tickerTagInput')?.value.trim() || 'Alert';
   if (!text) return;
 
-  mockTickers.unshift({
-    id: Date.now(),
-    text: text,
-    tag: tag
-  });
+  if (editId) {
+    // Edit existing ticker
+    const idx = mockTickers.findIndex(t => t.id == editId);
+    if (idx !== -1) {
+      mockTickers[idx] = {
+        ...mockTickers[idx],
+        text: text,
+        tag: tag
+      };
+      localStorage.setItem('mpi_tickers', JSON.stringify(mockTickers));
+      renderTickerTable();
+      closeAdminModal('addTickerModal');
+      document.getElementById('tickerTextInput').value = '';
+      alert(isEn ? 'Ticker alert updated successfully!' : 'टिकर सन्देश सफलतापूर्वक सम्पादन भयो!');
+    }
+  } else {
+    // Add new ticker
+    mockTickers.unshift({
+      id: Date.now(),
+      text: text,
+      tag: tag
+    });
 
-  localStorage.setItem('mpi_tickers', JSON.stringify(mockTickers));
-  renderTickerTable();
-  closeAdminModal('addTickerModal');
-  document.getElementById('tickerTextInput').value = '';
-  alert(isEn ? 'Ticker alert published!' : 'नयाँ टिकर अलर्ट प्रकाशित भयो!');
+    localStorage.setItem('mpi_tickers', JSON.stringify(mockTickers));
+    renderTickerTable();
+    closeAdminModal('addTickerModal');
+    document.getElementById('tickerTextInput').value = '';
+    alert(isEn ? 'Ticker alert published!' : 'नयाँ टिकर अलर्ट प्रकाशित भयो!');
+  }
 };
 
 window.deleteTicker = function(id) {
