@@ -202,14 +202,15 @@ let mockAdmissions = [
   }
 ];
 
-let mockNotices = [
+const defaultNotices = [
   {
     id: "N-2083-104",
     title_ne: "CTEVT डिप्लोमा इन फार्मेसी तथा PCL सामान्य चिकित्सा (HA) नयाँ भर्ना आवेदन फाराम खुला!",
     title_en: "Admission Application Form Open for CTEVT Diploma in Pharmacy & PCL General Medicine (HA)",
     category: "Admission",
     date_bs: "२०८३ आश्विन १२",
-    file: "CTEVT_Admission_Form_2083_MPI.pdf"
+    file: "CTEVT_Admission_Form_2083_MPI.pdf",
+    content_ne: "प्राविधिक शिक्षा तथा व्यावसायिक तालिम परिषद् (CTEVT) अन्तर्गतको आङ्गिक शिक्षालय मङ्गलसेन बहुप्राविधिक शिक्षालय, मङ्गलसेन-३ अछाममा शैक्षिक सत्र २०८३/०८४ का लागि नयाँ भर्ना आवेदन फाराम खुला गरिएको छ।"
   },
   {
     id: "N-2083-103",
@@ -217,7 +218,8 @@ let mockNotices = [
     title_en: "Result of Classified Free Scholarship Entrance Examination Published",
     category: "Scholarship",
     date_bs: "२०८३ आश्विन ०८",
-    file: "Classified_Scholarship_Result_2083.pdf"
+    file: "Classified_Scholarship_Result_2083.pdf",
+    content_ne: "CTEVT परीक्षा नियन्त्रण कार्यालय सानोठिमी भक्तपुरबाट सञ्चालित वर्गीकृत निःशुल्क छात्रवृत्तिको प्रवेश परीक्षामा सफल भई सिफारिस भएका मुख्य उम्मेदवारहरूले तोकिएको समयभित्र भर्ना हुन अनुरोध छ।"
   },
   {
     id: "N-2083-102",
@@ -225,9 +227,12 @@ let mockNotices = [
     title_en: "First Year Regular & Back Examination Schedule Routine Published",
     category: "Exam",
     date_bs: "२०८३ आश्विन ०२",
-    file: "CTEVT_Exam_Routine_First_Year_2083.pdf"
+    file: "CTEVT_Exam_Routine_First_Year_2083.pdf",
+    content_ne: "CTEVT परीक्षा नियन्त्रण कार्यालयको वार्षिक क्यालेन्डर अनुसार डिप्लोमा तथा प्रमाणपत्र तह प्रथम वर्षको परीक्षा तालिका सार्वजनिक गरिएको छ।"
   }
 ];
+
+let mockNotices = JSON.parse(localStorage.getItem('mpi_notices') || 'null') || defaultNotices;
 
 const defaultTickers = [
   { id: 1, text: "CTEVT Diploma in Pharmacy & PCL General Medicine (HA) २०८३/०८४ भर्ना फाराम खुला सम्बन्धी अत्यन्त जरुरी सूचना!", tag: "भर्ना खुला" },
@@ -489,14 +494,19 @@ function renderNoticesTable() {
   tbody.innerHTML = mockNotices.map(n => `
     <tr>
       <td><strong>${n.id}</strong></td>
-      <td>${isEn ? n.title_en : n.title_ne}</td>
+      <td>${isEn ? (n.title_en || n.title_ne) : n.title_ne}</td>
       <td><span class="badge-status status-verified">${n.category}</span></td>
       <td>${n.date_bs}</td>
-      <td><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${n.file}</td>
+      <td><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${n.file || n.file_name || 'Document.pdf'}</td>
       <td>
-        <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteNotice('${n.id}')">
-          <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
-        </button>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#3B82F6; color:#ffffff;" onclick="editNotice('${n.id}')">
+            <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'सम्पादन'}
+          </button>
+          <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteNotice('${n.id}')">
+            <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -584,38 +594,141 @@ window.handleNoticeFileSelect = function(input) {
 
 // Add New Notice Handler (Opens Modal)
 window.addNewNotice = function() {
+  const isEn = (currentAdminLang === 'en');
   const form = document.getElementById('addNoticeForm');
   if (form) form.reset();
+
+  const editIdInput = document.getElementById('noticeEditId');
+  if (editIdInput) editIdInput.value = '';
+
   const preview = document.getElementById('noticeFilePreviewArea');
   if (preview) preview.style.display = 'none';
   selectedNoticeFileObj = null;
+
+  const modalTitle = document.getElementById('modalNoticeTitleText');
+  const btnSubmitText = document.getElementById('btnNoticeSubmitText');
+  const btnSubmitIcon = document.getElementById('btnNoticeSubmitIcon');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-file-circle-plus"></i> ${isEn ? 'Publish New Notice' : 'नयाँ सूचना प्रकाशन (Publish Notice)'}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Publish Notice' : 'सूचना प्रकाशित गर्नुहोस् (Publish)';
+  }
+  if (btnSubmitIcon) {
+    btnSubmitIcon.className = 'fa-solid fa-paper-plane';
+  }
+
   openAdminModal('addNoticeModal');
 };
 
-// Save Notice Form Submission
+// Edit Existing Notice Handler (Opens Modal Pre-filled)
+window.editNotice = function(id) {
+  const notice = mockNotices.find(n => n.id === id);
+  if (!notice) return;
+
+  const isEn = (currentAdminLang === 'en');
+
+  const editIdInput = document.getElementById('noticeEditId');
+  if (editIdInput) editIdInput.value = notice.id;
+
+  const titleNeInput = document.getElementById('noticeTitleNeInput');
+  const titleEnInput = document.getElementById('noticeTitleEnInput');
+  const catInput = document.getElementById('noticeCategoryInput');
+  const dateBsInput = document.getElementById('noticeDateBsInput');
+  const contentInput = document.getElementById('noticeContentNeInput');
+
+  if (titleNeInput) titleNeInput.value = notice.title_ne || '';
+  if (titleEnInput) titleEnInput.value = notice.title_en || '';
+  if (catInput) catInput.value = notice.category || 'Admission';
+  if (dateBsInput) dateBsInput.value = notice.date_bs || '';
+  if (contentInput) contentInput.value = notice.content_ne || '';
+
+  // Current file preview
+  const preview = document.getElementById('noticeFilePreviewArea');
+  const nameEl = document.getElementById('selectedNoticeFileName');
+  selectedNoticeFileObj = null;
+  const currentFile = notice.file || notice.file_name;
+  if (preview && nameEl && currentFile) {
+    nameEl.textContent = `${currentFile} (हालको फाइल)`;
+    preview.style.display = 'block';
+  } else if (preview) {
+    preview.style.display = 'none';
+  }
+
+  // Update modal heading and action button
+  const modalTitle = document.getElementById('modalNoticeTitleText');
+  const btnSubmitText = document.getElementById('btnNoticeSubmitText');
+  const btnSubmitIcon = document.getElementById('btnNoticeSubmitIcon');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isEn ? `Edit Notice (${notice.id})` : `सूचना सम्पादन गर्नुहोस् (${notice.id})`}`;
+  }
+  if (btnSubmitText) {
+    btnSubmitText.textContent = isEn ? 'Save Changes' : 'परिवर्तन सुरक्षित गर्नुहोस् (Save Changes)';
+  }
+  if (btnSubmitIcon) {
+    btnSubmitIcon.className = 'fa-solid fa-floppy-disk';
+  }
+
+  openAdminModal('addNoticeModal');
+};
+
+// Save Notice Form Submission (Add or Edit)
 window.handleSaveNotice = function(e) {
   e.preventDefault();
   const isEn = (currentAdminLang === 'en');
+  const editId = document.getElementById('noticeEditId')?.value;
   const titleNe = document.getElementById('noticeTitleNeInput')?.value.trim();
   const titleEn = document.getElementById('noticeTitleEnInput')?.value.trim() || titleNe;
   const category = document.getElementById('noticeCategoryInput')?.value || 'Admission';
   const dateBs = document.getElementById('noticeDateBsInput')?.value.trim() || '२०८३ आश्विन १४';
-  
-  const fileName = selectedNoticeFileObj ? selectedNoticeFileObj.name : `Notice_Document_${Date.now().toString().slice(-4)}.pdf`;
-  const newId = `N-2083-${Math.floor(100 + Math.random() * 900)}`;
+  const contentNe = document.getElementById('noticeContentNeInput')?.value.trim() || '';
 
-  mockNotices.unshift({
-    id: newId,
-    title_ne: titleNe,
-    title_en: titleEn,
-    category: category,
-    date_bs: dateBs,
-    file: fileName
-  });
+  if (editId) {
+    // Edit Mode
+    const idx = mockNotices.findIndex(n => n.id === editId);
+    if (idx !== -1) {
+      const existingFile = mockNotices[idx].file || mockNotices[idx].file_name || 'Notice_Document.pdf';
+      const fileName = selectedNoticeFileObj ? selectedNoticeFileObj.name : existingFile;
 
-  renderDashboard();
-  closeAdminModal('addNoticeModal');
-  alert(isEn ? `Notice "${titleEn}" published successfully with attachment: ${fileName}` : `सूचना "${titleNe}" सफलतापूर्वक संलग्न डकुमेन्ट सहित प्रकाशित भयो!`);
+      mockNotices[idx] = {
+        ...mockNotices[idx],
+        title_ne: titleNe,
+        title_en: titleEn,
+        category: category,
+        date_bs: dateBs,
+        file: fileName,
+        file_name: fileName,
+        content_ne: contentNe || mockNotices[idx].content_ne || titleNe
+      };
+
+      localStorage.setItem('mpi_notices', JSON.stringify(mockNotices));
+      renderDashboard();
+      closeAdminModal('addNoticeModal');
+      alert(isEn ? `Notice "${titleEn}" updated successfully!` : `सूचना "${titleNe}" सफलतापूर्वक सम्पादन भयो!`);
+    }
+  } else {
+    // New Notice Mode
+    const fileName = selectedNoticeFileObj ? selectedNoticeFileObj.name : `Notice_Document_${Date.now().toString().slice(-4)}.pdf`;
+    const newId = `N-2083-${Math.floor(100 + Math.random() * 900)}`;
+
+    mockNotices.unshift({
+      id: newId,
+      title_ne: titleNe,
+      title_en: titleEn,
+      category: category,
+      date_bs: dateBs,
+      file: fileName,
+      file_name: fileName,
+      content_ne: contentNe || titleNe
+    });
+
+    localStorage.setItem('mpi_notices', JSON.stringify(mockNotices));
+    renderDashboard();
+    closeAdminModal('addNoticeModal');
+    alert(isEn ? `Notice "${titleEn}" published successfully!` : `सूचना "${titleNe}" सफलतापूर्वक प्रकाशित भयो!`);
+  }
 };
 
 window.addNewTicker = function() {
@@ -709,6 +822,7 @@ window.deleteNotice = function(id) {
   const isEn = (currentAdminLang === 'en');
   if (confirm(isEn ? `Delete notice ${id}?` : `के तपाईं यो सूचना (${id}) हटाउन चाहनुहुन्छ?`)) {
     mockNotices = mockNotices.filter(n => n.id !== id);
+    localStorage.setItem('mpi_notices', JSON.stringify(mockNotices));
     renderDashboard();
   }
 };

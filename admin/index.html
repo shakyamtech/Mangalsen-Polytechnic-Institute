@@ -416,7 +416,7 @@
        3. Admin Modals Hub
        ========================================== -->
   
-  <!-- Add New Notice Modal with File Attachment -->
+  <!-- Add / Edit Notice Modal with File Attachment -->
   <div class="admin-modal-backdrop" id="addNoticeModal">
     <div class="admin-modal-dialog">
       <div class="admin-modal-header">
@@ -425,6 +425,7 @@
       </div>
       <div class="admin-modal-body">
         <form id="addNoticeForm" onsubmit="handleSaveNotice(event)">
+          <input type="hidden" id="noticeEditId" value="" />
           
           <div class="form-group-admin">
             <label class="form-label-admin">सूचनाको शीर्षक (नेपालीमा) <span style="color:var(--admin-accent);">*</span>:</label>
@@ -453,6 +454,11 @@
             </div>
           </div>
 
+          <div class="form-group-admin">
+            <label class="form-label-admin">सूचनाको विस्तृत विवरण (Notice Content / Details):</label>
+            <textarea id="noticeContentNeInput" class="login-input" rows="3" style="margin-bottom:0;" placeholder="सूचनाको विस्तृत विवरण यहाँ लेख्नुहोस् (वा खाली छोड्नुहोस्)..."></textarea>
+          </div>
+
           <!-- Attachment Upload Dropzone -->
           <div class="form-group-admin">
             <label class="form-label-admin"><i class="fa-solid fa-paperclip"></i> आधिकारिक PDF डकुमेन्ट / फाइल संलग्न गर्नुहोस् (Attachment):</label>
@@ -475,8 +481,8 @@
             <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('addNoticeModal')">
               रद्द गर्नुहोस् (Cancel)
             </button>
-            <button type="submit" class="btn-admin btn-admin-primary">
-              <i class="fa-solid fa-paper-plane"></i> सूचना प्रकाशित गर्नुहोस् (Publish)
+            <button type="submit" class="btn-admin btn-admin-primary" id="btnNoticeSubmit">
+              <i class="fa-solid fa-paper-plane" id="btnNoticeSubmitIcon"></i> <span id="btnNoticeSubmitText">सूचना प्रकाशित गर्नुहोस् (Publish)</span>
             </button>
           </div>
 

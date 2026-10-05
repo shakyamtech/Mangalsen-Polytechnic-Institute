@@ -3,7 +3,7 @@
  * Notices, Circulars & Examination Results Hub
  */
 
-const noticesData = [
+const defaultNoticesData = [
   {
     id: "N-2083-104",
     title_ne: "CTEVT डिप्लोमा इन फार्मेसी तथा PCL सामान्य चिकित्सा (HA) तहमा नयाँ भर्ना आवेदन फाराम भर्ने सम्बन्धी अत्यन्त जरुरी सूचना!",
@@ -96,7 +96,81 @@ const noticesData = [
   }
 ];
 
+function getDynamicNotices() {
+  try {
+    const raw = localStorage.getItem('mpi_notices');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((n, idx) => {
+          const rawCat = (n.category || 'Admission').toLowerCase();
+          let normCat = 'admission';
+          let catClass = 'cat-admission';
+          let catLabel_ne = 'भर्ना सूचना';
+          let catLabel_en = 'Admission';
+
+          if (rawCat.includes('exam')) {
+            normCat = 'exam';
+            catClass = 'cat-exam';
+            catLabel_ne = 'परीक्षा तालिका';
+            catLabel_en = 'Examination';
+          } else if (rawCat.includes('tender')) {
+            normCat = 'tender';
+            catClass = 'cat-tender';
+            catLabel_ne = 'बोलपत्र';
+            catLabel_en = 'Tender/Procurement';
+          } else if (rawCat.includes('scholarship')) {
+            normCat = 'admission';
+            catClass = 'cat-admission';
+            catLabel_ne = 'छात्रवृत्ति';
+            catLabel_en = 'Scholarship';
+          } else if (rawCat.includes('circular')) {
+            normCat = 'circular';
+            catClass = 'cat-circular';
+            catLabel_ne = 'परिपत्र';
+            catLabel_en = 'Circular';
+          }
+
+          return {
+            id: n.id || `N-${idx}`,
+            title_ne: n.title_ne || '',
+            title_en: n.title_en || n.title_ne || '',
+            category: normCat,
+            categoryLabel_ne: n.categoryLabel_ne || catLabel_ne,
+            categoryLabel_en: n.categoryLabel_en || catLabel_en,
+            catClass: n.catClass || catClass,
+            date_bs: n.date_bs || '२०८३ आश्विन १४',
+            date_ad: n.date_ad || '2026-09-30',
+            day: n.day || '१४',
+            month_ne: n.month_ne || 'आश्विन',
+            month_en: n.month_en || 'SEP',
+            isNew: idx === 0,
+            file_name: n.file || n.file_name || 'Notice_Document.pdf',
+            content_ne: n.content_ne || n.title_ne,
+            content_en: n.content_en || n.title_en || n.content_ne || n.title_ne
+          };
+        });
+      }
+    }
+  } catch (e) {
+    console.warn('Dynamic notices load error', e);
+  }
+  return defaultNoticesData;
+}
+
+let noticesData = getDynamicNotices();
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'mpi_notices') {
+    noticesData = getDynamicNotices();
+    const activeBtn = document.querySelector('.notices-filter-nav .filter-pill-btn.active');
+    const cat = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+    renderNotices(cat);
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
+  noticesData = getDynamicNotices();
   renderNotices('all');
   initNoticeFilters();
   initNoticeSearch();
