@@ -139,20 +139,110 @@ function populateReviewStep() {
 
 function submitApplication() {
   const prog = document.getElementById('admProgram')?.value;
-  const progText = document.getElementById('admProgram')?.options[document.getElementById('admProgram').selectedIndex]?.text;
-  const quotaText = document.getElementById('admQuota')?.options[document.getElementById('admQuota').selectedIndex]?.text;
-  const nameEn = document.getElementById('admFullNameEn')?.value;
-  const nameNe = document.getElementById('admFullNameNe')?.value;
-  const phone = document.getElementById('admPhone')?.value;
-  const gpa = document.getElementById('admGpa')?.value;
-  const symbol = document.getElementById('admSymbolNo')?.value;
-  const district = document.getElementById('admDistrict')?.value;
-  const father = document.getElementById('admFatherName')?.value || 'N/A';
+  const progText = document.getElementById('admProgram')?.options[document.getElementById('admProgram').selectedIndex]?.text || 'PCL in General Medicine (HA)';
+  const quotaText = document.getElementById('admQuota')?.options[document.getElementById('admQuota').selectedIndex]?.text || 'Open Merit';
+  const nameEn = document.getElementById('admFullNameEn')?.value.trim() || '';
+  const nameNe = document.getElementById('admFullNameNe')?.value.trim() || '';
+  const phone = document.getElementById('admPhone')?.value.trim() || '';
+  const gpa = document.getElementById('admGpa')?.value.trim() || '3.20';
+  const symbol = document.getElementById('admSymbolNo')?.value.trim() || '';
+  const district = document.getElementById('admDistrict')?.value.trim() || 'Mangalsen-3, Achham';
+  const school = document.getElementById('admSchool')?.value.trim() || '';
+  const father = document.getElementById('admFatherName')?.value.trim() || 'N/A';
+  const gradeSci = document.getElementById('admGradeSci')?.value || 'B+';
+  const dobBs = document.getElementById('admDobBs')?.value.trim() || '';
+  const gender = document.getElementById('admGender')?.value || 'male';
+  const examCenter = document.getElementById('admCenter')?.value || 'mpi_campus';
 
   const randomNum = Math.floor(1000 + Math.random() * 9000);
   const progCode = (prog === 'pharmacy') ? 'PHARM' : 'HA';
-  const appId = `MPI-2081-${progCode}-${randomNum}`;
-  const appliedDate = "२०८१ आश्विन १४ (2026-09-30)";
+  const appId = `MPI-2083-${progCode}-${randomNum}`;
+  const now = new Date();
+  const appliedDate = `२०८३ आश्विन १४ (${now.toISOString().slice(0, 10)})`;
+
+  // Construct applicant object and persist to localStorage for admin panel sync
+  const newApplicant = {
+    app_id: appId,
+    program: (prog === 'pharmacy') ? 'Diploma in Pharmacy' : 'PCL in General Medicine (HA)',
+    quota: quotaText,
+    name_ne: nameNe || 'विद्यार्थी',
+    name_en: (nameEn || 'STUDENT').toUpperCase(),
+    phone: phone,
+    district: district,
+    school: school || 'Secondary School',
+    symbol_no: symbol || '08001000A',
+    gpa: gpa,
+    grade_sci: gradeSci,
+    father: father,
+    status: 'Pending',
+    date: appliedDate,
+    dob_bs: dobBs,
+    gender: gender,
+    exam_center: examCenter,
+    timestamp: Date.now()
+  };
+
+  try {
+    let admissionsList = [];
+    const stored = localStorage.getItem('mpi_admissions');
+    if (stored) {
+      admissionsList = JSON.parse(stored);
+      if (!Array.isArray(admissionsList)) admissionsList = [];
+    } else {
+      // Initialize with default admin records if first time
+      admissionsList = [
+        {
+          app_id: "MPI-2083-HA-8842",
+          program: "PCL in General Medicine (HA)",
+          quota: "Classified Scholarship",
+          name_ne: "रमेश बहादुर कुँवर",
+          name_en: "RAMESH BAHADUR KUNWAR",
+          phone: "9848765432",
+          district: "Mangalsen-3, Achham",
+          school: "Shree Shodasha Devi Ma.Vi.",
+          symbol_no: "08004128K",
+          gpa: "3.15",
+          grade_sci: "B+",
+          status: "Verified",
+          date: "२०८३ आश्विन १४"
+        },
+        {
+          app_id: "MPI-2083-PHARM-7219",
+          program: "Diploma in Pharmacy",
+          quota: "Open Merit",
+          name_ne: "सिता कुमारी शाही",
+          name_en: "SITA KUMARI SHAHI",
+          phone: "9868123456",
+          district: "Sanfebagar-2, Achham",
+          school: "Shree Tribhuvan Ma.Vi.",
+          symbol_no: "08009921B",
+          gpa: "3.45",
+          grade_sci: "A",
+          status: "Verified",
+          date: "२०८३ आश्विन १३"
+        },
+        {
+          app_id: "MPI-2083-HA-4310",
+          program: "PCL in General Medicine (HA)",
+          quota: "Female Quota",
+          name_ne: "पुजा अधिकारी",
+          name_en: "PUJA ADHIKARI",
+          phone: "9812345678",
+          district: "Kamalbazar, Achham",
+          school: "Kamalbazar Secondary School",
+          symbol_no: "08001244M",
+          gpa: "2.90",
+          grade_sci: "C+",
+          status: "Pending",
+          date: "२०८३ आश्विन १२"
+        }
+      ];
+    }
+    admissionsList.unshift(newApplicant);
+    localStorage.setItem('mpi_admissions', JSON.stringify(admissionsList));
+  } catch(e) {
+    console.error('Error saving admission application:', e);
+  }
 
   // Render Admit Card Slip
   const wizardCard = document.getElementById('admissionWizardBody');

@@ -196,7 +196,7 @@ const adminI18n = {
 };
 
 // Data Stores
-let mockAdmissions = [
+const defaultAdmissions = [
   {
     app_id: "MPI-2083-HA-8842",
     program: "PCL in General Medicine (HA)",
@@ -210,7 +210,7 @@ let mockAdmissions = [
     gpa: "3.15",
     grade_sci: "B+",
     status: "Verified",
-    date: "2083-06-14"
+    date: "२०८३ आश्विन १४"
   },
   {
     app_id: "MPI-2083-PHARM-7219",
@@ -225,7 +225,7 @@ let mockAdmissions = [
     gpa: "3.45",
     grade_sci: "A",
     status: "Verified",
-    date: "2083-06-13"
+    date: "२०८३ आश्विन १३"
   },
   {
     app_id: "MPI-2083-HA-4310",
@@ -240,9 +240,28 @@ let mockAdmissions = [
     gpa: "2.90",
     grade_sci: "C+",
     status: "Pending",
-    date: "2083-06-12"
+    date: "२०८३ आश्विन १२"
   }
 ];
+
+function loadStoredAdmissions() {
+  const raw = localStorage.getItem('mpi_admissions');
+  if (!raw) {
+    try {
+      localStorage.setItem('mpi_admissions', JSON.stringify(defaultAdmissions));
+    } catch(e) {}
+    return defaultAdmissions;
+  }
+  try {
+    const stored = JSON.parse(raw);
+    if (!Array.isArray(stored) || stored.length === 0) return defaultAdmissions;
+    return stored;
+  } catch (e) {
+    return defaultAdmissions;
+  }
+}
+
+let mockAdmissions = loadStoredAdmissions();
 
 const defaultNotices = [
   {
@@ -627,9 +646,14 @@ function renderAdmissionsTable(filterCourse = 'all', searchQuery = '') {
       <td>${item.phone}<br><small style="color:#64748B;">${item.district}</small></td>
       <td><span class="badge-status ${item.status === 'Verified' ? 'status-verified' : 'status-pending'}">${item.status}</span></td>
       <td>
-        <button class="btn-admin btn-admin-primary" style="padding:4px 8px; font-size:0.75rem;" onclick="viewApplicantDetail('${item.app_id}')">
-          <i class="fa-solid fa-eye"></i> ${isEn ? 'View Profile' : 'हेर्नुहोस्'}
-        </button>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="btn-admin btn-admin-primary" style="padding:4px 8px; font-size:0.75rem;" onclick="viewApplicantDetail('${item.app_id}')">
+            <i class="fa-solid fa-eye"></i> ${isEn ? 'View Profile' : 'हेर्नुहोस्'}
+          </button>
+          <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteAdmission('${item.app_id}')" title="${isEn ? 'Delete' : 'हटाउनुहोस्'}">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -1574,11 +1598,14 @@ window.viewApplicantDetail = function(appId) {
         </div>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem;">
-        <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; flex-wrap:wrap; gap:0.5rem;">
+        <div style="display:flex; gap:0.5rem;">
           <button class="btn-admin ${app.status === 'Verified' ? 'btn-admin-danger' : 'btn-admin-success'}" style="font-size:0.85rem;" onclick="toggleApplicantVerification('${app.app_id}')">
             <i class="fa-solid ${app.status === 'Verified' ? 'fa-xmark' : 'fa-check'}"></i> 
             ${app.status === 'Verified' ? (isEn ? 'Mark as Pending' : 'प्रमाणिकरण रद्द (Pending)') : (isEn ? 'Verify Applicant' : 'प्रमाणित गर्नुहोस् (Verify)')}
+          </button>
+          <button class="btn-admin btn-admin-danger" style="font-size:0.85rem;" onclick="deleteAdmission('${app.app_id}')">
+            <i class="fa-solid fa-trash"></i> ${isEn ? 'Delete' : 'हटाउनुहोस्'}
           </button>
         </div>
         <div style="display:flex; gap:0.5rem;">
@@ -1601,8 +1628,19 @@ window.toggleApplicantVerification = function(appId) {
   if (!app) return;
   
   app.status = (app.status === 'Verified') ? 'Pending' : 'Verified';
+  localStorage.setItem('mpi_admissions', JSON.stringify(mockAdmissions));
   renderDashboard();
   viewApplicantDetail(appId);
+};
+
+window.deleteAdmission = function(appId) {
+  const isEn = (currentAdminLang === 'en');
+  if (confirm(isEn ? `Are you sure you want to delete application ${appId}?` : `के तपाईं आवेदन (${appId}) विवरण स्थायी रूपमा हटाउन चाहनुहुन्छ?`)) {
+    mockAdmissions = mockAdmissions.filter(a => a.app_id !== appId);
+    localStorage.setItem('mpi_admissions', JSON.stringify(mockAdmissions));
+    renderDashboard();
+    closeAdminModal('applicantDetailModal');
+  }
 };
 
 // ==========================================
@@ -1881,3 +1919,31 @@ window.handleSaveContactSettings = function(e) {
   closeAdminModal('contactSettingsModal');
   alert('शिक्षालयको सम्पर्क तथा ठेगाना विवरण सफलतापूर्वक अपडेट भयो!');
 };
+
+// ==========================================
+// Cross-Tab Live Synchronization
+// ==========================================
+window.addEventListener('storage', (e) => {
+  if (e.key === 'mpi_admissions') {
+    mockAdmissions = loadStoredAdmissions();
+    renderKPIs();
+    renderOverviewRecent();
+    if (activeView === 'admissions' || activeView === 'overview') {
+      renderAdmissionsTable();
+    }
+  } else if (e.key === 'mpi_inquiries') {
+    mockInquiries = JSON.parse(localStorage.getItem('mpi_inquiries') || 'null') || defaultInquiries;
+    updateInquiryUnreadBadge();
+    if (activeView === 'inquiries') {
+      renderInquiriesTable();
+    }
+  } else if (e.key === 'mpi_notices') {
+    mockNotices = loadStoredAdminNotices();
+    renderKPIs();
+    renderOverviewRecent();
+    if (activeView === 'notices') {
+      renderNoticesTable();
+    }
+  }
+});
+
