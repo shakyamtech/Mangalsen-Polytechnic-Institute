@@ -91,6 +91,12 @@
             <i class="fa-solid fa-file-arrow-down"></i> <span data-admin-i18n="nav_downloads">डाउनलोड हब</span>
           </a>
         </li>
+        <li class="sidebar-nav-item" data-view-target="inquiries">
+          <a href="javascript:void(0)" onclick="switchAdminView('inquiries')">
+            <i class="fa-solid fa-envelope-open-text"></i> <span data-admin-i18n="nav_inquiries">सम्पर्क सन्देशहरू (Inbox)</span>
+            <span id="unreadInquiriesBadge" style="margin-left:auto; background:#EF4444; color:#fff; font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:10px; display:none;">0</span>
+          </a>
+        </li>
         <li class="sidebar-nav-item">
           <a href="../index.html" target="_blank">
             <i class="fa-solid fa-arrow-up-right-from-square"></i> <span data-admin-i18n="nav_main_site">मुख्य वेबसाइट हेर्नुहोस्</span>
@@ -490,6 +496,48 @@
         </div>
       </section>
 
+      <!-- ==============================================
+           PAGE 8: INQUIRIES & CONTACT MESSAGES VIEW
+           ============================================== -->
+      <section class="admin-view-panel" id="view-inquiries" style="display: none;">
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title"><i class="fa-solid fa-envelope-open-text"></i> <span data-admin-i18n="inquiries_title">सम्पर्क तथा सोधपुछ सन्देशहरू (Inquiries Inbox)</span></h3>
+              <span style="font-size: 0.82rem; color: var(--admin-text-muted);" data-admin-i18n="inquiries_sub">वेबसाइटबाट सर्वसाधारण र विद्यार्थीहरूले पठाएका सन्देश तथा जिज्ञासाहरूको विवरण</span>
+            </div>
+            <button class="btn-admin" style="background:#0284C7; color:#fff;" onclick="openContactSettingsModal()">
+              <i class="fa-solid fa-gear"></i> <span>सम्पर्क ठेगाना/फोन सेटिङ</span>
+            </button>
+          </div>
+
+          <div style="display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap;">
+            <button class="btn-admin" id="filterInqAll" style="background:var(--admin-primary); color:#fff; font-size:0.8rem; padding:5px 12px;" onclick="filterInquiries('all', this)">सबै सन्देशहरू (<span id="inquiryCountAll">0</span>)</button>
+            <button class="btn-admin" id="filterInqNew" style="background:#E2E8F0; color:#334155; font-size:0.8rem; padding:5px 12px;" onclick="filterInquiries('new', this)">नयाँ / अपठित (<span id="inquiryCountNew">0</span>)</button>
+            <button class="btn-admin" id="filterInqReplied" style="background:#E2E8F0; color:#334155; font-size:0.8rem; padding:5px 12px;" onclick="filterInquiries('replied', this)">जवाफ दिइएको (<span id="inquiryCountReplied">0</span>)</button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>मिति (Date)</th>
+                  <th>पठाउने व्यक्ति (Sender)</th>
+                  <th>सम्पर्क (Phone / Email)</th>
+                  <th>विषय (Subject)</th>
+                  <th>सन्देश (Message Preview)</th>
+                  <th>स्थिति (Status)</th>
+                  <th data-admin-i18n="th_action">कार्य</th>
+                </tr>
+              </thead>
+              <tbody id="adminInquiriesTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -782,6 +830,70 @@
       </div>
       <div class="admin-modal-body" id="modalApplicantBody">
         <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- View Inquiry Message Modal -->
+  <div class="admin-modal-backdrop" id="viewInquiryModal">
+    <div class="admin-modal-dialog" style="max-width:600px;">
+      <div class="admin-modal-header" style="background:#F8FAFC; border-bottom:1px solid #E2E8F0;">
+        <div>
+          <span style="font-size:0.75rem; font-weight:700; color:#0284C7; text-transform:uppercase;" id="modalInquiryIdBadge">INQUIRY MESSAGE</span>
+          <h4 class="admin-modal-title" id="modalInquirySenderName" style="color:var(--admin-primary); margin-top:2px;">Sender Name</h4>
+        </div>
+        <button class="admin-modal-close" onclick="closeAdminModal('viewInquiryModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body" id="modalInquiryBody">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact & Institution Info Settings Modal -->
+  <div class="admin-modal-backdrop" id="contactSettingsModal">
+    <div class="admin-modal-dialog" style="max-width:580px;">
+      <div class="admin-modal-header">
+        <h4 class="admin-modal-title"><i class="fa-solid fa-sliders"></i> शिक्षालय सम्पर्क तथा ठेगाना सेटिङ</h4>
+        <button class="admin-modal-close" onclick="closeAdminModal('contactSettingsModal')">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form onsubmit="handleSaveContactSettings(event)">
+          <div class="form-group-admin">
+            <label class="form-label-admin">ठेगाना / अवस्थिति (Location):</label>
+            <input type="text" id="settingLocationInput" class="login-input" placeholder="उदा. Mangalsen Municipality Ward No. 3, Achham" required />
+          </div>
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">फोन / हटलाइन (Phone / Hotline):</label>
+              <input type="text" id="settingPhoneInput" class="login-input" placeholder="उदा. 097-620000 / 9858488000" required />
+            </div>
+            <div class="form-group-admin">
+              <label class="form-label-admin">इमेल ठेगाना (Email Address):</label>
+              <input type="email" id="settingEmailInput" class="login-input" placeholder="उदा. info@mpi.edu.np" required />
+            </div>
+          </div>
+          <div class="form-group-admin">
+            <label class="form-label-admin">कार्यालय समय (Office Hours):</label>
+            <input type="text" id="settingHoursInput" class="login-input" placeholder="उदा. Sun - Thu: 10:00 AM - 5:00 PM | Fri: 10:00 AM - 3:00 PM" required />
+          </div>
+          <div class="form-grid-2-admin">
+            <div class="form-group-admin">
+              <label class="form-label-admin">Facebook Page URL:</label>
+              <input type="url" id="settingFacebookInput" class="login-input" placeholder="https://facebook.com/..." />
+            </div>
+            <div class="form-group-admin">
+              <label class="form-label-admin">YouTube Channel URL:</label>
+              <input type="url" id="settingYoutubeInput" class="login-input" placeholder="https://youtube.com/..." />
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.25rem;">
+            <button type="button" class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('contactSettingsModal')">रद्द</button>
+            <button type="submit" class="btn-admin btn-admin-primary">
+              <i class="fa-solid fa-floppy-disk"></i> <span>परिवर्तन सुरक्षित गर्नुहोस्</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

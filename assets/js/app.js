@@ -363,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDynamicCharter();
   initDynamicFaculty();
   initDynamicDownloads();
+  initDynamicContactInfo();
   initHeroSlider();
   initAccessibility();
   initNoticeModalPopup();
@@ -537,7 +538,81 @@ function initDynamicTicker() {
   }
 }
 
-// Auto-sync ticker, charter, faculty & downloads live across browser tabs
+// Dynamic Institution Contact Info Sync from Admin
+const defaultContactData = {
+  location: "Mangalsen Municipality Ward No. 3, Achham, Sudurpashchim Province, Nepal",
+  phone: "097-620000 / 9858488000 / 9848765432",
+  email: "info@mpi.edu.np / mangalsenpi@gmail.com",
+  hours: "Sun - Thu: 10:00 AM - 5:00 PM\nFriday: 10:00 AM - 3:00 PM (Saturday Closed)",
+  facebook: "https://www.facebook.com/mangalsenpi/",
+  youtube: "https://www.youtube.com/"
+};
+
+function initDynamicContactInfo() {
+  try {
+    const raw = localStorage.getItem('mpi_contact_info');
+    const data = raw ? JSON.parse(raw) : defaultContactData;
+    if (data) {
+      const locEl = document.getElementById('contactInfoLocation');
+      const phEl = document.getElementById('contactInfoPhone');
+      const emEl = document.getElementById('contactInfoEmail');
+      const hrEl = document.getElementById('contactInfoHours');
+      const fbEl = document.getElementById('contactInfoFacebook');
+      const ytEl = document.getElementById('contactInfoYoutube');
+
+      if (locEl && data.location) locEl.textContent = data.location;
+      if (phEl && data.phone) phEl.textContent = data.phone;
+      if (emEl && data.email) emEl.textContent = data.email;
+      if (hrEl && data.hours) hrEl.innerHTML = data.hours.replace(/\n/g, '<br>').replace(/\|/g, '<br>');
+      if (fbEl && data.facebook) fbEl.href = data.facebook;
+      if (ytEl && data.youtube) ytEl.href = data.youtube;
+    }
+  } catch (e) {
+    console.warn('Dynamic contact load error', e);
+  }
+}
+
+// Contact Inquiry Form Submission Handler
+window.handleContactInquirySubmit = function(event) {
+  if (event) event.preventDefault();
+  const name = document.getElementById('inquiryName')?.value.trim();
+  const phone = document.getElementById('inquiryPhone')?.value.trim();
+  const email = document.getElementById('inquiryEmail')?.value.trim();
+  const subject = document.getElementById('inquirySubject')?.value || 'General Inquiries';
+  const message = document.getElementById('inquiryMessage')?.value.trim();
+
+  if (!name || !phone || !message) {
+    alert('कृपया सबै अनिवार्य विवरण (नाम, फोन र सन्देश) भर्नुहोस्।');
+    return;
+  }
+
+  const newInquiry = {
+    id: `INQ-2083-${Math.floor(100 + Math.random() * 900)}`,
+    name,
+    phone,
+    email,
+    subject,
+    message,
+    date: '२०८३/०६/१४',
+    status: 'New'
+  };
+
+  try {
+    const raw = localStorage.getItem('mpi_inquiries');
+    const inquiries = raw ? JSON.parse(raw) : [];
+    inquiries.unshift(newInquiry);
+    localStorage.setItem('mpi_inquiries', JSON.stringify(inquiries));
+  } catch (e) {
+    console.warn('Error saving inquiry', e);
+  }
+
+  const form = document.getElementById('contactInquiryForm');
+  if (form) form.reset();
+
+  alert(`धन्यवाद ${name} ज्यू! तपाईंको सोधपुछ सन्देश (ID: ${newInquiry.id}) मङ्गलसेन बहुप्राविधिक शिक्षालयमा सफलतापूर्वक दर्ता भएको छ। हाम्रा प्रतिनिधिले छिट्टै सम्पर्क गर्नेछन्।`);
+};
+
+// Auto-sync ticker, charter, faculty, downloads & contact live across browser tabs
 window.addEventListener('storage', (e) => {
   if (e.key === 'mpi_tickers') {
     initDynamicTicker();
@@ -550,6 +625,9 @@ window.addEventListener('storage', (e) => {
   }
   if (e.key === 'mpi_downloads') {
     initDynamicDownloads();
+  }
+  if (e.key === 'mpi_contact_info') {
+    initDynamicContactInfo();
   }
 });
 
@@ -676,10 +754,11 @@ function setLanguage(lang) {
     checkEligibility();
   }
 
-  // Preserve dynamic tickers, faculty & downloads
+  // Preserve dynamic tickers, faculty, downloads & contact
   initDynamicTicker();
   initDynamicFaculty();
   initDynamicDownloads();
+  initDynamicContactInfo();
 }
 
 // Dark / Light Theme

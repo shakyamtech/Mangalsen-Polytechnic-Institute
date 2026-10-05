@@ -23,8 +23,11 @@ const adminI18n = {
     btn_add_charter: "नयाँ सेवा थप्नुहोस्",
     btn_add_download: "नयाँ फाइल थप्नुहोस्",
     nav_downloads: "डाउनलोड हब",
+    nav_inquiries: "सम्पर्क सन्देशहरू (Inbox)",
     downloads_cms_title: "डाउनलोड हब व्यवस्थापन (Downloads & Resources CMS)",
     downloads_cms_sub: "पाठ्यक्रम, मोडल प्रश्नपत्र, शैक्षिक क्यालेन्डर तथा स्रोत सामग्री अपलोड र सम्पादन गर्नुहोस्",
+    inquiries_title: "सम्पर्क तथा सोधपुछ सन्देशहरू (Inquiries Inbox)",
+    inquiries_sub: "वेबसाइटबाट सर्वसाधारण र विद्यार्थीहरूले पठाएका सन्देश तथा जिज्ञासाहरूको विवरण",
     th_doc_title: "फाइल शीर्षक (Document Title)",
     th_doc_cat: "विधा (Category)",
     th_doc_date: "मिति (Date)",
@@ -106,6 +109,7 @@ const adminI18n = {
     nav_staff: "Faculty & Staff",
     nav_charter: "Citizen Charter",
     nav_downloads: "Downloads Hub",
+    nav_inquiries: "Inquiries Inbox",
     nav_main_site: "View Main Website",
     btn_logout: "Logout",
     btn_add_notice: "Add New Notice",
@@ -116,6 +120,8 @@ const adminI18n = {
     btn_add_download: "Add New Resource",
     downloads_cms_title: "Downloads & Resources CMS",
     downloads_cms_sub: "Manage and upload syllabus, model question papers, and academic resources",
+    inquiries_title: "Contact & Inquiries Inbox",
+    inquiries_sub: "Manage public inquiries, consultation messages, and feedback from website",
     th_doc_title: "Document Title",
     th_doc_cat: "Category",
     th_doc_date: "Date",
@@ -343,6 +349,42 @@ const defaultDownloads = [
 
 let mockDownloads = JSON.parse(localStorage.getItem('mpi_downloads') || 'null') || defaultDownloads;
 
+const defaultContactInfo = {
+  location: "Mangalsen Municipality Ward No. 3, Achham, Sudurpashchim Province, Nepal",
+  phone: "097-620000 / 9858488000 / 9848765432",
+  email: "info@mpi.edu.np / mangalsenpi@gmail.com",
+  hours: "Sun - Thu: 10:00 AM - 5:00 PM | Friday: 10:00 AM - 3:00 PM (Saturday Closed)",
+  facebook: "https://www.facebook.com/mangalsenpi/",
+  youtube: "https://www.youtube.com/"
+};
+
+let mockContactInfo = JSON.parse(localStorage.getItem('mpi_contact_info') || 'null') || defaultContactInfo;
+
+const defaultInquiries = [
+  {
+    id: "INQ-2083-001",
+    name: "गणेश रोकाया",
+    phone: "9848123456",
+    email: "ganesh.roka@gmail.com",
+    subject: "Admissions & Scholarships",
+    message: "नमस्ते, म कक्षा १० पास भएको विद्यार्थी हुँ। HA मा classified scholarship को लागि प्रवेश परीक्षा फाराम भर्ने अन्तिम मिति कहिले सम्म छ?",
+    date: "२०८३/०६/१४",
+    status: "New"
+  },
+  {
+    id: "INQ-2083-002",
+    name: "मनिषा साउद",
+    phone: "9868789012",
+    email: "manisha.saud@gmail.com",
+    subject: "Fee Structure & Syllabus",
+    message: "फार्मेसीको ३ वर्षे डिप्लोमा कोर्षको कुल शुल्क कति लाग्छ र किस्ताबन्दी सुविधा छ कि छैन जानकारी पाउँ।",
+    date: "२०८३/०६/१३",
+    status: "Replied"
+  }
+];
+
+let mockInquiries = JSON.parse(localStorage.getItem('mpi_inquiries') || 'null') || defaultInquiries;
+
 let activeView = 'overview';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -474,6 +516,10 @@ window.switchAdminView = function(viewKey) {
     downloads: {
       title: isEn ? "Downloads & Resources CMS" : "डाउनलोड हब व्यवस्थापन (Downloads CMS)",
       sub: isEn ? "Curriculum syllabus, model questions, and academic resources" : "पाठ्यक्रम, मोडल प्रश्नपत्र तथा शैक्षिक सामग्री अपलोड र व्यवस्थापन"
+    },
+    inquiries: {
+      title: isEn ? "Contact & Inquiries Inbox" : "सम्पर्क तथा सोधपुछ सन्देशहरू (Inquiries Inbox)",
+      sub: isEn ? "Public feedback and admission inquiries from website" : "विद्यार्थी तथा सर्वसाधारणका जिज्ञासा र सन्देशहरू"
     }
   };
 
@@ -494,6 +540,7 @@ window.switchAdminView = function(viewKey) {
   if (viewKey === 'staff') renderStaffTable();
   if (viewKey === 'charter') renderCharterTable();
   if (viewKey === 'downloads') renderDownloadsTable();
+  if (viewKey === 'inquiries') renderInquiriesTable();
 };
 
 function renderDashboard() {
@@ -506,6 +553,8 @@ function renderDashboard() {
   renderStaffTable();
   renderCharterTable();
   renderDownloadsTable();
+  renderInquiriesTable();
+  updateInquiryUnreadBadge();
 }
 
 function renderKPIs() {
@@ -1624,4 +1673,211 @@ window.savePopupSettings = function(e) {
 window.resetPopupDismissCache = function() {
   localStorage.removeItem('mpi_notice_dismissed_v1');
   alert(currentAdminLang === 'en' ? '🔄 Pop-up dismiss cache cleared! You can now visit the homepage to preview the popup.' : '🔄 पप-अप क्यास रिसेट गरियो! अब मुख्य वेबसाइट खोल्दा पप-अप तुरुन्त देखिनेछ।');
+};
+
+// ==========================================
+// Inquiries & Contact Messages Manager
+// ==========================================
+let currentInquiryFilter = 'all';
+
+window.filterInquiries = function(filter, btn) {
+  currentInquiryFilter = filter;
+  ['filterInqAll', 'filterInqNew', 'filterInqReplied'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.background = '#E2E8F0';
+      el.style.color = '#334155';
+    }
+  });
+  if (btn) {
+    btn.style.background = 'var(--admin-primary)';
+    btn.style.color = '#ffffff';
+  }
+  renderInquiriesTable();
+};
+
+window.updateInquiryUnreadBadge = function() {
+  const badge = document.getElementById('unreadInquiriesBadge');
+  const countAll = document.getElementById('inquiryCountAll');
+  const countNew = document.getElementById('inquiryCountNew');
+  const countReplied = document.getElementById('inquiryCountReplied');
+
+  const unreadCount = mockInquiries.filter(i => i.status === 'New').length;
+  const repliedCount = mockInquiries.filter(i => i.status === 'Replied').length;
+
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+  if (countAll) countAll.textContent = mockInquiries.length;
+  if (countNew) countNew.textContent = unreadCount;
+  if (countReplied) countReplied.textContent = repliedCount;
+};
+
+window.renderInquiriesTable = function() {
+  const tbody = document.getElementById('adminInquiriesTableBody');
+  if (!tbody) return;
+
+  updateInquiryUnreadBadge();
+
+  let list = mockInquiries;
+  if (currentInquiryFilter === 'new') {
+    list = mockInquiries.filter(i => i.status === 'New');
+  } else if (currentInquiryFilter === 'replied') {
+    list = mockInquiries.filter(i => i.status === 'Replied');
+  }
+
+  const isEn = (currentAdminLang === 'en');
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--admin-text-muted); padding:2rem;">कुनै सन्देश फेला परेन (No messages in this folder)</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(inq => {
+    const isNew = inq.status === 'New';
+    const statusBadge = isNew
+      ? `<span class="badge-status" style="background:#FEE2E2; color:#DC2626;"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> नयाँ (New)</span>`
+      : `<span class="badge-status status-verified"><i class="fa-solid fa-check"></i> जवाफ दिइयो (Replied)</span>`;
+
+    const msgPreview = inq.message.length > 50 ? inq.message.substring(0, 50) + '...' : inq.message;
+
+    return `
+      <tr style="${isNew ? 'font-weight:600; background:#F8FAFC;' : ''}">
+        <td>${inq.date || '-'}</td>
+        <td>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:32px; height:32px; border-radius:50%; background:#E0F2FE; color:#0284C7; display:flex; align-items:center; justify-content:center; font-size:0.85rem;">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <strong>${inq.name}</strong>
+          </div>
+        </td>
+        <td>
+          <div style="font-size:0.82rem;">
+            <div><i class="fa-solid fa-phone" style="color:#64748B; font-size:0.75rem;"></i> <a href="tel:${inq.phone}" style="color:#0284C7;">${inq.phone}</a></div>
+            ${inq.email ? `<div><i class="fa-solid fa-envelope" style="color:#64748B; font-size:0.75rem;"></i> <a href="mailto:${inq.email}" style="color:#0284C7;">${inq.email}</a></div>` : ''}
+          </div>
+        </td>
+        <td><span class="badge-status" style="background:#F1F5F9; color:#334155;">${inq.subject || 'General'}</span></td>
+        <td style="max-width:240px; color:#475569; font-size:0.85rem;">${msgPreview}</td>
+        <td>${statusBadge}</td>
+        <td>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn-admin" style="padding:4px 8px; font-size:0.75rem; background:#0284C7; color:#ffffff;" onclick="viewInquiryDetail('${inq.id}')">
+              <i class="fa-solid fa-eye"></i> ${isEn ? 'View' : 'हेर्नुहोस्'}
+            </button>
+            <button class="btn-admin btn-admin-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteInquiry('${inq.id}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+};
+
+window.viewInquiryDetail = function(id) {
+  const inq = mockInquiries.find(i => i.id === id);
+  if (!inq) return;
+
+  const titleEl = document.getElementById('modalInquirySenderName');
+  const badgeEl = document.getElementById('modalInquiryIdBadge');
+  const bodyEl = document.getElementById('modalInquiryBody');
+
+  if (titleEl) titleEl.textContent = inq.name;
+  if (badgeEl) badgeEl.textContent = `${inq.id} • ${inq.date}`;
+
+  if (bodyEl) {
+    bodyEl.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        <div style="background:#F1F5F9; padding:1rem; border-radius:8px; display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.88rem;">
+          <div><strong>सम्पर्क फोन:</strong> <a href="tel:${inq.phone}" style="color:#0284C7; font-weight:700;">${inq.phone}</a></div>
+          <div><strong>इमेल:</strong> ${inq.email ? `<a href="mailto:${inq.email}" style="color:#0284C7;">${inq.email}</a>` : 'उपलब्ध छैन'}</div>
+          <div><strong>विषय:</strong> ${inq.subject || 'General'}</div>
+          <div><strong>हालको स्थिति:</strong> <span class="badge-status ${inq.status === 'New' ? 'status-pending' : 'status-verified'}">${inq.status}</span></div>
+        </div>
+
+        <div>
+          <label style="font-size:0.85rem; font-weight:700; color:#334155; display:block; margin-bottom:0.4rem;">सन्देश / जिज्ञासाको पूर्ण विवरण:</label>
+          <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:8px; padding:1rem; line-height:1.7; font-size:0.95rem; color:#1E293B;">
+            ${inq.message}
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #E2E8F0; padding-top:1rem; margin-top:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+          <div style="display:flex; gap:0.5rem;">
+            <a href="tel:${inq.phone}" class="btn-admin" style="background:#059669; color:#fff; text-decoration:none;">
+              <i class="fa-solid fa-phone"></i> फोन गर्नुहोस्
+            </a>
+            ${inq.email ? `<a href="mailto:${inq.email}?subject=Reply from Mangalsen Polytechnic Institute" class="btn-admin" style="background:#3B82F6; color:#fff; text-decoration:none;"><i class="fa-solid fa-envelope"></i> इमेल पठाउनुहोस्</a>` : ''}
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn-admin" style="background:#D97706; color:#fff;" onclick="updateInquiryStatus('${inq.id}', '${inq.status === 'New' ? 'Replied' : 'New'}')">
+              <i class="fa-solid fa-arrow-rotate-right"></i> ${inq.status === 'New' ? 'Mark as Replied' : 'Mark as New'}
+            </button>
+            <button class="btn-admin" style="background:#E2E8F0; color:#475569;" onclick="closeAdminModal('viewInquiryModal')">बन्द गर्नुहोस्</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  openAdminModal('viewInquiryModal');
+};
+
+window.updateInquiryStatus = function(id, newStatus) {
+  const idx = mockInquiries.findIndex(i => i.id === id);
+  if (idx !== -1) {
+    mockInquiries[idx].status = newStatus;
+    localStorage.setItem('mpi_inquiries', JSON.stringify(mockInquiries));
+    renderInquiriesTable();
+    closeAdminModal('viewInquiryModal');
+  }
+};
+
+window.deleteInquiry = function(id) {
+  if (confirm('के तपाईं यो सन्देश हटाउन चाहनुहुन्छ?')) {
+    mockInquiries = mockInquiries.filter(i => i.id !== id);
+    localStorage.setItem('mpi_inquiries', JSON.stringify(mockInquiries));
+    renderInquiriesTable();
+  }
+};
+
+window.openContactSettingsModal = function() {
+  const loc = document.getElementById('settingLocationInput');
+  const ph = document.getElementById('settingPhoneInput');
+  const em = document.getElementById('settingEmailInput');
+  const hr = document.getElementById('settingHoursInput');
+  const fb = document.getElementById('settingFacebookInput');
+  const yt = document.getElementById('settingYoutubeInput');
+
+  if (loc) loc.value = mockContactInfo.location || '';
+  if (ph) ph.value = mockContactInfo.phone || '';
+  if (em) em.value = mockContactInfo.email || '';
+  if (hr) hr.value = mockContactInfo.hours || '';
+  if (fb) fb.value = mockContactInfo.facebook || '';
+  if (yt) yt.value = mockContactInfo.youtube || '';
+
+  openAdminModal('contactSettingsModal');
+};
+
+window.handleSaveContactSettings = function(e) {
+  e.preventDefault();
+  mockContactInfo = {
+    location: document.getElementById('settingLocationInput')?.value.trim() || mockContactInfo.location,
+    phone: document.getElementById('settingPhoneInput')?.value.trim() || mockContactInfo.phone,
+    email: document.getElementById('settingEmailInput')?.value.trim() || mockContactInfo.email,
+    hours: document.getElementById('settingHoursInput')?.value.trim() || mockContactInfo.hours,
+    facebook: document.getElementById('settingFacebookInput')?.value.trim() || mockContactInfo.facebook,
+    youtube: document.getElementById('settingYoutubeInput')?.value.trim() || mockContactInfo.youtube
+  };
+
+  localStorage.setItem('mpi_contact_info', JSON.stringify(mockContactInfo));
+  closeAdminModal('contactSettingsModal');
+  alert('शिक्षालयको सम्पर्क तथा ठेगाना विवरण सफलतापूर्वक अपडेट भयो!');
 };

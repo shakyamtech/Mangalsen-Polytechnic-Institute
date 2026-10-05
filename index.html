@@ -1152,7 +1152,7 @@
             <div class="contact-icon-box"><i class="fa-solid fa-location-dot"></i></div>
             <div>
               <strong style="display:block; font-size:0.95rem;">Location:</strong>
-              <span style="font-size:0.88rem; color:#E2E8F0;">Mangalsen Municipality Ward No. 3, Achham, Sudurpashchim Province, Nepal</span>
+              <span style="font-size:0.88rem; color:#E2E8F0;" id="contactInfoLocation">Mangalsen Municipality Ward No. 3, Achham, Sudurpashchim Province, Nepal</span>
             </div>
           </div>
 
@@ -1160,7 +1160,7 @@
             <div class="contact-icon-box"><i class="fa-solid fa-phone"></i></div>
             <div>
               <strong style="display:block; font-size:0.95rem;">Phone / Hotline:</strong>
-              <span style="font-size:0.88rem; color:#E2E8F0;">097-620000 / 9858488000 / 9848765432</span>
+              <span style="font-size:0.88rem; color:#E2E8F0;" id="contactInfoPhone">097-620000 / 9858488000 / 9848765432</span>
             </div>
           </div>
 
@@ -1168,7 +1168,7 @@
             <div class="contact-icon-box"><i class="fa-solid fa-envelope"></i></div>
             <div>
               <strong style="display:block; font-size:0.95rem;">Email Address:</strong>
-              <span style="font-size:0.88rem; color:#E2E8F0;">info@mpi.edu.np / mangalsenpi@gmail.com</span>
+              <span style="font-size:0.88rem; color:#E2E8F0;" id="contactInfoEmail">info@mpi.edu.np / mangalsenpi@gmail.com</span>
             </div>
           </div>
 
@@ -1176,16 +1176,16 @@
             <div class="contact-icon-box"><i class="fa-regular fa-clock"></i></div>
             <div>
               <strong style="display:block; font-size:0.95rem;">Office Hours:</strong>
-              <span style="font-size:0.88rem; color:#E2E8F0;">Sun - Thu: 10:00 AM - 5:00 PM<br>Friday: 10:00 AM - 3:00 PM (Saturday Closed)</span>
+              <span style="font-size:0.88rem; color:#E2E8F0;" id="contactInfoHours">Sun - Thu: 10:00 AM - 5:00 PM<br>Friday: 10:00 AM - 3:00 PM (Saturday Closed)</span>
             </div>
           </div>
 
           <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.25rem;">
             <strong style="display:block; font-size:0.9rem; margin-bottom:0.6rem;">Connect on Social Media:</strong>
             <div class="footer-social-links" style="margin-top:0;">
-              <a href="https://www.facebook.com/mangalsenpi/" target="_blank" class="social-icon-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-              <a href="https://www.youtube.com/" target="_blank" class="social-icon-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-              <a href="mailto:info@mpi.edu.np" class="social-icon-btn" title="Email Us"><i class="fa-solid fa-envelope"></i></a>
+              <a href="https://www.facebook.com/mangalsenpi/" id="contactInfoFacebook" target="_blank" class="social-icon-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://www.youtube.com/" id="contactInfoYoutube" target="_blank" class="social-icon-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+              <a href="mailto:info@mpi.edu.np" id="contactInfoMailto" class="social-icon-btn" title="Email Us"><i class="fa-solid fa-envelope"></i></a>
             </div>
           </div>
         </div>
@@ -1195,39 +1195,39 @@
             <i class="fa-regular fa-comment-dots"></i> Online Inquiry Form
           </h4>
           
-          <form id="contactInquiryForm" onsubmit="event.preventDefault(); simulateContactSubmit();">
+          <form id="contactInquiryForm" onsubmit="handleContactInquirySubmit(event)">
             <div class="form-group">
               <label class="form-label" style="color:var(--text-main);">Full Name <span style="color:var(--crimson);">*</span>:</label>
-              <input type="text" class="admission-input" placeholder="Enter your full name" required />
+              <input type="text" id="inquiryName" class="admission-input" placeholder="Enter your full name" required />
             </div>
 
             <div class="form-grid-2">
               <div class="form-group">
                 <label class="form-label" style="color:var(--text-main);">Mobile Number <span style="color:var(--crimson);">*</span>:</label>
-                <input type="tel" class="admission-input" placeholder="98XXXXXXXX" required />
+                <input type="tel" id="inquiryPhone" class="admission-input" placeholder="98XXXXXXXX" required />
               </div>
 
               <div class="form-group">
                 <label class="form-label" style="color:var(--text-main);">Email:</label>
-                <input type="email" class="admission-input" placeholder="yourname@gmail.com" />
+                <input type="email" id="inquiryEmail" class="admission-input" placeholder="yourname@gmail.com" />
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label" style="color:var(--text-main);">Subject:</label>
-              <select class="admission-input">
-                <option value="admission">Admissions & Scholarships</option>
-                <option value="courses">Fee Structure & Syllabus</option>
-                <option value="general">General Inquiries</option>
+              <select id="inquirySubject" class="admission-input">
+                <option value="Admissions & Scholarships">Admissions & Scholarships (भर्ना तथा छात्रवृत्ति)</option>
+                <option value="Fee Structure & Syllabus">Fee Structure & Syllabus (शुल्क तथा पाठ्यक्रम)</option>
+                <option value="General Inquiries">General Inquiries (सामान्य सोधपुछ)</option>
               </select>
             </div>
 
             <div class="form-group">
               <label class="form-label" style="color:var(--text-main);">Message <span style="color:var(--crimson);">*</span>:</label>
-              <textarea class="admission-input" rows="4" placeholder="Write your question or message here..." required></textarea>
+              <textarea id="inquiryMessage" class="admission-input" rows="4" placeholder="Write your question or message here..." required></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%;">
+            <button type="submit" class="btn btn-primary" id="btnSubmitInquiry" style="width: 100%;">
               <i class="fa-solid fa-paper-plane"></i> Send Inquiry
             </button>
           </form>
